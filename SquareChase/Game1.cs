@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace SquareChase
 {
@@ -9,13 +10,22 @@ namespace SquareChase
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+
+
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        
+
+        private int _playerScore = 0; // game world state variables
+        private float _remainingTime = 0;
+        private Square _square;
+
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content"; // refactor to global constants
         }
 
         /// <summary>
@@ -28,7 +38,11 @@ namespace SquareChase
         {
             // TODO: Add your initialization logic here
 
+            // do things like set screen resolution, toggle full screen mode, etc.
+
             base.Initialize();
+
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -38,9 +52,10 @@ namespace SquareChase
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            _square = new Square(Content.Load<Texture2D>(@"Square"));
         }
 
         /// <summary>
@@ -64,6 +79,26 @@ namespace SquareChase
 
             // TODO: Add your update logic here
 
+
+            if (_remainingTime <= 0)
+            {
+                _square.WarpSquare(this.Window);
+                _remainingTime = Square.TimePerSquare;
+            }
+
+            MouseState mouse = Mouse.GetState();
+            if (mouse.LeftButton == ButtonState.Pressed && _square.Bounds.Contains(mouse.X, mouse.Y))
+            {
+                _playerScore++;
+                _remainingTime = 0;
+                _square.OnClick();
+            }
+
+            float timeSinceLastCallToUpdateMethod = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _remainingTime = Math.Max(0, _remainingTime - timeSinceLastCallToUpdateMethod);
+
+            this.Window.Title = string.Format("Score: {0}", _playerScore);
+
             base.Update(gameTime);
         }
 
@@ -76,6 +111,12 @@ namespace SquareChase
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            {
+                _spriteBatch.Draw(_square.Texture, _square.Bounds, _square.ColourToShow);
+            }
+            _spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
