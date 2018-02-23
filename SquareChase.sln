@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquareChase", "SquareChase\SquareChase.csproj", "{535118CD-3364-4D58-9CC2-CEE29AEB87E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloodControl", "FloodControl\FloodControl.csproj", "{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,6 +17,10 @@ Global
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Debug|x86.Build.0 = Debug|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Release|x86.ActiveCfg = Release|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Release|x86.Build.0 = Release|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|x86.ActiveCfg = Debug|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|x86.Build.0 = Debug|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.ActiveCfg = Release|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
