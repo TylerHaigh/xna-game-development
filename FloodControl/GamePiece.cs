@@ -121,5 +121,7 @@ namespace FloodControl
             return new Rectangle(x, y, PieceWidth, PieceHeight);
         }
 
+        // TODO: Create empty override method for UpdatePiece();
+
     }
 }
