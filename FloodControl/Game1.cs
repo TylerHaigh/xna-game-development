@@ -35,6 +35,7 @@ namespace FloodControl
 
         private SpriteFont _pericles36Font;
         private Vector2 _scorePosition = new Vector2(605, 215);
+        private Queue<ScoreZoom> _scoreZooms = new Queue<ScoreZoom>();
 
         public Game1()
         {
@@ -140,6 +141,8 @@ namespace FloodControl
                                 HandleMouseInput(Mouse.GetState());
                         }
 
+                        UpdateScoreZooms();
+
                         break;
                     }
             }
@@ -207,6 +210,16 @@ namespace FloodControl
                                 }
 
                             //this.Window.Title = string.Format("Score: {0}", _playerScore);
+
+                            foreach (ScoreZoom zoom in _scoreZooms)
+                            {
+                                Vector2 windowCenter = new Vector2(this.Window.ClientBounds.Width / 2, this.Window.ClientBounds.Height / 2);
+                                Vector2 stringLength = _pericles36Font.MeasureString(zoom.Text);
+                                Vector2 textCenter = new Vector2(stringLength.X / 2, stringLength.Y / 2);
+
+                                spriteBatch.DrawString(_pericles36Font, zoom.Text, windowCenter, zoom.DrawColor, 0.0f, textCenter, zoom.Scale, SpriteEffects.None, 0);
+                            }
+
                             spriteBatch.DrawString(_pericles36Font, _playerScore.ToString(), _scorePosition, Color.Black);
                             break;
                         }
@@ -274,9 +287,11 @@ namespace FloodControl
                 Vector2 lastPipe = waterChain[waterChain.Count - 1];
                 if (lastPipe.X == GameBoard.GameBoardWidth - 1) // Must end on RHS of game board
                 {
-                    if (_gameBoard.PieceHasConector((int)lastPipe.X, (int)lastPipe.Y, "Right")) // Might be connecting to RHS of board
+                    if (_gameBoard.PieceHasConector((int)lastPipe.X, (int)lastPipe.Y, "Right")) // Must be connecting to RHS of board
                     {
                         _playerScore = DetermineScore(waterChain.Count);
+                        _scoreZooms.Enqueue(new ScoreZoom("+" + _playerScore, new Color(1, 0, 0, 0.4f))); // red
+                        // improve: could make score increase each time we "win"
 
                         // Clear tiles filled with water
                         // will be refilled by calling GenerateNewPieces function
@@ -311,5 +326,22 @@ namespace FloodControl
                 }
             }
         }
+
+        private void UpdateScoreZooms()
+        {
+            int dequeueCounter = 0;
+            foreach (ScoreZoom zoom in _scoreZooms)
+            {
+                zoom.Update();
+                if (zoom.IsCompleted)
+                    dequeueCounter++;
+            }
+
+            for (int d = 0; d < dequeueCounter; d++)
+                _scoreZooms.Dequeue();
+        }
+
+
+
     }
 }
