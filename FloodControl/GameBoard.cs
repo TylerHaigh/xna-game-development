@@ -36,9 +36,9 @@ namespace FloodControl
         private Dictionary<string, FallingPiece>  _fallingPieces  = new Dictionary<string, FallingPiece>();
         private Dictionary<string, FadingPiece>   _fadingPieces   = new Dictionary<string, FadingPiece>();
 
-        public void AddRotatingPiece(int x, int y, string pieceName, bool clockwise)     { _rotatingPieces.Add(string.Format("{0}_{1}", x, y), new RotatingPiece(pieceName, clockwise)); }
-        public void  AddFallingPiece(int x, int y, string pieceName, int verticleOffset) {  _fallingPieces.Add(string.Format("{0}_{1}", x, y), new FallingPiece(pieceName, verticleOffset)); }
-        public void   AddFadingPiece(int x, int y, string pieceName)                     {   _fadingPieces.Add(string.Format("{0}_{1}", x, y), new FadingPiece(pieceName, GamePiece.WaterSuffixString)); }
+        public void AddRotatingPiece(int x, int y, string pieceName, bool clockwise)     { _rotatingPieces[string.Format("{0}_{1}", x, y)] = new RotatingPiece(pieceName, clockwise); }
+        public void  AddFallingPiece(int x, int y, string pieceName, int verticleOffset) {  _fallingPieces[string.Format("{0}_{1}", x, y)] = new FallingPiece(pieceName, verticleOffset); }
+        public void   AddFadingPiece(int x, int y, string pieceName)                     {   _fadingPieces[string.Format("{0}_{1}", x, y)] = new FadingPiece(pieceName, GamePiece.WaterSuffixString); }
 
         public bool ArePiecesAnimating => _rotatingPieces.Count > 0 || _fallingPieces.Count > 0 || _fadingPieces.Count > 0;
 
@@ -94,6 +94,7 @@ namespace FloodControl
             if (!PieceIsEmpty(x, rowLookup))
             {
                 PullDownGamePieceIntoCurrent(x, y, rowLookup, GetPieceType(x, rowLookup));
+                AddFallingPiece(x, y, GetPieceType(x, y), GamePiece.PieceHeight * (y - rowLookup));
                 return true;
             }
             return false;
@@ -145,7 +146,10 @@ namespace FloodControl
             for (int x = 0; x < GameBoardWidth; x++)
                 for (int y = 0; y < GameBoardHeight; y++)
                     if (PieceIsEmpty(x, y))
+                    {
                         RandomisePieceType(x, y);
+                        AddFallingPiece(x, y, GetPieceType(x, y), GamePiece.PieceHeight * GameBoardHeight);
+                    }
         }
 
         public void ResetWater()
