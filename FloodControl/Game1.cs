@@ -206,6 +206,7 @@ namespace FloodControl
                         // will be refilled by calling GenerateNewPieces function
                         foreach (Vector2 tile in waterChain)
                         {
+                            _gameBoard.AddFadingPiece((int)tile.X, (int)tile.Y, _gameBoard.GetPieceType((int)tile.X, (int)tile.Y));
                             _gameBoard.SetPieceType((int)tile.X, (int)tile.Y, GamePiece.EmptyPieceType);
                         }
                     }

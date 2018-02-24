@@ -75,9 +75,10 @@ namespace FloodControl
 
         public void RemoveSuffix(string suffix) { this.Suffix = this.Suffix.Replace(suffix, ""); }
 
-        public void FillWithWater() { AddSuffix("W"); }
-        public void EmptyWater() { RemoveSuffix("W"); }
-        public bool IsFilledWithWater => Suffix.Contains("W");
+        public const string WaterSuffixString = "W";
+        public void FillWithWater() { AddSuffix(WaterSuffixString); }
+        public void EmptyWater() { RemoveSuffix(WaterSuffixString); }
+        public bool IsFilledWithWater => Suffix.Contains(WaterSuffixString);
 
         public void Rotate(bool clockWise)
         {

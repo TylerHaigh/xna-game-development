@@ -29,6 +29,20 @@ namespace FloodControl
         private GamePiece[,] _boardSquares = new GamePiece[GameBoardWidth, GameBoardHeight];
         private List<Vector2> _waterTracker = new List<Vector2>();
 
+
+        // Use of dictionaries to track animating pieces is a bad idea...
+        // Use a list/dictionary of generic IAnimatingPiece and create api to treat all pieces the same to reduce code copy
+        private Dictionary<string, RotatingPiece> _rotatingPieces = new Dictionary<string, RotatingPiece>();
+        private Dictionary<string, FallingPiece>  _fallingPieces  = new Dictionary<string, FallingPiece>();
+        private Dictionary<string, FadingPiece>   _fadingPieces   = new Dictionary<string, FadingPiece>();
+
+        public void AddRotatingPiece(int x, int y, string pieceName, bool clockwise)     { _rotatingPieces.Add(string.Format("{0}_{1}", x, y), new RotatingPiece(pieceName, clockwise)); }
+        public void  AddFallingPiece(int x, int y, string pieceName, int verticleOffset) {  _fallingPieces.Add(string.Format("{0}_{1}", x, y), new FallingPiece(pieceName, verticleOffset)); }
+        public void   AddFadingPiece(int x, int y, string pieceName)                     {   _fadingPieces.Add(string.Format("{0}_{1}", x, y), new FadingPiece(pieceName, GamePiece.WaterSuffixString)); }
+
+        public bool ArePiecesAnimating => _rotatingPieces.Count > 0 || _fallingPieces.Count > 0 || _fadingPieces.Count > 0;
+
+
         public GameBoard() { ClearBoard(); }
 
         /// <summary>
@@ -172,6 +186,65 @@ namespace FloodControl
             }
         }
 
+
+        public void UpdateAnimatedPieces()
+        {
+            if (_fadingPieces.Count > 0)
+                UpdateFallingPieces(); // only animate fading. When done, allow other animations to run
+            else
+            {
+                UpdateRotatingPieces();
+                UpdateFallingPieces();
+            }
+        }
+
+        public void UpdateRotatingPieces()
+        {
+            Queue<string> keysToRemove = new Queue<string>();
+            foreach (string key in _rotatingPieces.Keys)
+            {
+                RotatingPiece p = _rotatingPieces[key];
+                p.UpdatePiece();
+
+                if (p.RotationTicksRemaining == 0)
+                    keysToRemove.Enqueue(key);
+            }
+
+            while (keysToRemove.Count > 0)
+                _rotatingPieces.Remove(keysToRemove.Dequeue());
+        }
+
+        public void UpdateFallingPieces()
+        {
+            Queue<string> keysToRemove = new Queue<string>();
+            foreach (string key in _fallingPieces.Keys)
+            {
+                FallingPiece p = _fallingPieces[key];
+                p.UpdatePiece();
+
+                if (p.VerticalOffset == 0)
+                    keysToRemove.Enqueue(key);
+            }
+
+            while (keysToRemove.Count > 0)
+                _fallingPieces.Remove(keysToRemove.Dequeue());
+        }
+
+        public void UpdateFadingPieces()
+        {
+            Queue<string> keysToRemove = new Queue<string>();
+            foreach (string key in _fadingPieces.Keys)
+            {
+                FadingPiece p = _fadingPieces[key];
+                p.UpdatePiece();
+
+                if (p.AlphaLevel == FadingPiece.FullTransparentAlpha)
+                    keysToRemove.Enqueue(key);
+            }
+
+            while (keysToRemove.Count > 0)
+                _fadingPieces.Remove(keysToRemove.Dequeue());
+        }
 
 
 
