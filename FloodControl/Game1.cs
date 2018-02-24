@@ -33,6 +33,9 @@ namespace FloodControl
         private const float MinTimeSinceLastInput = 0.25f;
         private float _timeSinceLastInput = 0;
 
+        private SpriteFont _pericles36Font;
+        private Vector2 _scorePosition = new Vector2(605, 215);
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -76,6 +79,8 @@ namespace FloodControl
             _playingPieces    = Content.Load<Texture2D>(@"Textures/Tile_Sheet");
             _backgroundScreen = Content.Load<Texture2D>(@"Textures/Background");
             _titleScreen      = Content.Load<Texture2D>(@"Textures/TitleScreen");
+
+            _pericles36Font = Content.Load<SpriteFont>(@"Fonts/Pericles36"); // Download font from here before compiling: http://xbox.create.msdn.com/en-US/education/catalog/utility/font_pack
         }
 
         /// <summary>
@@ -201,7 +206,8 @@ namespace FloodControl
 
                                 }
 
-                            this.Window.Title = string.Format("Score: {0}", _playerScore);
+                            //this.Window.Title = string.Format("Score: {0}", _playerScore);
+                            spriteBatch.DrawString(_pericles36Font, _playerScore.ToString(), _scorePosition, Color.Black);
                             break;
                         }
                 }
