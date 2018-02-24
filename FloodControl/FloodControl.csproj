@@ -46,6 +46,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="GamePiece.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotatingPiece.cs" />

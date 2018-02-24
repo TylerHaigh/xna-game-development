@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace FloodControl
 {
-    
+
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public partial class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -24,8 +24,6 @@ namespace FloodControl
         private Vector2 _gameBoardOrigin = new Vector2(70, 89); // What???
 
         private int _playerScore = 0;
-
-        private enum GameState {  TitleScreen, PlayingScreen };
         private GameState _gameState = GameState.TitleScreen;
 
         private Rectangle _emptyPieceTileSheetReferenceSource = new Rectangle(1, 247, 40, 40); // points to empty piece texture in tile sheet for ease of reference
@@ -36,6 +34,22 @@ namespace FloodControl
         private SpriteFont _pericles36Font;
         private Vector2 _scorePosition = new Vector2(605, 215);
         private Queue<ScoreZoom> _scoreZooms = new Queue<ScoreZoom>();
+
+        private Vector2 _gameOverLocation = new Vector2(200, 260);
+        float gameOverTimer;
+
+        private const float MaxFloodCount = 100;
+        private const float TimeBetweenFloodIncreases = 1.0f;
+        private const float FloodIncreaseAmount = 10f;
+
+        private float _currentFloodCount = 0;
+        private float _timeSinceLastFloodIncrease = 0;
+
+        private const int MaxWaterHeight = 244;
+        private const int WaterWidth = 297;
+        private Vector2 _waterOverlayStart = new Vector2(85, 245);
+        private Vector2 _waterPosition = new Vector2(478, 338);
+
 
         public Game1()
         {
@@ -119,7 +133,22 @@ namespace FloodControl
                     }
                 case GameState.PlayingScreen:
                     {
-                        _timeSinceLastInput += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        float timeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        _timeSinceLastInput += timeSinceLastUpdate;
+
+                        _timeSinceLastFloodIncrease += timeSinceLastUpdate;
+                        if(_timeSinceLastFloodIncrease >= TimeBetweenFloodIncreases)
+                        {
+                            _currentFloodCount += FloodIncreaseAmount;
+                            _timeSinceLastFloodIncrease = 0;
+
+                            if(_currentFloodCount > MaxFloodCount)
+                            {
+                                gameOverTimer = 4;
+                                _gameState = GameState.GameOver;
+                            }
+                        }
+
 
                         if (_gameBoard.PiecesAreAnimating)
                         {
@@ -145,6 +174,16 @@ namespace FloodControl
 
                         break;
                     }
+                case GameState.GameOver:
+                    {
+                        gameOverTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (gameOverTimer <= 0)
+                            _gameState = GameState.TitleScreen;
+
+                        break;
+
+                    }
+
             }
 
 
@@ -168,6 +207,7 @@ namespace FloodControl
                 switch (_gameState)
                 {
                     case GameState.TitleScreen:
+                    case GameState.GameOver:
                         {
                             spriteBatch.Draw(_titleScreen, screenBounds, Color.White);
                             break;
@@ -221,10 +261,22 @@ namespace FloodControl
                             }
 
                             spriteBatch.DrawString(_pericles36Font, _playerScore.ToString(), _scorePosition, Color.Black);
+
+                            int waterHeight = (int)(MaxWaterHeight * (_currentFloodCount / 100));
+                            Rectangle waterScreenRect = new Rectangle((int)_waterPosition.X, (int)_waterPosition.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
+                            Rectangle waterSourceRect = new Rectangle((int)_waterOverlayStart.X, (int)_waterOverlayStart.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
+                            spriteBatch.Draw(_backgroundScreen, waterScreenRect, waterSourceRect, new Color(255,255,255, 180)); // half white
+
                             break;
                         }
                 }
             }
+
+
+            if(_gameState == GameState.GameOver)
+                spriteBatch.DrawString(_pericles36Font, "G A M E   O V E R!", _gameOverLocation, Color.Yellow);
+
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -289,8 +341,10 @@ namespace FloodControl
                 {
                     if (_gameBoard.PieceHasConector((int)lastPipe.X, (int)lastPipe.Y, "Right")) // Must be connecting to RHS of board
                     {
-                        _playerScore = DetermineScore(waterChain.Count);
-                        _scoreZooms.Enqueue(new ScoreZoom("+" + _playerScore, new Color(1, 0, 0, 0.4f))); // red
+                        int score = DetermineScore(waterChain.Count);
+                        _playerScore += score;
+                        _scoreZooms.Enqueue(new ScoreZoom("+" + score, new Color(1, 0, 0, 0.4f))); // red
+                        _currentFloodCount = MathHelper.Clamp(_currentFloodCount - (score / 10), 0, 100);
                         // improve: could make score increase each time we "win"
 
                         // Clear tiles filled with water

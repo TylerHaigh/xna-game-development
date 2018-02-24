@@ -17,7 +17,7 @@ namespace FloodControl
         public Color DrawColor { get; set; }
 
         private int _displayCounter = 0;
-        private float _scale = 0.4f;
+        //private float _scale = 0.4f;
         private float _lastScaleAmount = 0;
 
 
@@ -33,7 +33,7 @@ namespace FloodControl
 
         public void Update()
         {
-            _scale += _lastScaleAmount + ScaleAmount;
+            //_scale += _lastScaleAmount + ScaleAmount;
             _lastScaleAmount += ScaleAmount;
             _displayCounter++;
         }
