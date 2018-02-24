@@ -122,6 +122,13 @@ namespace FloodControl
             return new Rectangle(x, y, PieceWidth, PieceHeight);
         }
 
+
+        public static Rectangle CalculateScreenRenderDestinationRectangle(int pixelX, int pixelY)
+        {
+            Rectangle screenDestinationRect = new Rectangle(pixelX, pixelY, PieceWidth, PieceHeight);
+            return screenDestinationRect;
+        }
+
         // TODO: Create empty override method for UpdatePiece();
 
     }

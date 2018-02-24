@@ -115,17 +115,25 @@ namespace FloodControl
                     {
                         _timeSinceLastInput += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                        if (_timeSinceLastInput >= MinTimeSinceLastInput)
-                            HandleMouseInput(Mouse.GetState());
-
-                        // Calculate score
-                        _gameBoard.ResetWater();
-                        for (int y = 0; y < GameBoard.GameBoardHeight; y++)
+                        if (_gameBoard.PiecesAreAnimating)
                         {
-                            CheckScoringChain(_gameBoard.GetWaterChain(y));
+                            _gameBoard.UpdateAnimatedPieces();
                         }
+                        else
+                        {
 
-                        _gameBoard.GeneratePieces(true);
+                            // Calculate score
+                            _gameBoard.ResetWater();
+                            for (int y = 0; y < GameBoard.GameBoardHeight; y++)
+                            {
+                                CheckScoringChain(_gameBoard.GetWaterChain(y));
+                            }
+
+                            _gameBoard.GeneratePieces(true);
+
+                            if (_timeSinceLastInput >= MinTimeSinceLastInput)
+                                HandleMouseInput(Mouse.GetState());
+                        }
 
                         break;
                     }
@@ -166,12 +174,31 @@ namespace FloodControl
                                     int pixelX = (int)_gameBoardOrigin.X + (x * GamePiece.PieceWidth);
                                     int pixelY = (int)_gameBoardOrigin.Y + (y * GamePiece.PieceHeight);
 
-                                    // Render background empty piece
-                                    Rectangle gamePieceScreenDestination = new Rectangle(pixelX, pixelY, GamePiece.PieceWidth, GamePiece.PieceHeight);
-                                    spriteBatch.Draw(_playingPieces, gamePieceScreenDestination, _emptyPieceTileSheetReferenceSource, Color.White);
+                                    DrawEmptyPiece(pixelX, pixelY);
 
-                                    // Render game piece on top of background
-                                    spriteBatch.Draw(_playingPieces, gamePieceScreenDestination, _gameBoard.GetPieceRectangle(x, y), Color.White);
+                                    bool pieceDrawn = false;
+                                    string positionName = string.Format("{0}_{1}", x, y);
+
+                                    if(_gameBoard.HasRotatingPiece(positionName))
+                                    {
+                                        pieceDrawn = true;
+                                        DrawRotatingPiece(pixelX, pixelY, positionName);
+                                    }
+                                    if (_gameBoard.HasFallingPiece(positionName))
+                                    {
+                                        pieceDrawn = true;
+                                        DrawFallingPiece(pixelX, pixelY, positionName);
+                                    }
+                                    if (_gameBoard.HasFadingPiece(positionName))
+                                    {
+                                        pieceDrawn = true;
+                                        DrawFadingPiece(pixelX, pixelY, positionName);
+                                    }
+
+                                    if (!pieceDrawn)
+                                        DrawStandardPiece(x, y, pixelX, pixelY);
+
+
                                 }
 
                             this.Window.Title = string.Format("Score: {0}", _playerScore);
@@ -182,6 +209,49 @@ namespace FloodControl
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawEmptyPiece(int pixelX, int pixelY)
+        {
+            // Render background empty piece
+            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
+            spriteBatch.Draw(_playingPieces, rect, _emptyPieceTileSheetReferenceSource, Color.White);
+        }
+
+        private void DrawStandardPiece(int boardX, int boardY, int pixelX, int pixelY)
+        {
+            // Render game piece on top of background
+            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
+            spriteBatch.Draw(_playingPieces, rect, _gameBoard.GetPieceRectangle(boardX, boardY), Color.White);
+        }
+
+        private void DrawRotatingPiece(int pixelX, int pixelY, string pieceName)
+        {
+            RotatingPiece p = _gameBoard.GetRotatingPiece(pieceName);
+
+            Rectangle rect = new Rectangle(
+                pixelX + (GamePiece.PieceWidth / 2),
+                pixelY + (GamePiece.PieceHeight / 2),
+                GamePiece.PieceWidth, GamePiece.PieceHeight
+            );
+
+            Vector2 tileCenter = new Vector2(GamePiece.PieceWidth / 2, GamePiece.PieceHeight / 2);
+
+            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White, p.RotationAmount, tileCenter, SpriteEffects.None, 0);
+        }
+
+        private void DrawFallingPiece(int pixelX, int pixelY, string pieceName)
+        {
+            FallingPiece p = _gameBoard.GetFallingPiece(pieceName);
+            Rectangle rect = new Rectangle(pixelX, pixelY - p.VerticalOffset, GamePiece.PieceWidth, GamePiece.PieceHeight);
+            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White);
+        }
+
+        private void DrawFadingPiece(int pixelX, int pixelY, string pieceName)
+        {
+            FadingPiece p = _gameBoard.GetFadingPiece(pieceName);
+            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
+            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White * p.AlphaLevel);
         }
 
 
@@ -223,11 +293,13 @@ namespace FloodControl
             {
                 if(mouseState.LeftButton == ButtonState.Pressed)
                 {
+                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), false);
                     _gameBoard.RotatePiece(x, y, false);
                     _timeSinceLastInput = 0;
                 }
                 if (mouseState.RightButton == ButtonState.Pressed)
                 {
+                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), true);
                     _gameBoard.RotatePiece(x, y, true);
                     _timeSinceLastInput = 0;
                 }

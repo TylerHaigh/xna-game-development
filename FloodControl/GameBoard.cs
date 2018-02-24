@@ -40,7 +40,15 @@ namespace FloodControl
         public void  AddFallingPiece(int x, int y, string pieceName, int verticleOffset) {  _fallingPieces[string.Format("{0}_{1}", x, y)] = new FallingPiece(pieceName, verticleOffset); }
         public void   AddFadingPiece(int x, int y, string pieceName)                     {   _fadingPieces[string.Format("{0}_{1}", x, y)] = new FadingPiece(pieceName, GamePiece.WaterSuffixString); }
 
-        public bool ArePiecesAnimating => _rotatingPieces.Count > 0 || _fallingPieces.Count > 0 || _fadingPieces.Count > 0;
+        public bool PiecesAreAnimating => _rotatingPieces.Count > 0 || _fallingPieces.Count > 0 || _fadingPieces.Count > 0;
+
+        public RotatingPiece GetRotatingPiece(string pieceName) => _rotatingPieces[pieceName];
+        public  FallingPiece  GetFallingPiece(string pieceName) =>  _fallingPieces[pieceName];
+        public   FadingPiece   GetFadingPiece(string pieceName) =>   _fadingPieces[pieceName];
+
+        public bool HasRotatingPiece(string pieceName) => _rotatingPieces.ContainsKey(pieceName);
+        public bool  HasFallingPiece(string pieceName) =>  _fallingPieces.ContainsKey(pieceName);
+        public bool   HasFadingPiece(string pieceName) =>   _fadingPieces.ContainsKey(pieceName);
 
 
         public GameBoard() { ClearBoard(); }
@@ -194,7 +202,7 @@ namespace FloodControl
         public void UpdateAnimatedPieces()
         {
             if (_fadingPieces.Count > 0)
-                UpdateFallingPieces(); // only animate fading. When done, allow other animations to run
+                UpdateFadingPieces(); // only animate fading. When done, allow other animations to run
             else
             {
                 UpdateRotatingPieces();
