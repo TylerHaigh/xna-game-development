@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FloodControl.Models.Pieces;
 using Microsoft.Xna.Framework;
 
-namespace FloodControl
+namespace FloodControl.Models
 {
     /// <summary>
     /// Represents the game world on which water filled tiles are placed

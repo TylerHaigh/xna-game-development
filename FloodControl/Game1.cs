@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using FloodControl.Models;
+using FloodControl.Utils;
+using FloodControl.Models.Pieces;
 
 namespace FloodControl
 {
@@ -11,7 +14,7 @@ namespace FloodControl
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public partial class Game1 : Game
+    public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
