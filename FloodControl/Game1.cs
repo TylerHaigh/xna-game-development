@@ -37,10 +37,11 @@ namespace FloodControl
 
         private Vector2 _gameOverLocation = new Vector2(200, 260);
         float gameOverTimer;
+        private const int GameOverWaitTime = 4;
 
         private const float MaxFloodCount = 100;
         private const float TimeBetweenFloodIncreases = 1.0f;
-        private const float FloodIncreaseAmount = 10f;
+        private const float FloodIncreaseAmount = 0.5f;
 
         private float _currentFloodCount = 0;
         private float _timeSinceLastFloodIncrease = 0;
@@ -144,7 +145,7 @@ namespace FloodControl
 
                             if(_currentFloodCount > MaxFloodCount)
                             {
-                                gameOverTimer = 4;
+                                gameOverTimer = GameOverWaitTime;
                                 _gameState = GameState.GameOver;
                             }
                         }
