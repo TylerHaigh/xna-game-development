@@ -41,7 +41,7 @@ namespace FloodControl
 
         private const float MaxFloodCount = 100;
         private const float TimeBetweenFloodIncreases = 1.0f;
-        private const float FloodIncreaseAmount = 0.5f;
+        private float _floodIncreaseAmount = 0.5f;
 
         private float _currentFloodCount = 0;
         private float _timeSinceLastFloodIncrease = 0;
@@ -51,6 +51,10 @@ namespace FloodControl
         private Vector2 _waterOverlayStart = new Vector2(85, 245);
         private Vector2 _waterPosition = new Vector2(478, 338);
 
+        private int _currentLevel = 0;
+        private int _linesCompletedThisLevel = 0;
+        private const float FloodAccellerationPerLevel = 0.5f;
+        private Vector2 _levelTextPosition = new Vector2(512, 215);
 
         public Game1()
         {
@@ -126,8 +130,11 @@ namespace FloodControl
                     {
                         if(Keyboard.GetState().IsKeyDown(Keys.Space))
                         {
-                            _gameBoard.GenerateNewGameBoard(false);
+                            //_gameBoard.GenerateNewGameBoard(false);
                             _playerScore = 0;
+                            _currentLevel = 0; // will be incremented on StartNewLevel();
+                            _floodIncreaseAmount = 0; // will be incremented on StartNewLevel()
+                            StartNewLevel();
                             _gameState = GameState.PlayingScreen;
                         }
                         break;
@@ -140,7 +147,7 @@ namespace FloodControl
                         _timeSinceLastFloodIncrease += timeSinceLastUpdate;
                         if(_timeSinceLastFloodIncrease >= TimeBetweenFloodIncreases)
                         {
-                            _currentFloodCount += FloodIncreaseAmount;
+                            _currentFloodCount += _floodIncreaseAmount;
                             _timeSinceLastFloodIncrease = 0;
 
                             if(_currentFloodCount > MaxFloodCount)
@@ -263,6 +270,8 @@ namespace FloodControl
 
                             spriteBatch.DrawString(_pericles36Font, _playerScore.ToString(), _scorePosition, Color.Black);
 
+                            spriteBatch.DrawString(_pericles36Font, _currentLevel.ToString(), _levelTextPosition, Color.Black);
+
                             int waterHeight = (int)(MaxWaterHeight * (_currentFloodCount / 100));
                             Rectangle waterScreenRect = new Rectangle((int)_waterPosition.X, (int)_waterPosition.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
                             Rectangle waterSourceRect = new Rectangle((int)_waterOverlayStart.X, (int)_waterOverlayStart.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
@@ -346,7 +355,8 @@ namespace FloodControl
                         _playerScore += score;
                         _scoreZooms.Enqueue(new ScoreZoom("+" + score, new Color(1, 0, 0, 0.4f))); // red
                         _currentFloodCount = MathHelper.Clamp(_currentFloodCount - (score / 10), 0, 100);
-                        // improve: could make score increase each time we "win"
+                        _linesCompletedThisLevel++;
+
 
                         // Clear tiles filled with water
                         // will be refilled by calling GenerateNewPieces function
@@ -355,6 +365,9 @@ namespace FloodControl
                             _gameBoard.AddFadingPiece((int)tile.X, (int)tile.Y, _gameBoard.GetPieceType((int)tile.X, (int)tile.Y));
                             _gameBoard.SetPieceType((int)tile.X, (int)tile.Y, GamePiece.EmptyPieceType);
                         }
+
+                        if (_linesCompletedThisLevel >= 10)
+                            StartNewLevel();
                     }
                 }
             }
@@ -396,7 +409,14 @@ namespace FloodControl
                 _scoreZooms.Dequeue();
         }
 
-
+        private void StartNewLevel()
+        {
+            _currentLevel++;
+            _currentFloodCount = 0;
+            _linesCompletedThisLevel = 0;
+            _floodIncreaseAmount += FloodAccellerationPerLevel;
+            _gameBoard.GenerateNewGameBoard(false);
+        }
 
     }
 }
