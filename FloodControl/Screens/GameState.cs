@@ -1,4 +1,4 @@
-﻿namespace FloodControl.Models
+﻿namespace FloodControl.Screens
 {
 
     enum GameState { TitleScreen, PlayingScreen, GameOver };
