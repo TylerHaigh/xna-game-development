@@ -23,9 +23,8 @@ namespace FloodControl
         TextureManager _textureManager;
 
         GameState _gameState;
-        TitleScreen _titleScreen;
-        PlayingScreen _playingScreen;
-        GameOverScreen _gameOverScreen;
+        private Dictionary<GameState, IGameScreen> _gameScreens = new Dictionary<GameState, IGameScreen>();
+        private IGameScreen _currentScreen => _gameScreens[_gameState];
 
 
         public Game1()
@@ -33,14 +32,22 @@ namespace FloodControl
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            _titleScreen = new TitleScreen(this);
-            _playingScreen = new PlayingScreen(this);
-            _gameOverScreen = new GameOverScreen(this);
+            RegisterGameScreens();
+        }
 
+        private void RegisterGameScreens()
+        {
+            var _titleScreen = new TitleScreen(this);
+            var _playingScreen = new PlayingScreen(this);
+            var _gameOverScreen = new GameOverScreen(this);
 
             _titleScreen.StartNewGame += StartNewGame;
             _playingScreen.GameOver += GameOver;
             _gameOverScreen.GameOverDelayComplete += GameOverDelayComplete;
+
+            _gameScreens[GameState.TitleScreen] = _titleScreen;
+            _gameScreens[GameState.PlayingScreen] = _playingScreen;
+            _gameScreens[GameState.GameOver] = _gameOverScreen;
         }
 
         /// <summary>
@@ -62,10 +69,7 @@ namespace FloodControl
             graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
-
             _gameState = GameState.TitleScreen;
-
-
         }
 
         private void GameOverDelayComplete(object sender, EventArgs e)
@@ -75,13 +79,13 @@ namespace FloodControl
 
         private void GameOver(object sender, EventArgs e)
         {
-            _gameOverScreen.ResetTimer();
+            ((GameOverScreen)_gameScreens[GameState.GameOver]).ResetTimer();
             _gameState = GameState.GameOver;
         }
 
         private void StartNewGame(object sender, EventArgs e)
         {
-            _playingScreen.StartNewGame();
+            ((PlayingScreen)_gameScreens[GameState.PlayingScreen]).StartNewGame();
             _gameState = GameState.PlayingScreen;
         }
 
@@ -93,15 +97,13 @@ namespace FloodControl
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            _textureManager = new TextureManager(this.Content);
 
-
-            
 
             // TODO: use this.Content to load your game content here
-            _titleScreen.LoadContent(_textureManager);
-            _playingScreen.LoadContent(_textureManager);
-            _gameOverScreen.LoadContent(_textureManager);
+            _textureManager = new TextureManager(this.Content);
+
+            foreach (var gs in _gameScreens.Values)
+                gs.LoadContent(_textureManager);
         }
 
         /// <summary>
@@ -125,26 +127,7 @@ namespace FloodControl
 
             // TODO: Add your update logic here
 
-            switch(_gameState)
-            {
-                case GameState.TitleScreen:
-                    {
-                        _titleScreen.Update(gameTime);
-                        break;
-                    }
-                case GameState.PlayingScreen:
-                    {
-                        _playingScreen.Update(gameTime);
-                        break;
-                    }
-                case GameState.GameOver:
-                    {
-                        _gameOverScreen.Update(gameTime);
-                        break;
-
-                    }
-
-            }
+            _currentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -161,24 +144,7 @@ namespace FloodControl
 
             spriteBatch.Begin();
             {
-                switch (_gameState)
-                {
-                    case GameState.TitleScreen:
-                        {
-                            _titleScreen.Draw(gameTime, spriteBatch);
-                            break;
-                        }
-                    case GameState.PlayingScreen:
-                        {
-                            _playingScreen.Draw(gameTime, spriteBatch);
-                            break;
-                        }
-                    case GameState.GameOver:
-                        {
-                            _gameOverScreen.Draw(gameTime, spriteBatch);
-                            break;
-                        }
-                }
+                _currentScreen.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
 

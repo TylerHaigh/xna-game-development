@@ -18,7 +18,7 @@ namespace FloodControl.Screens
         private const float MinTimeSinceLastInput = 0.25f;
         private const float MaxFloodCount = 100;
         private const float TimeBetweenFloodIncreases = 1.0f;
-        private const float FloodAccellerationPerLevel = 10f;
+        private const float FloodAccellerationPerLevel = 1f;
         private const int MaxWaterHeight = 244;
         private const int WaterWidth = 297;
 
