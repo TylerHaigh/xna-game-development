@@ -11,14 +11,14 @@ namespace FloodControl.Screens
 {
     class GameOverScreen : GameScreen
     {
-
+        private const int GameOverWaitTime = 4;
 
         private Texture2D _titleScreen;
         private SpriteFont _pericles36Font;
 
         private Vector2 _gameOverLocation = new Vector2(200, 360);
-        float gameOverTimer = GameOverWaitTime;
-        private const int GameOverWaitTime = 4;
+
+        Timer gameOverTimer = new Timer(TimeSpan.FromSeconds(GameOverWaitTime));
 
 
         public event EventHandler GameOverDelayComplete;
@@ -41,14 +41,14 @@ namespace FloodControl.Screens
 
         public override void Update(GameTime gameTime)
         {
-            gameOverTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (gameOverTimer <= 0)
+            gameOverTimer.Update(gameTime);
+            if (gameOverTimer.Completed)
                 GameOverDelayComplete?.Invoke(this, null);
         }
 
         public void ResetTimer()
         {
-            gameOverTimer = GameOverWaitTime;
+            gameOverTimer.Reset();
         }
     }
 }

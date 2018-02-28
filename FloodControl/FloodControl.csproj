@@ -56,6 +56,7 @@
     <Compile Include="Screens\TitleScreen.cs" />
     <Compile Include="Utils\ScoreZoom.cs" />
     <Compile Include="Utils\TextureManager.cs" />
+    <Compile Include="Utils\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
