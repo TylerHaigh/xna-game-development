@@ -18,7 +18,7 @@ namespace FloodControl.Screens
         private const float MinTimeSinceLastInput = 0.25f;
         private const float MaxFloodCount = 100;
         private const float TimeBetweenFloodIncreases = 1.0f;
-        private const float FloodAccellerationPerLevel = 10f;
+        private const float FloodAccellerationPerLevel = 1.0f;
         private const int MaxWaterHeight = 244;
         private const int WaterWidth = 297;
 
@@ -38,13 +38,15 @@ namespace FloodControl.Screens
 
         private GameBoard _gameBoard;
 
-        private float _timeSinceLastInput = 0;
         private float _floodIncreaseAmount = 0.5f;
         private float _currentFloodCount = 0;
-        private float _timeSinceLastFloodIncrease = 0;
         private int _currentLevel = 0;
         private int _linesCompletedThisLevel = 0;
         private int _playerScore = 0;
+
+
+        private Timer _lastFloodIncreaseTimer = new Timer(TimeSpan.FromSeconds(TimeBetweenFloodIncreases));
+        private Timer _inputTimer = new Timer(TimeSpan.FromSeconds(MinTimeSinceLastInput));
 
 
         public event EventHandler GameOver;
@@ -65,18 +67,17 @@ namespace FloodControl.Screens
         public override void Update(GameTime gameTime)
         {
             float timeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _timeSinceLastInput += timeSinceLastUpdate;
 
-            _timeSinceLastFloodIncrease += timeSinceLastUpdate;
-            if (_timeSinceLastFloodIncrease >= TimeBetweenFloodIncreases)
+            _lastFloodIncreaseTimer.Update(gameTime);
+            _inputTimer.Update(gameTime);
+
+            if (_lastFloodIncreaseTimer.Completed)
             {
                 _currentFloodCount += _floodIncreaseAmount;
-                _timeSinceLastFloodIncrease = 0;
+                _lastFloodIncreaseTimer.Reset();
 
                 if (_currentFloodCount > MaxFloodCount)
-                {
                     GameOver?.Invoke(this, null);
-                }
             }
 
 
@@ -96,7 +97,7 @@ namespace FloodControl.Screens
 
                 _gameBoard.GeneratePieces(true);
 
-                if (_timeSinceLastInput >= MinTimeSinceLastInput)
+                if (_inputTimer.Completed)
                     HandleMouseInput(Mouse.GetState());
             }
 
@@ -251,17 +252,13 @@ namespace FloodControl.Screens
 
             if (_gameBoard.PieceIsWithinGameBounds(x, y))
             {
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                bool isAClickInput = mouseState.RightButton == ButtonState.Pressed || mouseState.LeftButton == ButtonState.Pressed;
+                if (isAClickInput)
                 {
-                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), false);
-                    _gameBoard.RotatePiece(x, y, false);
-                    _timeSinceLastInput = 0;
-                }
-                if (mouseState.RightButton == ButtonState.Pressed)
-                {
-                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), true);
-                    _gameBoard.RotatePiece(x, y, true);
-                    _timeSinceLastInput = 0;
+                    bool rotateClockwise = mouseState.RightButton == ButtonState.Pressed;
+                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), rotateClockwise);
+                    _gameBoard.RotatePiece(x, y, rotateClockwise);
+                    _inputTimer.Reset();
                 }
             }
         }
@@ -298,7 +295,6 @@ namespace FloodControl.Screens
 
             _gameBoard = new GameBoard();
             StartNewLevel();
-
         }
 
 
