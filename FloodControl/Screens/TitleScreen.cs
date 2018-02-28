@@ -18,7 +18,6 @@ namespace FloodControl.Screens
         public event EventHandler StartNewGame;
 
 
-
         private Texture2D _titleScreen;
 
         public TitleScreen(Game game) : base(game) { }

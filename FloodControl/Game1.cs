@@ -20,50 +20,27 @@ namespace FloodControl
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private Texture2D _playingPieces;
-        private Texture2D _backgroundScreen;
-        private Texture2D _titleScreen;
+        TextureManager _textureManager;
 
-        private GameBoard _gameBoard;
-        private Vector2 _gameBoardOrigin = new Vector2(70, 89); // What???
+        GameState _gameState;
+        TitleScreen _titleScreen;
+        PlayingScreen _playingScreen;
+        GameOverScreen _gameOverScreen;
 
-        private int _playerScore = 0;
-        private GameState _gameState = GameState.TitleScreen;
-
-        private Rectangle _emptyPieceTileSheetReferenceSource = new Rectangle(1, 247, 40, 40); // points to empty piece texture in tile sheet for ease of reference
-
-        private const float MinTimeSinceLastInput = 0.25f;
-        private float _timeSinceLastInput = 0;
-
-        private SpriteFont _pericles36Font;
-        private Vector2 _scorePosition = new Vector2(605, 215);
-        private Queue<ScoreZoom> _scoreZooms = new Queue<ScoreZoom>();
-
-        private Vector2 _gameOverLocation = new Vector2(200, 260);
-        float gameOverTimer;
-        private const int GameOverWaitTime = 4;
-
-        private const float MaxFloodCount = 100;
-        private const float TimeBetweenFloodIncreases = 1.0f;
-        private float _floodIncreaseAmount = 0.5f;
-
-        private float _currentFloodCount = 0;
-        private float _timeSinceLastFloodIncrease = 0;
-
-        private const int MaxWaterHeight = 244;
-        private const int WaterWidth = 297;
-        private Vector2 _waterOverlayStart = new Vector2(85, 245);
-        private Vector2 _waterPosition = new Vector2(478, 338);
-
-        private int _currentLevel = 0;
-        private int _linesCompletedThisLevel = 0;
-        private const float FloodAccellerationPerLevel = 0.5f;
-        private Vector2 _levelTextPosition = new Vector2(512, 215);
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            _titleScreen = new TitleScreen(this);
+            _playingScreen = new PlayingScreen(this);
+            _gameOverScreen = new GameOverScreen(this);
+
+
+            _titleScreen.StartNewGame += StartNewGame;
+            _playingScreen.GameOver += GameOver;
+            _gameOverScreen.GameOverDelayComplete += GameOverDelayComplete;
         }
 
         /// <summary>
@@ -85,8 +62,27 @@ namespace FloodControl
             graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
-            _gameBoard = new GameBoard();
 
+            _gameState = GameState.TitleScreen;
+
+
+        }
+
+        private void GameOverDelayComplete(object sender, EventArgs e)
+        {
+            _gameState = GameState.TitleScreen;
+        }
+
+        private void GameOver(object sender, EventArgs e)
+        {
+            _gameOverScreen.ResetTimer();
+            _gameState = GameState.GameOver;
+        }
+
+        private void StartNewGame(object sender, EventArgs e)
+        {
+            _playingScreen.StartNewGame();
+            _gameState = GameState.PlayingScreen;
         }
 
         /// <summary>
@@ -97,14 +93,15 @@ namespace FloodControl
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            _textureManager = new TextureManager(this.Content);
+
+
+            
 
             // TODO: use this.Content to load your game content here
-
-            _playingPieces    = Content.Load<Texture2D>(@"Textures/Tile_Sheet");
-            _backgroundScreen = Content.Load<Texture2D>(@"Textures/Background");
-            _titleScreen      = Content.Load<Texture2D>(@"Textures/TitleScreen");
-
-            _pericles36Font = Content.Load<SpriteFont>(@"Fonts/Pericles36"); // Download font from here before compiling: http://xbox.create.msdn.com/en-US/education/catalog/utility/font_pack
+            _titleScreen.LoadContent(_textureManager);
+            _playingScreen.LoadContent(_textureManager);
+            _gameOverScreen.LoadContent(_textureManager);
         }
 
         /// <summary>
@@ -132,73 +129,22 @@ namespace FloodControl
             {
                 case GameState.TitleScreen:
                     {
-                        if(Keyboard.GetState().IsKeyDown(Keys.Space))
-                        {
-                            //_gameBoard.GenerateNewGameBoard(false);
-                            _playerScore = 0;
-                            _currentLevel = 0; // will be incremented on StartNewLevel();
-                            _floodIncreaseAmount = 0; // will be incremented on StartNewLevel()
-                            StartNewLevel();
-                            _gameState = GameState.PlayingScreen;
-                        }
+                        _titleScreen.Update(gameTime);
                         break;
                     }
                 case GameState.PlayingScreen:
                     {
-                        float timeSinceLastUpdate = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        _timeSinceLastInput += timeSinceLastUpdate;
-
-                        _timeSinceLastFloodIncrease += timeSinceLastUpdate;
-                        if(_timeSinceLastFloodIncrease >= TimeBetweenFloodIncreases)
-                        {
-                            _currentFloodCount += _floodIncreaseAmount;
-                            _timeSinceLastFloodIncrease = 0;
-
-                            if(_currentFloodCount > MaxFloodCount)
-                            {
-                                gameOverTimer = GameOverWaitTime;
-                                _gameState = GameState.GameOver;
-                            }
-                        }
-
-
-                        if (_gameBoard.PiecesAreAnimating)
-                        {
-                            _gameBoard.UpdateAnimatedPieces();
-                        }
-                        else
-                        {
-
-                            // Calculate score
-                            _gameBoard.ResetWater();
-                            for (int y = 0; y < GameBoard.GameBoardHeight; y++)
-                            {
-                                CheckScoringChain(_gameBoard.GetWaterChain(y));
-                            }
-
-                            _gameBoard.GeneratePieces(true);
-
-                            if (_timeSinceLastInput >= MinTimeSinceLastInput)
-                                HandleMouseInput(Mouse.GetState());
-                        }
-
-                        UpdateScoreZooms();
-
+                        _playingScreen.Update(gameTime);
                         break;
                     }
                 case GameState.GameOver:
                     {
-                        gameOverTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        if (gameOverTimer <= 0)
-                            _gameState = GameState.TitleScreen;
-
+                        _gameOverScreen.Update(gameTime);
                         break;
 
                     }
 
             }
-
-
 
             base.Update(gameTime);
         }
@@ -213,213 +159,30 @@ namespace FloodControl
 
             // TODO: Add your drawing code here
 
-            Rectangle screenBounds = new Rectangle(0, 0, this.Window.ClientBounds.Width, this.Window.ClientBounds.Height);
             spriteBatch.Begin();
             {
                 switch (_gameState)
                 {
                     case GameState.TitleScreen:
-                    case GameState.GameOver:
                         {
-                            spriteBatch.Draw(_titleScreen, screenBounds, Color.White);
+                            _titleScreen.Draw(gameTime, spriteBatch);
                             break;
                         }
                     case GameState.PlayingScreen:
                         {
-                            spriteBatch.Draw(_backgroundScreen, screenBounds, Color.White);
-
-                            for (int x = 0; x < GameBoard.GameBoardWidth; x++)
-                                for (int y = 0; y < GameBoard.GameBoardHeight; y++)
-                                {
-                                    int pixelX = (int)_gameBoardOrigin.X + (x * GamePiece.PieceWidth);
-                                    int pixelY = (int)_gameBoardOrigin.Y + (y * GamePiece.PieceHeight);
-
-                                    DrawEmptyPiece(pixelX, pixelY);
-
-                                    bool pieceDrawn = false;
-                                    string positionName = string.Format("{0}_{1}", x, y);
-
-                                    if(_gameBoard.HasRotatingPiece(positionName))
-                                    {
-                                        pieceDrawn = true;
-                                        DrawRotatingPiece(pixelX, pixelY, positionName);
-                                    }
-                                    if (_gameBoard.HasFallingPiece(positionName))
-                                    {
-                                        pieceDrawn = true;
-                                        DrawFallingPiece(pixelX, pixelY, positionName);
-                                    }
-                                    if (_gameBoard.HasFadingPiece(positionName))
-                                    {
-                                        pieceDrawn = true;
-                                        DrawFadingPiece(pixelX, pixelY, positionName);
-                                    }
-
-                                    if (!pieceDrawn)
-                                        DrawStandardPiece(x, y, pixelX, pixelY);
-
-
-                                }
-
-                            //this.Window.Title = string.Format("Score: {0}", _playerScore);
-
-                            foreach (ScoreZoom zoom in _scoreZooms)
-                            {
-                                Vector2 windowCenter = new Vector2(this.Window.ClientBounds.Width / 2, this.Window.ClientBounds.Height / 2);
-                                Vector2 stringLength = _pericles36Font.MeasureString(zoom.Text);
-                                Vector2 textCenter = new Vector2(stringLength.X / 2, stringLength.Y / 2);
-
-                                spriteBatch.DrawString(_pericles36Font, zoom.Text, windowCenter, zoom.DrawColor, 0.0f, textCenter, zoom.Scale, SpriteEffects.None, 0);
-                            }
-
-                            spriteBatch.DrawString(_pericles36Font, _playerScore.ToString(), _scorePosition, Color.Black);
-
-                            spriteBatch.DrawString(_pericles36Font, _currentLevel.ToString(), _levelTextPosition, Color.Black);
-
-                            int waterHeight = (int)(MaxWaterHeight * (_currentFloodCount / 100));
-                            Rectangle waterScreenRect = new Rectangle((int)_waterPosition.X, (int)_waterPosition.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
-                            Rectangle waterSourceRect = new Rectangle((int)_waterOverlayStart.X, (int)_waterOverlayStart.Y + (MaxWaterHeight - waterHeight), WaterWidth, waterHeight);
-                            spriteBatch.Draw(_backgroundScreen, waterScreenRect, waterSourceRect, new Color(255,255,255, 180)); // half white
-
+                            _playingScreen.Draw(gameTime, spriteBatch);
+                            break;
+                        }
+                    case GameState.GameOver:
+                        {
+                            _gameOverScreen.Draw(gameTime, spriteBatch);
                             break;
                         }
                 }
             }
-
-
-            if(_gameState == GameState.GameOver)
-                spriteBatch.DrawString(_pericles36Font, "G A M E   O V E R!", _gameOverLocation, Color.Yellow);
-
-
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void DrawEmptyPiece(int pixelX, int pixelY)
-        {
-            // Render background empty piece
-            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
-            spriteBatch.Draw(_playingPieces, rect, _emptyPieceTileSheetReferenceSource, Color.White);
-        }
-
-        private void DrawStandardPiece(int boardX, int boardY, int pixelX, int pixelY)
-        {
-            // Render game piece on top of background
-            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
-            spriteBatch.Draw(_playingPieces, rect, _gameBoard.GetPieceRectangle(boardX, boardY), Color.White);
-        }
-
-        private void DrawRotatingPiece(int pixelX, int pixelY, string pieceName)
-        {
-            RotatingPiece p = _gameBoard.GetRotatingPiece(pieceName);
-
-            Rectangle rect = new Rectangle(
-                pixelX + (GamePiece.PieceWidth / 2),
-                pixelY + (GamePiece.PieceHeight / 2),
-                GamePiece.PieceWidth, GamePiece.PieceHeight
-            );
-
-            Vector2 tileCenter = new Vector2(GamePiece.PieceWidth / 2, GamePiece.PieceHeight / 2);
-
-            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White, p.RotationAmount, tileCenter, SpriteEffects.None, 0);
-        }
-
-        private void DrawFallingPiece(int pixelX, int pixelY, string pieceName)
-        {
-            FallingPiece p = _gameBoard.GetFallingPiece(pieceName);
-            Rectangle rect = new Rectangle(pixelX, pixelY - p.VerticalOffset, GamePiece.PieceWidth, GamePiece.PieceHeight);
-            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White);
-        }
-
-        private void DrawFadingPiece(int pixelX, int pixelY, string pieceName)
-        {
-            FadingPiece p = _gameBoard.GetFadingPiece(pieceName);
-            Rectangle rect = GamePiece.CalculateScreenRenderDestinationRectangle(pixelX, pixelY);
-            spriteBatch.Draw(_playingPieces, rect, p.GetSoruceRect(), Color.White * p.AlphaLevel);
-        }
-
-
-        private int DetermineScore(int squareCount)
-        {
-            double res = (Math.Pow(squareCount / 5, 2) + squareCount) * 10;
-            return (int)res;
-        }
-
-        private void CheckScoringChain(List<Vector2> waterChain)
-        {
-            if (waterChain.Count > 0)
-            {
-                Vector2 lastPipe = waterChain[waterChain.Count - 1];
-                if (lastPipe.X == GameBoard.GameBoardWidth - 1) // Must end on RHS of game board
-                {
-                    if (_gameBoard.PieceHasConector((int)lastPipe.X, (int)lastPipe.Y, "Right")) // Must be connecting to RHS of board
-                    {
-                        int score = DetermineScore(waterChain.Count);
-                        _playerScore += score;
-                        _scoreZooms.Enqueue(new ScoreZoom("+" + score, new Color(1, 0, 0, 0.4f))); // red
-                        _currentFloodCount = MathHelper.Clamp(_currentFloodCount - (score / 10), 0, 100);
-                        _linesCompletedThisLevel++;
-
-
-                        // Clear tiles filled with water
-                        // will be refilled by calling GenerateNewPieces function
-                        foreach (Vector2 tile in waterChain)
-                        {
-                            _gameBoard.AddFadingPiece((int)tile.X, (int)tile.Y, _gameBoard.GetPieceType((int)tile.X, (int)tile.Y));
-                            _gameBoard.SetPieceType((int)tile.X, (int)tile.Y, GamePiece.EmptyPieceType);
-                        }
-
-                        if (_linesCompletedThisLevel >= 10)
-                            StartNewLevel();
-                    }
-                }
-            }
-        }
-
-        private void HandleMouseInput(MouseState mouseState)
-        {
-            int x = (mouseState.X - (int)_gameBoardOrigin.X) / GamePiece.PieceWidth;
-            int y = (mouseState.Y - (int)_gameBoardOrigin.Y) / GamePiece.PieceHeight;
-
-            if(_gameBoard.PieceIsWithinGameBounds(x, y))
-            {
-                if(mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), false);
-                    _gameBoard.RotatePiece(x, y, false);
-                    _timeSinceLastInput = 0;
-                }
-                if (mouseState.RightButton == ButtonState.Pressed)
-                {
-                    _gameBoard.AddRotatingPiece(x, y, _gameBoard.GetPieceType(x, y), true);
-                    _gameBoard.RotatePiece(x, y, true);
-                    _timeSinceLastInput = 0;
-                }
-            }
-        }
-
-        private void UpdateScoreZooms()
-        {
-            int dequeueCounter = 0;
-            foreach (ScoreZoom zoom in _scoreZooms)
-            {
-                zoom.Update();
-                if (zoom.IsCompleted)
-                    dequeueCounter++;
-            }
-
-            for (int d = 0; d < dequeueCounter; d++)
-                _scoreZooms.Dequeue();
-        }
-
-        private void StartNewLevel()
-        {
-            _currentLevel++;
-            _currentFloodCount = 0;
-            _linesCompletedThisLevel = 0;
-            _floodIncreaseAmount += FloodAccellerationPerLevel;
-            _gameBoard.GenerateNewGameBoard(false);
         }
 
     }

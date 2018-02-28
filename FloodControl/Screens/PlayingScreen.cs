@@ -18,7 +18,7 @@ namespace FloodControl.Screens
         private const float MinTimeSinceLastInput = 0.25f;
         private const float MaxFloodCount = 100;
         private const float TimeBetweenFloodIncreases = 1.0f;
-        private const float FloodAccellerationPerLevel = 0.5f;
+        private const float FloodAccellerationPerLevel = 10f;
         private const int MaxWaterHeight = 244;
         private const int WaterWidth = 297;
 
@@ -105,6 +105,9 @@ namespace FloodControl.Screens
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+
+            spriteBatch.Draw(_backgroundScreen, ScreenBounds, Color.White);
+
             for (int x = 0; x < GameBoard.GameBoardWidth; x++)
                 for (int y = 0; y < GameBoard.GameBoardHeight; y++)
                 {
@@ -286,6 +289,17 @@ namespace FloodControl.Screens
             _gameBoard.GenerateNewGameBoard(false);
         }
 
+
+        public void StartNewGame()
+        {
+            _playerScore = 0;
+            _currentLevel = 0;
+            _floodIncreaseAmount = 0;
+
+            _gameBoard = new GameBoard();
+            StartNewLevel();
+
+        }
 
 
 

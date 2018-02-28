@@ -46,7 +46,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Models\GameBoard.cs" />
     <Compile Include="Models\Pieces\GamePiece.cs" />
-    <Compile Include="Screens\GameOver.cs" />
+    <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
