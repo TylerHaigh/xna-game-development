@@ -35,10 +35,7 @@ namespace FloodControl.Screens
 
         public override void LoadContent(TextureManager textureManager)
         {
-            if (!textureManager.HasLoadedContentWithKey(TitleScreenTextureKey))
-                textureManager.LoadContent<Texture2D>(TitleScreenTextureKey);
-
-            _titleScreen = textureManager.Get<Texture2D>(TitleScreenTextureKey);
+            _titleScreen = textureManager.OptionalLoadContent<Texture2D>(TitleScreenTextureKey);
         }
     }
 }
