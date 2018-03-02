@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Packt.Mono.Framework
 {
-    public interface IGameScreen
+    public interface IGameScreen : IGameEntity
     {
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime, SpriteBatch spriteBatch);
         void LoadContent(TextureManager textureManager);
     }
 

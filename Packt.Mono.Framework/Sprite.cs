@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Packt.Mono.Framework
 {
-    class Sprite
+    class Sprite : IGameEntity
     {
 
         public Texture2D Texture { get; set; }
@@ -16,6 +16,7 @@ namespace Packt.Mono.Framework
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Location { get; set; } = Vector2.Zero;
         public Vector2 Velocity { get; set; } = Vector2.Zero;
+        public float Scale { get; set; } = 1;
 
         private float _rotation = 0;
         public float Rotation {
@@ -24,7 +25,7 @@ namespace Packt.Mono.Framework
         }
 
         // Animating Sprite details
-        private List<Rectangle> _frames = new List<Rectangle>();
+        protected List<Rectangle> _frames = new List<Rectangle>();
         private int _frameWidth = 0;
         private int _frameHeight = 0;
         private int _currentFrame;
@@ -40,8 +41,13 @@ namespace Packt.Mono.Framework
         public float FrameDisplayTime
         {
             get { return _frameDisplayTime; }
-            set { _frameDisplayTime = Math.Max(0, value); }
+            set {
+                _frameDisplayTime = Math.Max(0, value);
+                _timeForCurrentFrame = new Timer(_frameDisplayTime);
+            }
         }
+
+        public void AddFrame(Rectangle frameRect) => _frames.Add(frameRect);
 
         public Rectangle Source => _frames[_currentFrame];
         public Rectangle Destination => new Rectangle((int)Location.X, (int)Location.Y, _frameWidth, _frameHeight);
@@ -70,9 +76,30 @@ namespace Packt.Mono.Framework
             _frameWidth = initialFrame.Width;
             _frameHeight = initialFrame.Height;
 
-            _timeForCurrentFrame =  new Timer(TimeSpan.FromSeconds(_frameDisplayTime));
+            _timeForCurrentFrame =  new Timer(_frameDisplayTime);
         }
 
+        public virtual void Update(GameTime gameTime)
+        {
+            UpdateCurrentFrameTimer(gameTime);
+
+            Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        private void UpdateCurrentFrameTimer(GameTime gameTime)
+        {
+            _timeForCurrentFrame.Update(gameTime);
+            if (_timeForCurrentFrame.Completed)
+            {
+                _currentFrame = (_currentFrame + 1) % _frames.Count;
+                _timeForCurrentFrame.Reset();
+            }
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Center, Source, TintColor, Rotation, CenterOfFrame, Scale, SpriteEffects.None, 0);
+        }
 
     }
 }

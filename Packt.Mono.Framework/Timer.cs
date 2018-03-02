@@ -15,6 +15,8 @@ namespace Packt.Mono.Framework
 
         private TimeSpan _currentTime;
 
+        public Timer(float f) : this(TimeSpan.FromSeconds(f)) { }
+        public Timer(double d) : this(TimeSpan.FromSeconds(d)) { }
         public Timer(TimeSpan duration) { Duration = duration; _currentTime = new TimeSpan(); }
 
         public void Update(GameTime gameTime)
