@@ -48,6 +48,7 @@ namespace Packt.Mono.Framework
         }
 
         public void AddFrame(Rectangle frameRect) => _frames.Add(frameRect);
+        public void AddFrames(IEnumerable<Rectangle> frameRects) => _frames.AddRange(frameRects);
 
         public Rectangle Source => _frames[_currentFrame];
         public Rectangle Destination => new Rectangle((int)Location.X, (int)Location.Y, _frameWidth, _frameHeight);
@@ -68,7 +69,9 @@ namespace Packt.Mono.Framework
         public bool IsCircleColliding(CollisionCircle otherCircle) => this.CollisionCircle.Intersects(otherCircle);
 
 
-        public Sprite(Vector2 location, Texture2D texture, Rectangle initialFrame, Vector2 velocity)
+        public Sprite(Texture2D texture, Rectangle initialFrame) : this(texture, initialFrame, Vector2.Zero, Vector2.Zero) { }
+
+        public Sprite(Texture2D texture, Rectangle initialFrame, Vector2 location, Vector2 velocity)
         {
             this.Location = location;
             this.Texture = texture;
