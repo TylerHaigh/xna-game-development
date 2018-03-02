@@ -55,6 +55,11 @@ namespace Packt.Mono.Framework
         public int BoundingXPadding { get; set; } = 0; // Boudning Box Collision
         public int BoundingYPadding { get; set; } = 0;
 
+        public Rectangle BoundingBoxRectangle => new Rectangle((int)Location.X + BoundingXPadding, (int)Location.Y + BoundingYPadding, _frameWidth - (BoundingXPadding * 2), _frameHeight - (BoundingYPadding * 2));
+        public bool IsBoxColliding(Rectangle otherBox) => BoundingBoxRectangle.Intersects(otherBox);
+        public bool IsCircleColliding(Vector2 otherCenter, float otherRadius) => Vector2.Distance(this.Center, otherCenter) < (CollisionRadius + otherRadius);
+
+
         public Sprite(Vector2 location, Texture2D texture, Rectangle initialFrame, Vector2 velocity)
         {
             this.Location = location;
