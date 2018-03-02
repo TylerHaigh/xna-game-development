@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AsteroidAssault.Screens;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Packt.Mono.Framework;
+using System.Collections.Generic;
 
 namespace AsteroidAssault
 {
@@ -14,15 +17,24 @@ namespace AsteroidAssault
 
 
         private GameState _gameState = GameState.TitleScreen;
-        private Texture2D _titleScreen;
-        private Texture2D _spriteSheet;
+        private Dictionary<GameState, IGameScreen> _gameScreens = new Dictionary<GameState, IGameScreen>();
+        IGameScreen _currentScreen => _gameScreens[_gameState];
 
-
+        private TextureManager _textureManager;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            RegisterGameScreens();
+        }
+
+        private void RegisterGameScreens()
+        {
+            TitleScreen ts = new TitleScreen(this);
+
+            _gameScreens[GameState.TitleScreen] = ts;
         }
 
         /// <summary>
@@ -47,9 +59,12 @@ namespace AsteroidAssault
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _textureManager = new TextureManager(Content);
+            foreach (var gs in _gameScreens.Values)
+                gs.LoadContent(_textureManager);
+
             // TODO: use this.Content to load your game content here
-            _titleScreen = Content.Load<Texture2D>(@"Textures\TitleScreen");
-            _spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
+            //_spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
         }
 
         /// <summary>
@@ -73,21 +88,7 @@ namespace AsteroidAssault
 
             // TODO: Add your update logic here
 
-            switch (_gameState)
-            {
-                case GameState.TitleScreen:
-                    break;
-                case GameState.Playing:
-                    break;
-                case GameState.PlayerDead:
-                    break;
-                case GameState.GameOver:
-                    break;
-                default:
-                    break;
-            }
-
-
+            _currentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -104,20 +105,7 @@ namespace AsteroidAssault
 
             spriteBatch.Begin();
             {
-
-                if (_gameState == GameState.TitleScreen)
-                {
-                    spriteBatch.Draw(_titleScreen, new Rectangle(0,0, this.Window.ClientBounds.Width, this.Window.ClientBounds.Height), Color.White);
-                }
-
-                if(_gameState == GameState.Playing || _gameState == GameState.PlayerDead || _gameState == GameState.GameOver)
-                {
-                }
-
-                if(_gameState == GameState.GameOver)
-                {
-                }
-
+                _currentScreen.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
 
