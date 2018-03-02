@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollisionCircle.cs" />
     <Compile Include="IGameEntity.cs" />
     <Compile Include="IGameScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
