@@ -36,7 +36,7 @@ namespace AsteroidAssault.Models
             for (int i = 0; i < starCount; i++)
             {
                 Vector2 loc = new Vector2(_rand.Next(0, _screenWidth), _rand.Next(0, _screenHeight));
-                Sprite star = new Sprite(loc, texture, frameRectangle, starVelocity);
+                Sprite star = new Sprite(loc, texture, frameRectangle, starVelocity * (_rand.Next(30, 100) / 100.0f));
 
                 Color starColor = _colors[_rand.Next(0, _colors.Length)];
                 starColor *= (_rand.Next(30, 80) / 100.0f);

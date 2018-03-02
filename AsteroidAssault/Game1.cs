@@ -16,7 +16,7 @@ namespace AsteroidAssault
         SpriteBatch spriteBatch;
 
 
-        private GameState _gameState = GameState.TitleScreen;
+        private GameState _gameState = GameState.Playing;
         private Dictionary<GameState, IGameScreen> _gameScreens = new Dictionary<GameState, IGameScreen>();
         IGameScreen _currentScreen => _gameScreens[_gameState];
 
@@ -33,8 +33,10 @@ namespace AsteroidAssault
         private void RegisterGameScreens()
         {
             TitleScreen ts = new TitleScreen(this);
+            PlayingScreen ps = new PlayingScreen(this);
 
             _gameScreens[GameState.TitleScreen] = ts;
+            _gameScreens[GameState.Playing] = ps;
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace AsteroidAssault
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
