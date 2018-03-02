@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FloodControl.Utils
+namespace Packt.Mono.Framework
 {
-    class TextureManager
+    public class TextureManager
     {
 
         public ContentManager Content { get; set; }

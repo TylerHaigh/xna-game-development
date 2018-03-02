@@ -9,24 +9,42 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloodControl", "FloodContro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsteroidAssault", "AsteroidAssault\AsteroidAssault.csproj", "{F85D50F5-4889-43C5-86CF-E8DF3E99A690}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packt.Mono.Framework", "Packt.Mono.Framework\Packt.Mono.Framework.csproj", "{95941149-BAC1-4C33-B936-044667D5BBBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Debug|x86.ActiveCfg = Debug|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Debug|x86.Build.0 = Debug|x86
+		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Release|Any CPU.ActiveCfg = Release|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Release|x86.ActiveCfg = Release|x86
 		{535118CD-3364-4D58-9CC2-CEE29AEB87E8}.Release|x86.Build.0 = Release|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|x86.ActiveCfg = Debug|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|x86.Build.0 = Debug|x86
+		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|Any CPU.ActiveCfg = Release|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.ActiveCfg = Release|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.Build.0 = Release|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Debug|x86.ActiveCfg = Debug|x86
 		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Debug|x86.Build.0 = Debug|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Release|Any CPU.ActiveCfg = Release|x86
 		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Release|x86.ActiveCfg = Release|x86
 		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Release|x86.Build.0 = Release|x86
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Debug|x86.Build.0 = Debug|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Release|x86.ActiveCfg = Release|Any CPU
+		{95941149-BAC1-4C33-B936-044667D5BBBA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

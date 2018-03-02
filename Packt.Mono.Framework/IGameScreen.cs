@@ -1,5 +1,4 @@
-﻿using FloodControl.Utils;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FloodControl.Screens
+namespace Packt.Mono.Framework
 {
-    interface IGameScreen
+    public interface IGameScreen
     {
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
         void LoadContent(TextureManager textureManager);
     }
 
-    abstract class GameScreen : IGameScreen
+    public abstract class GameScreen : IGameScreen
     {
         protected Game _game;
         public GameScreen(Game game) { _game = game; }

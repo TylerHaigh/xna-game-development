@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FloodControl.Utils
+namespace Packt.Mono.Framework
 {
-    class Timer
+    public class Timer
     {
         public readonly TimeSpan Duration;
 
