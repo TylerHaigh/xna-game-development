@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquareChase", "SquareChase\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloodControl", "FloodControl\FloodControl.csproj", "{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsteroidAssault", "AsteroidAssault\AsteroidAssault.csproj", "{F85D50F5-4889-43C5-86CF-E8DF3E99A690}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,6 +23,10 @@ Global
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Debug|x86.Build.0 = Debug|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.ActiveCfg = Release|x86
 		{23558A2B-8EBE-4BEF-9E7B-517CC4BB3DC6}.Release|x86.Build.0 = Release|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Debug|x86.ActiveCfg = Debug|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Debug|x86.Build.0 = Debug|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Release|x86.ActiveCfg = Release|x86
+		{F85D50F5-4889-43C5-86CF-E8DF3E99A690}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
