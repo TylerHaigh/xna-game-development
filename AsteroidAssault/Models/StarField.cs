@@ -18,7 +18,7 @@ namespace AsteroidAssault.Models
         private const int DefaultScreenHeight = 600;
 
         private Random _rand = new Random();
-        private Color[] _colors = { Color.White, Color.Yellow, Color.Wheat, Color.WhiteSmoke, Color.SlateGray };
+        private Color[] _colors = { Color.White, Color.Yellow, Color.Wheat, Color.WhiteSmoke, Color.SlateGray, Color.CornflowerBlue, Color.Orange };
 
         private int _screenWidth = DefaultScreenHeight;
         private int _screenHeight = DefaultScreenHeight;
