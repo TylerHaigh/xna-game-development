@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Packt.Mono.Framework
 {
-    class Sprite : IGameEntity
+    public class Sprite : IGameEntity
     {
 
         public Texture2D Texture { get; set; }
