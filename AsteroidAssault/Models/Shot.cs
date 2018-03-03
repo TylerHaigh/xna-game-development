@@ -19,12 +19,12 @@ namespace AsteroidAssault.Models
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            Sprite.Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            Sprite.Update(gameTime);
         }
 
         public bool IsOnScreen(Rectangle screenBounds)
