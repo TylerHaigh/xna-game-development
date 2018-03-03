@@ -5,7 +5,7 @@ using System;
 
 namespace AsteroidAssault.Models
 {
-    class Asteroid : IGameEntity
+    class Asteroid : IGameEntity, IParticle
     {
 
         private const int MinSpeed = 60;
