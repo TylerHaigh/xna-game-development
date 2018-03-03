@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models
 {
-    class AsteroidManager
+    class AsteroidManager : IGameEntity
     {
         /*
          * Responsibilities:
@@ -18,14 +18,11 @@ namespace AsteroidAssault.Models
          *  - reposition when off-screen
          */
 
-        private const int ScreenPadding = 10;
-        private const int MinSpeed = 60;
-        private const int MaxSpeed = 120;
 
         private TileSheet _tileSheet;
         private Rectangle _screenBounds;
 
-        private List<Sprite> _asteroids = new List<Sprite>();
+        private List<Asteroid> _asteroids = new List<Asteroid>();
         private Random _rand = new Random();
 
 
@@ -41,12 +38,12 @@ namespace AsteroidAssault.Models
         public void AddAsteroid()
         {
             Vector2 initPosition = new Vector2(-500, -500); // hack to force the asteroid to reposition itself when Update() is called
-            Sprite asteroid = _tileSheet.SpriteAnimation();
+            Sprite asteroidSprite = _tileSheet.SpriteAnimation();
 
-            asteroid.Rotation = MathHelper.ToRadians((float)_rand.Next(0, 360));
-            asteroid.CollisionRadius = 15;
+            asteroidSprite.Rotation = MathHelper.ToRadians(_rand.Next(0, 360));
+            asteroidSprite.CollisionRadius = 15;
 
-            _asteroids.Add(asteroid);
+            _asteroids.Add(new Asteroid(asteroidSprite));
         }
 
         public void Clear() => _asteroids.Clear();
@@ -57,6 +54,94 @@ namespace AsteroidAssault.Models
 
             for (int i = 0; i < asteroidCount; i++)
                 AddAsteroid();
+        }
+
+        private Vector2 GenerateRandomLocation()
+        {
+            Vector2 location = Vector2.Zero;
+            bool invalidLocation = true;
+            int tryCount = 0;
+            const int TryCount = 5;
+
+            do
+            {
+                tryCount++;
+
+                location = CalculateRandomLocationOutsideOfScreen();
+                invalidLocation = CheckIfLocationCollidesWithExistingAsteroid(location);
+
+                if (tryCount > TryCount && invalidLocation)
+                {
+                    // force it to be some random location out of the screen and we will re-attempt again on next call to Update()
+                    location = new Vector2(-500, -500);
+                    invalidLocation = false;
+                }
+            } while (invalidLocation);
+
+            return location;
+        }
+
+        private Vector2 CalculateRandomLocationOutsideOfScreen()
+        {
+            Vector2 location = Vector2.Zero;
+
+            switch (_rand.Next(0, 3))
+            {
+                case 0: // Somewhere on Y axis on the outside of the LHS of screen
+                    {
+                        location.X = 0 - _tileSheet.InitalFrame.Width;
+                        location.Y = _rand.Next(0, _screenBounds.Height);
+                        break;
+                    }
+                case 1: // Somewhere on Y axis on the outside of the RHS of screen
+                    {
+                        location.X = _screenBounds.Width + 0;
+                        location.Y = _rand.Next(0, _screenBounds.Height);
+                        break;
+                    }
+                case 2: // somewhere on the X axis on the outside of the TOP of the screen
+                    {
+                        location.X = _rand.Next(0, _screenBounds.Width);
+                        location.Y = 0 - _tileSheet.InitalFrame.Height;
+                        break;
+                    }
+            }
+
+            return location;
+        }
+
+        private bool CheckIfLocationCollidesWithExistingAsteroid(Vector2 location)
+        {
+            foreach (var a in _asteroids)
+            {
+                // If there is already an asteroid at the target location, then we can't move the target asteroid to here
+                Rectangle other = new Rectangle((int)location.X, (int)location.Y, _tileSheet.InitalFrame.Width, _tileSheet.InitalFrame.Height);
+                if (a.Sprite.IsBoxColliding(other))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (var a in _asteroids)
+            {
+                a.Update(gameTime);
+                if (!a.IsOnScreen(_screenBounds))
+                {
+                    a.Location = GenerateRandomLocation();
+                    a.RandomiseVelocity();
+                }
+            }
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach (var a in _asteroids)
+                a.Draw(gameTime, spriteBatch);
         }
 
     }

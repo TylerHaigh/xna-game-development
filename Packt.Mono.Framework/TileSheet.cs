@@ -12,7 +12,7 @@ namespace Packt.Mono.Framework
     {
 
         private Texture2D _texture;
-        private Rectangle _initalFrame;
+        public readonly Rectangle InitalFrame; // mutable object...
         private int _tilesX;
         private int _tilesY;
 
@@ -22,7 +22,7 @@ namespace Packt.Mono.Framework
         public TileSheet(Texture2D texture, Rectangle initialFrame, int tilesX, int tilesY, int paddingX = 0, int paddingY = 0)
         {
             this._texture = texture;
-            this._initalFrame = initialFrame;
+            this.InitalFrame = initialFrame;
             this._tilesX = tilesX;
             this._tilesY = tilesY;
             this._paddingX = paddingX;
@@ -34,10 +34,10 @@ namespace Packt.Mono.Framework
             PreconditionCheckCoords(x, y);
 
             Rectangle rect = new Rectangle(
-                _initalFrame.X + ((_initalFrame.Width + _paddingX) * x),
-                _initalFrame.Y + ((_initalFrame.Height + _paddingY) * y),
-                _initalFrame.Width,
-                _initalFrame.Height
+                InitalFrame.X + ((InitalFrame.Width + _paddingX) * x),
+                InitalFrame.Y + ((InitalFrame.Height + _paddingY) * y),
+                InitalFrame.Width,
+                InitalFrame.Height
             );
 
             return rect;
@@ -66,7 +66,7 @@ namespace Packt.Mono.Framework
 
         public Sprite SpriteAnimation()
         {
-            Sprite s = new Sprite(_texture, _initalFrame);
+            Sprite s = new Sprite(_texture, InitalFrame);
             s.AddFrames(AllTiles());
             return s;
         }
