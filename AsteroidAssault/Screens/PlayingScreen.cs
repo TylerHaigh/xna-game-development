@@ -19,6 +19,11 @@ namespace AsteroidAssault.Screens
         private Vector2 _starVelocity = new Vector2(0, 30);
         private Rectangle _starTextureSourceRectangle = new Rectangle(0, 450, 2, 2);
 
+        private const int AsteroidCount = 10;
+        private Rectangle _initalAsteroidFrame = new Rectangle(0, 0, Asteroid.SpriteWidth, Asteroid.SpriteHeight);
+        AsteroidManager _asteroidManager;
+
+
         public PlayingScreen(Game game) : base(game)
         {
         }
@@ -26,6 +31,7 @@ namespace AsteroidAssault.Screens
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             _starField.Draw(gameTime, spriteBatch);
+            _asteroidManager.Draw(gameTime, spriteBatch);
         }
 
         public override void LoadContent(TextureManager textureManager)
@@ -33,11 +39,13 @@ namespace AsteroidAssault.Screens
             _starFieldTexture = textureManager.OptionalLoadContent<Texture2D>(@"Textures/SpriteSheet");
 
             _starField = new StarField(ClientBounds.Width, ClientBounds.Height, StarCount, _starVelocity, _starFieldTexture, _starTextureSourceRectangle);
+            _asteroidManager = new AsteroidManager(AsteroidCount, new TileSheet(_starFieldTexture, _initalAsteroidFrame, Asteroid.AsteroidFrames), ScreenBounds);
         }
 
         public override void Update(GameTime gameTime)
         {
             _starField.Update(gameTime);
+            _asteroidManager.Update(gameTime);
         }
     }
 }

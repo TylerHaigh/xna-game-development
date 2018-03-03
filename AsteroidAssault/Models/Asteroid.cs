@@ -16,6 +16,9 @@ namespace AsteroidAssault.Models
         public Vector2 Location { get { return Sprite.Location; } set { Sprite.Location = value; } }
         public Vector2 Velocity { get { return Sprite.Velocity; } set { Sprite.Velocity = value; } }
 
+        public const int SpriteWidth = 50;
+        public const int SpriteHeight = 50;
+        public const int AsteroidFrames = 20;
 
         private Random _rand = new Random();
 

@@ -19,7 +19,7 @@ namespace Packt.Mono.Framework
         private int _paddingX;
         private int _paddingY;
 
-        public TileSheet(Texture2D texture, Rectangle initialFrame, int tilesX, int tilesY, int paddingX = 0, int paddingY = 0)
+        public TileSheet(Texture2D texture, Rectangle initialFrame, int tilesX, int tilesY = 1, int paddingX = 0, int paddingY = 0)
         {
             this._texture = texture;
             this.InitalFrame = initialFrame;
@@ -52,9 +52,13 @@ namespace Packt.Mono.Framework
 
         public IEnumerable<Rectangle> AllTiles()
         {
+            List<Rectangle> frames = new List<Rectangle>();
+
             for (int x = 0; x < _tilesX; x++)
                 for (int y = 0; y < _tilesY; y++)
-                    yield return TileAt(x, y);
+                    frames.Add(TileAt(x, y));
+
+            return frames;
         }
 
         public Sprite SpriteTileAt(int x, int y)

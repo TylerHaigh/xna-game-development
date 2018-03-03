@@ -40,6 +40,7 @@ namespace AsteroidAssault.Models
             Vector2 initPosition = new Vector2(-500, -500); // hack to force the asteroid to reposition itself when Update() is called
             Sprite asteroidSprite = _tileSheet.SpriteAnimation();
 
+            asteroidSprite.Location = initPosition;
             asteroidSprite.Rotation = MathHelper.ToRadians(_rand.Next(0, 360));
             asteroidSprite.CollisionRadius = 15;
 
