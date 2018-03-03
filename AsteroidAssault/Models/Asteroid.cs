@@ -20,6 +20,9 @@ namespace AsteroidAssault.Models
         public const int SpriteHeight = 50;
         public const int AsteroidFrames = 20;
 
+        public const int CollisionRadius = 15;
+
+
         private Random _rand = new Random();
 
         public readonly Sprite Sprite;
@@ -27,6 +30,7 @@ namespace AsteroidAssault.Models
         public Asteroid(Sprite sprite)
         {
             this.Sprite = sprite;
+            this.Sprite.CollisionRadius = CollisionRadius;
         }
 
 
@@ -62,6 +66,26 @@ namespace AsteroidAssault.Models
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Sprite.Draw(gameTime, spriteBatch);
+        }
+
+        public void BounceAsteroids(Asteroid other)
+        {
+            Vector2 centerOfMass = (this.Velocity + other.Velocity) / 2;
+
+            Vector2 thisNormal = other.Sprite.Center - this.Sprite.Center;
+            Vector2 otherNormal = this.Sprite.Center - other.Sprite.Center;
+
+            thisNormal.Normalize();
+            otherNormal.Normalize();
+
+            this.Velocity -= centerOfMass;
+            this.Velocity = Vector2.Reflect(this.Velocity, thisNormal);
+            this.Velocity += centerOfMass;
+
+
+            other.Velocity -= centerOfMass;
+            other.Velocity = Vector2.Reflect(other.Velocity, otherNormal);
+            other.Velocity += centerOfMass;
         }
     }
 }

@@ -42,7 +42,6 @@ namespace AsteroidAssault.Models
 
             asteroidSprite.Location = initPosition;
             asteroidSprite.Rotation = MathHelper.ToRadians(_rand.Next(0, 360));
-            asteroidSprite.CollisionRadius = 15;
 
             _asteroids.Add(new Asteroid(asteroidSprite));
         }
@@ -135,6 +134,19 @@ namespace AsteroidAssault.Models
                 {
                     a.Location = GenerateRandomLocation();
                     a.RandomiseVelocity();
+                }
+            }
+
+
+            for (int i = 0; i < _asteroids.Count; i++)
+            {
+                for (int j = i + 1; j < _asteroids.Count; j++)
+                {
+                    Asteroid a = _asteroids[i];
+                    Asteroid b = _asteroids[j];
+
+                    if (a.Sprite.IsCircleColliding(b.Sprite.Center, a.Sprite.CollisionRadius))
+                        a.BounceAsteroids(b);
                 }
             }
         }
