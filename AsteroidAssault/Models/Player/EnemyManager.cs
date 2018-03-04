@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Utilities;
 using System;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class EnemyManager
+    class EnemyManager : IGameEntity
     {
 
         public int MinEnemiesPerWave { get; set; } = 5;
@@ -18,7 +20,6 @@ namespace AsteroidAssault.Models.Player
         private const float NextWaveTimeout = 8;
         private const float SpawnWaitTimeout = 0.5f;
         private const float ShipShotChance = 0.2f; // out of 100
-        private const float ShotSpeed = 150f;
 
         private TileSheet _tileSheet;
         private Rectangle _screenBounds;
@@ -30,9 +31,9 @@ namespace AsteroidAssault.Models.Player
 
         private List<EnemyPath> _paths = new List<EnemyPath>();
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
-        // TODO: Needs to know the Player's location to work out where to fire shots at
+        public event EventHandler<ShotFiredEventArgs> ShotFired;
 
         public EnemyManager(TileSheet tileSheet, Rectangle screenBounds)
         {
@@ -47,6 +48,13 @@ namespace AsteroidAssault.Models.Player
             Enemy e = new Enemy(_tileSheet.SpriteAnimation(), path[0]);
             e.AddPath(path);
             _enemies.Add(e);
+
+            e.ShotFired += EnemyShotFired;
+        }
+
+        private void EnemyShotFired(object sender, ShotFiredEventArgs e)
+        {
+            ShotFired?.Invoke(sender, e);
         }
 
         private void SpawnWave(EnemyPath path)
@@ -132,6 +140,37 @@ namespace AsteroidAssault.Models.Player
             _paths.Add(path3);
         }
 
+        public void Update(GameTime gameTime)
+        {
+            for (int i = _enemies.Count-1; i >= 0; i--)
+            {
+                Enemy e = _enemies[i];
+                e.Update(gameTime);
+                if (!e.IsActive())
+                {
+                    _enemies.RemoveAt(i);
+                }
+                else
+                {
+                    float chance = _rand.Next(0, 100);
+                    if(chance <= ShipShotChance)
+                    {
+                        e.FireShot();
+                    }
+                }
+            }
+
+            if (Active)
+                UpdateWaveSpawns(gameTime);
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach (var e in _enemies)
+            {
+                e.Draw(gameTime, spriteBatch);
+            }
+        }
 
     }
 }

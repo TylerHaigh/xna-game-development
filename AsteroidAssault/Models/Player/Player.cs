@@ -37,6 +37,7 @@ namespace AsteroidAssault.Models.Player
 
         public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
         public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
+        public Vector2 Center => _sprite.Center;
 
         public Player(Sprite s, Rectangle screenBounds)
         {

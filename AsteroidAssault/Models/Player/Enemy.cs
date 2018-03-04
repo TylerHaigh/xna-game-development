@@ -26,9 +26,12 @@ namespace AsteroidAssault.Models.Player
 
         private const float Speed = 120;
         private const int CollisionRadius = 15;
-        public const int AnimationFrames = 1;
-        public const int TextureWidth = 1;
-        public const int TextureHeight = 1;
+        public const int AnimationFrames = 6;
+        public const int TextureWidth = 50;
+        public const int TextureHeight = 50;
+        private const float ShotSpeed = 150f;
+
+        public event EventHandler<ShotFiredEventArgs> ShotFired;
 
         public Enemy(Sprite s, Vector2 location)
         {
@@ -92,6 +95,17 @@ namespace AsteroidAssault.Models.Player
             if (_wayPoints.Count > 0) return true;
             if (ReachedWayPoint) return false; // reached final way point
             return true;
+        }
+
+        public void FireShot()
+        {
+            ShotFiredEventArgs args = new ShotFiredEventArgs
+            {
+                Location = Location + _gunOffset,
+                ShotSpeed = ShotSpeed
+                // Don't know directional velocity because we don't know where the player is
+            };
+            ShotFired?.Invoke(this, args);
         }
     }
 }

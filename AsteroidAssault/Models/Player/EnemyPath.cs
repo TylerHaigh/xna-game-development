@@ -12,7 +12,6 @@ namespace AsteroidAssault.Models.Player
         private List<Vector2> _waypoints = new List<Vector2>();
 
         public int NumberOfEnemiesAvailable { get; set; }
-        public readonly int PathNumber;
 
         public EnemyPath() { }
 

@@ -33,16 +33,11 @@ namespace AsteroidAssault.Screens
         private ShotManager _shotManager;
         private Rectangle _shotTextureInitialFrame = new Rectangle(0, 300, Shot.TextureWidth, Shot.TextureHeight);
 
+        private EnemyManager _enemyManager;
+        private Rectangle _enemyInitialFrame = new Rectangle(0, 200, Enemy.TextureWidth, Enemy.TextureHeight);
+
         public PlayingScreen(Game game) : base(game)
         {
-        }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            _starField.Draw(gameTime, spriteBatch);
-            _asteroidManager.Draw(gameTime, spriteBatch);
-            _player.Draw(gameTime, spriteBatch);
-            _shotManager.Draw(gameTime, spriteBatch);
         }
 
         public override void LoadContent(TextureManager textureManager)
@@ -53,9 +48,20 @@ namespace AsteroidAssault.Screens
             _asteroidManager = new AsteroidManager(AsteroidCount, new TileSheet(_spriteSheet, _initalAsteroidFrame, Asteroid.AsteroidFrames), ScreenBounds);
             _player = new Player(new TileSheet(_spriteSheet, _initalPlayerFrame, Player.PlayerAnimationFrames).SpriteAnimation(), ScreenBounds);
             _shotManager = new ShotManager(new TileSheet(_spriteSheet, _shotTextureInitialFrame, Shot.AnimationFrames), ScreenBounds);
+            _enemyManager = new EnemyManager(new TileSheet(_spriteSheet, _enemyInitialFrame, Enemy.AnimationFrames), ScreenBounds);
 
             _player.ShotFired += (sender, args) => _shotManager.CreateShot(args);
+            _enemyManager.ShotFired += EnemyManagerShotFired;
+        }
 
+        private void EnemyManagerShotFired(object sender, ShotFiredEventArgs e)
+        {
+            // Work out direction of enemy to player
+            Vector2 shotDirection = _player.Center - e.Location;
+            shotDirection.Normalize();
+            e.Velocity = shotDirection;
+
+            _shotManager.CreateShot(e);
         }
 
         public override void Update(GameTime gameTime)
@@ -64,6 +70,16 @@ namespace AsteroidAssault.Screens
             _asteroidManager.Update(gameTime);
             _player.Update(gameTime);
             _shotManager.Update(gameTime);
+            _enemyManager.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            _starField.Draw(gameTime, spriteBatch);
+            _asteroidManager.Draw(gameTime, spriteBatch);
+            _player.Draw(gameTime, spriteBatch);
+            _shotManager.Draw(gameTime, spriteBatch);
+            _enemyManager.Draw(gameTime, spriteBatch);
         }
     }
 }
