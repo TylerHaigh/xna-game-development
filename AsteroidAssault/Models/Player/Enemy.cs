@@ -19,7 +19,7 @@ namespace AsteroidAssault.Models.Player
         private Sprite _sprite;
         private Vector2 _gunOffset = new Vector2(25, 25);
 
-        private Queue<Vector2> _waypoints = new Queue<Vector2>();
+        private Queue<Vector2> _wayPoints = new Queue<Vector2>();
         private Vector2 _currentWayPoint = Vector2.Zero;
         private Vector2 _previousLocation = Vector2.Zero;
 
@@ -40,12 +40,56 @@ namespace AsteroidAssault.Models.Player
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _sprite.Draw(gameTime, spriteBatch);
+            if(IsActive())
+                _sprite.Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime)
         {
-            _sprite.Update(gameTime);
+
+            if(IsActive())
+            {
+                Velocity = CalculateHeading();
+
+                _previousLocation = Location;
+                _sprite.Update(gameTime);
+
+                _sprite.Rotation = (float)Math.Atan2(
+                    Location.Y - _previousLocation.Y,
+                    Location.X - _previousLocation.X
+                );
+
+                if (ReachedWayPoint)
+                    GetNextWaypoint();
+            }
+
+        }
+
+        private void GetNextWaypoint()
+        {
+            if (_wayPoints.Count > 0)
+                _currentWayPoint = _wayPoints.Dequeue();
+        }
+
+        private Vector2 CalculateHeading()
+        {
+            Vector2 heading = _currentWayPoint - Location;
+            if (heading != Vector2.Zero) heading.Normalize(); // unit vector
+            heading *= Speed; // magnitude scale
+            return heading;
+        }
+
+        public void AddWayPoint(Vector2 wayPoint) => _wayPoints.Enqueue(wayPoint);
+
+        public bool ReachedWayPoint => Vector2.Distance(Location, _currentWayPoint) < _sprite.Source.Width / 2;
+        
+        public bool IsActive()
+        {
+            /// Used to check if should be updated and drawn
+            if (Destroyed) return false;
+            if (_wayPoints.Count > 0) return true;
+            if (ReachedWayPoint) return false; // reached final way point
+            return true;
         }
     }
 }
