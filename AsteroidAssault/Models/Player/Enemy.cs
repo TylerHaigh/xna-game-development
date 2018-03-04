@@ -81,7 +81,7 @@ namespace AsteroidAssault.Models.Player
         }
 
         public void AddWayPoint(Vector2 wayPoint) => _wayPoints.Enqueue(wayPoint);
-        public void AddWayPoints(IEnumerable<Vector2> wayPoints) => _wayPoints.EnqueueRange(wayPoints);
+        public void AddPath(EnemyPath path) => _wayPoints.EnqueueRange(path.WayPoints);
 
         public bool ReachedWayPoint => Vector2.Distance(Location, _currentWayPoint) < _sprite.Source.Width / 2;
         
