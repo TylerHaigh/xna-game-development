@@ -27,9 +27,6 @@ namespace AsteroidAssault
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-
-            
-
             RegisterGameScreens();
         }
 
@@ -66,7 +63,11 @@ namespace AsteroidAssault
 
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 512;
+
+            //graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            //graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             //graphics.IsFullScreen = true;
+
             graphics.ApplyChanges();
 
             _textureManager = new TextureManager(Content);

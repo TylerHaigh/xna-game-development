@@ -44,6 +44,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Models\Asteroid.cs" />
     <Compile Include="Models\AsteroidManager.cs" />
+    <Compile Include="Models\Enemy.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Shot.cs" />
     <Compile Include="Models\ShotManager.cs" />

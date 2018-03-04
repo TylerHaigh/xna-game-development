@@ -17,7 +17,7 @@ namespace AsteroidAssault.Screens
         private StarField _starField;
         private const int StarCount = 200;
         private Vector2 _starVelocity = new Vector2(0, 30);
-        private Rectangle _starTextureSourceRectangle = new Rectangle(0, 450, 2, 2); // todo: create star class
+        private Rectangle _starTextureSourceRectangle = new Rectangle(0, 450, Star.TextureWidth, Star.TextureHeight);
 
         private const int AsteroidCount = 10;
         private Rectangle _initalAsteroidFrame = new Rectangle(0, 0, Asteroid.SpriteWidth, Asteroid.SpriteHeight);
@@ -27,7 +27,7 @@ namespace AsteroidAssault.Screens
         private Rectangle _initalPlayerFrame = new Rectangle(0, 150, Player.PlayerSpriteWidth, Player.PlayerSpriteHeight);
 
         private ShotManager _shotManager;
-        private Rectangle _shotTexture = new Rectangle(0, 300, Shot.TextureWidth, Shot.TextureHeight);
+        private Rectangle _shotTextureInitialFrame = new Rectangle(0, 300, Shot.TextureWidth, Shot.TextureHeight);
 
         public PlayingScreen(Game game) : base(game)
         {
@@ -48,7 +48,7 @@ namespace AsteroidAssault.Screens
             _starField = new StarField(StarCount, _starVelocity, new TileSheet(_spriteSheet, _starTextureSourceRectangle, Star.AnimationFrames), ScreenBounds);
             _asteroidManager = new AsteroidManager(AsteroidCount, new TileSheet(_spriteSheet, _initalAsteroidFrame, Asteroid.AsteroidFrames), ScreenBounds);
             _player = new Player(new TileSheet(_spriteSheet, _initalPlayerFrame, Player.PlayerAnimationFrames).SpriteAnimation(), ScreenBounds);
-            _shotManager = new ShotManager(new TileSheet(_spriteSheet, _shotTexture, 4), ScreenBounds);
+            _shotManager = new ShotManager(new TileSheet(_spriteSheet, _shotTextureInitialFrame, Shot.AnimationFrames), ScreenBounds);
 
             _player.ShotFired += (sender, args) => _shotManager.CreateShot(args);
 
