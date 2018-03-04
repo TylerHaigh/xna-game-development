@@ -13,4 +13,10 @@ namespace Packt.Mono.Framework
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
+
+    public interface IMovableGameEntity : IGameEntity
+    {
+        Vector2 Location { get; set; }
+        Vector2 Velocity { get; set; }
+    }
 }

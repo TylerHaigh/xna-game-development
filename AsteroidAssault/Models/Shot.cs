@@ -5,31 +5,38 @@ using System;
 
 namespace AsteroidAssault.Models
 {
-    class Shot : IGameEntity, IParticle
+    class Shot : IMovableGameEntity
     {
 
-        public float ShotSpeed { get; set; }
-        public int CollisionRadius { get; set; }
-        public Sprite Sprite { get; set; }
+        public const int AnimationFrames = 4;
+        public const int TextureWidth = 5;
+        public const int TextureHeight = 5;
 
-        public Vector2 Location { get { return Sprite.Location; } set { Sprite.Location = value; } }
-        public Vector2 Velocity { get { return Sprite.Velocity; } set { Sprite.Velocity = value; } }
+        private const int CollisionRadius = 2; // might be able to move to Shot class
 
-        public Shot(Sprite s) { this.Sprite = s; }
+        public Vector2 Location { get { return _sprite.Location; } set { _sprite.Location = value; } }
+        public Vector2 Velocity { get { return _sprite.Velocity; } set { _sprite.Velocity = value; } }
+
+        private Sprite _sprite { get; set; }
+
+        public Shot(Sprite s) {
+            this._sprite = s;
+            _sprite.CollisionRadius = CollisionRadius;
+        }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Sprite.Draw(gameTime, spriteBatch);
+            _sprite.Draw(gameTime, spriteBatch);
         }
 
         public void Update(GameTime gameTime)
         {
-            Sprite.Update(gameTime);
+            _sprite.Update(gameTime);
         }
 
         public bool IsOnScreen(Rectangle screenBounds)
         {
-            return this.Sprite.Destination.Intersects(screenBounds);
+            return this._sprite.Destination.Intersects(screenBounds);
         }
     }
 
@@ -38,7 +45,6 @@ namespace AsteroidAssault.Models
         public Vector2 Location { get; set; }
         public Vector2 Velocity { get; set; }
         public float ShotSpeed { get; set; }
-        public int CollisionRadius { get; set; }
     }
 
    

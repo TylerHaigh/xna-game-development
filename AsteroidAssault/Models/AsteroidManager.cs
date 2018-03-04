@@ -116,7 +116,7 @@ namespace AsteroidAssault.Models
             {
                 // If there is already an asteroid at the target location, then we can't move the target asteroid to here
                 Rectangle other = new Rectangle((int)location.X, (int)location.Y, _tileSheet.InitalFrame.Width, _tileSheet.InitalFrame.Height);
-                if (a.Sprite.IsBoxColliding(other))
+                if (a.IsBoxColliding(other))
                 {
                     return true;
                 }
@@ -145,7 +145,7 @@ namespace AsteroidAssault.Models
                     Asteroid a = _asteroids[i];
                     Asteroid b = _asteroids[j];
 
-                    if (a.Sprite.IsCircleColliding(b.Sprite.Center, a.Sprite.CollisionRadius))
+                    if (a.IsCircleColliding(new CollisionCircle(b.Center, Asteroid.CollisionRadius)))
                         a.BounceAsteroids(b);
                 }
             }

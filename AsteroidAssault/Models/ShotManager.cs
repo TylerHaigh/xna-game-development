@@ -50,9 +50,7 @@ namespace AsteroidAssault.Models
             Shot shot = new Shot(s);
 
             shot.Location = args.Location;
-            shot.Velocity = args.Velocity;
-            shot.ShotSpeed = args.ShotSpeed;
-            shot.CollisionRadius = args.CollisionRadius;
+            shot.Velocity = args.Velocity * args.ShotSpeed;
 
             _shots.Add(shot);
 

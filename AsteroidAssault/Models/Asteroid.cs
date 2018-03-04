@@ -5,7 +5,7 @@ using System;
 
 namespace AsteroidAssault.Models
 {
-    class Asteroid : IGameEntity, IParticle
+    class Asteroid : IMovableGameEntity
     {
 
         private const int MinSpeed = 60;
@@ -13,8 +13,8 @@ namespace AsteroidAssault.Models
 
         private const int ScreenPadding = 10;
 
-        public Vector2 Location { get { return Sprite.Location; } set { Sprite.Location = value; } }
-        public Vector2 Velocity { get { return Sprite.Velocity; } set { Sprite.Velocity = value; } }
+        public Vector2 Location { get { return _sprite.Location; } set { _sprite.Location = value; } }
+        public Vector2 Velocity { get { return _sprite.Velocity; } set { _sprite.Velocity = value; } }
 
         public const int SpriteWidth = 50;
         public const int SpriteHeight = 50;
@@ -25,12 +25,15 @@ namespace AsteroidAssault.Models
 
         private Random _rand = new Random();
 
-        public readonly Sprite Sprite;
+        private Sprite _sprite;
+        public Vector2 Center => _sprite.Center;
+        public bool IsCircleColliding(CollisionCircle otherCircle) => _sprite.IsCircleColliding(otherCircle);
+        public bool IsBoxColliding(Rectangle otherRect) => _sprite.IsBoxColliding(otherRect);
 
         public Asteroid(Sprite sprite)
         {
-            this.Sprite = sprite;
-            this.Sprite.CollisionRadius = CollisionRadius;
+            this._sprite = sprite;
+            this._sprite.CollisionRadius = CollisionRadius;
         }
 
 
@@ -55,25 +58,25 @@ namespace AsteroidAssault.Models
         public bool IsOnScreen(Rectangle screenBounds)
         {
             Rectangle screenRectWithPadding = new Rectangle(-ScreenPadding, -ScreenPadding, screenBounds.Width + ScreenPadding, screenBounds.Height + ScreenPadding);
-            return this.Sprite.Destination.Intersects(screenRectWithPadding);
+            return this._sprite.Destination.Intersects(screenRectWithPadding);
         }
 
         public void Update(GameTime gameTime)
         {
-            Sprite.Update(gameTime);
+            _sprite.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Sprite.Draw(gameTime, spriteBatch);
+            _sprite.Draw(gameTime, spriteBatch);
         }
 
         public void BounceAsteroids(Asteroid other)
         {
             Vector2 centerOfMass = (this.Velocity + other.Velocity) / 2;
 
-            Vector2 thisNormal = other.Sprite.Center - this.Sprite.Center;
-            Vector2 otherNormal = this.Sprite.Center - other.Sprite.Center;
+            Vector2 thisNormal = other._sprite.Center - this._sprite.Center;
+            Vector2 otherNormal = this._sprite.Center - other._sprite.Center;
 
             thisNormal.Normalize();
             otherNormal.Normalize();
