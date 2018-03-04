@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Extensions;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -80,6 +81,7 @@ namespace AsteroidAssault.Models.Player
         }
 
         public void AddWayPoint(Vector2 wayPoint) => _wayPoints.Enqueue(wayPoint);
+        public void AddWayPoints(IEnumerable<Vector2> wayPoints) => _wayPoints.EnqueueRange(wayPoints);
 
         public bool ReachedWayPoint => Vector2.Distance(Location, _currentWayPoint) < _sprite.Source.Width / 2;
         
