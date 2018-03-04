@@ -32,7 +32,7 @@ namespace AsteroidAssault.Models.Player
         public Enemy(Sprite s, Vector2 location)
         {
             this._sprite = s;
-            _sprite.CollisionRadius = CollisionRadius;
+            //_sprite.CollisionRadius = CollisionRadius;
 
             _currentWayPoint = location;
             _previousLocation = location;

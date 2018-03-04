@@ -41,7 +41,7 @@ namespace AsteroidAssault.Models.Player
         public Player(Sprite s, Rectangle screenBounds)
         {
             this._sprite = s;
-            _sprite.CollisionRadius = CollisionRadius;
+            //_sprite.CollisionRadius = CollisionRadius;
             _areaBounds = new Rectangle(screenBounds.X, screenBounds.Height / 2, screenBounds.Width, screenBounds.Height / 2);
 
             Location = new Vector2 { X = _areaBounds.Center.X, Y = _areaBounds.Center.Y };

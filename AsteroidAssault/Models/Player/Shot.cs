@@ -22,7 +22,7 @@ namespace AsteroidAssault.Models.Player
 
         public Shot(Sprite s) {
             this._sprite = s;
-            _sprite.CollisionRadius = CollisionRadius;
+            //_sprite.CollisionRadius = CollisionRadius;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

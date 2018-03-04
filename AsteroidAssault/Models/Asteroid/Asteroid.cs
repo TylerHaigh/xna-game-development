@@ -23,19 +23,24 @@ namespace AsteroidAssault.Models.Asteroid
         public const int AsteroidFrames = 20;
 
         public const int CollisionRadius = 15;
+        public const int CollisionBoxPadding = 0;
 
 
         private Random _rand = new Random();
 
         private Sprite _sprite;
         public Vector2 Center => _sprite.Center;
-        public bool IsCircleColliding(CollisionCircle otherCircle) => _sprite.IsCircleColliding(otherCircle);
-        public bool IsBoxColliding(Rectangle otherRect) => _sprite.IsBoxColliding(otherRect);
+
+        private CollisionCircle _collisionCircle => new CollisionCircle(Center, CollisionRadius);
+        public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, _sprite.Source);
+
+        public bool IsCircleColliding(CollisionCircle otherCircle) => CollisionEngine.Intersects(_collisionCircle, otherCircle);
+        public bool IsBoxColliding(Rectangle otherRect) => CollisionEngine.Intersects(BoundingBoxRectangle, otherRect);
 
         public Asteroid(Sprite sprite)
         {
             this._sprite = sprite;
-            this._sprite.CollisionRadius = CollisionRadius;
+            //this._sprite.CollisionRadius = CollisionRadius;
         }
 
 

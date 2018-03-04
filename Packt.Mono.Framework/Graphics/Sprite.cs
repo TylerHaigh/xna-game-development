@@ -27,8 +27,7 @@ namespace Packt.Mono.Framework.Graphics
 
         // Animating Sprite details
         protected List<Rectangle> _frames = new List<Rectangle>();
-        private int _frameWidth = 0;
-        private int _frameHeight = 0;
+        private Rectangle _initialFrame;
         private int _currentFrame;
         private GameTimer _timeForCurrentFrame;
 
@@ -52,23 +51,18 @@ namespace Packt.Mono.Framework.Graphics
         public void AddFrames(IEnumerable<Rectangle> frameRects) => _frames.AddRange(frameRects);
 
         public Rectangle Source => _frames[_currentFrame];
-        public Rectangle Destination => new Rectangle((int)Location.X, (int)Location.Y, _frameWidth, _frameHeight);
-        private Vector2 CenterOfFrame => new Vector2(_frameWidth / 2.0f, _frameHeight / 2.0f);
+        public Rectangle Destination => new Rectangle((int)Location.X, (int)Location.Y, _initialFrame.Width, _initialFrame.Height);
+        private Vector2 CenterOfFrame => new Vector2(_initialFrame.Width / 2.0f, _initialFrame.Height / 2.0f);
         public Vector2 Center => Location + CenterOfFrame;
 
 
 
         // Collision Detection
-        public int CollisionRadius { get; set; } = 0; // Bounding Circle Collision
-        public int BoundingXPadding { get; set; } = 0; // Boudning Box Collision
-        public int BoundingYPadding { get; set; } = 0;
-        private CollisionCircle CollisionCircle => new CollisionCircle (Center, CollisionRadius);
-
-        public Rectangle BoundingBoxRectangle => new Rectangle((int)Location.X + BoundingXPadding, (int)Location.Y + BoundingYPadding, _frameWidth - (BoundingXPadding * 2), _frameHeight - (BoundingYPadding * 2));
-        public bool IsBoxColliding(Rectangle otherBox) => BoundingBoxRectangle.Intersects(otherBox);
-        public bool IsCircleColliding(Vector2 otherCenter, float otherRadius) => this.IsCircleColliding(new CollisionCircle(otherCenter, otherRadius));
-        public bool IsCircleColliding(CollisionCircle otherCircle) => this.CollisionCircle.Intersects(otherCircle);
-
+        //public int CollisionRadius { get; set; } = 0; // Bounding Circle Collision
+        //public int BoundingXPadding { get; set; } = 0; // Boudning Box Collision
+        //public int BoundingYPadding { get; set; } = 0;
+        //public CollisionCircle CollisionCircle => new CollisionCircle (Center, CollisionRadius);
+        //public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, _initialFrame, BoundingXPadding, BoundingYPadding);
 
         public Sprite(Texture2D texture, Rectangle initialFrame) : this(texture, initialFrame, Vector2.Zero, Vector2.Zero) { }
 
@@ -79,8 +73,7 @@ namespace Packt.Mono.Framework.Graphics
             this.Velocity = velocity;
 
             _frames.Add(initialFrame);
-            _frameWidth = initialFrame.Width;
-            _frameHeight = initialFrame.Height;
+            _initialFrame = initialFrame;
 
             _timeForCurrentFrame =  new GameTimer(_frameDisplayTime);
         }
