@@ -51,7 +51,7 @@
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\TextureManager.cs" />
     <Compile Include="Graphics\TileSheet.cs" />
-    <Compile Include="Utilities\Timer.cs" />
+    <Compile Include="Utilities\GameTimer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

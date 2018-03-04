@@ -21,7 +21,7 @@ namespace FloodControl.Screens
 
         private Vector2 _gameOverLocation = new Vector2(200, 360);
 
-        Timer gameOverTimer = new Timer(TimeSpan.FromSeconds(GameOverWaitTime));
+        GameTimer gameOverTimer = new GameTimer(TimeSpan.FromSeconds(GameOverWaitTime));
 
 
         public event EventHandler GameOverDelayComplete;

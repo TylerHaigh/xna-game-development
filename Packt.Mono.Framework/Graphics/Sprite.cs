@@ -30,7 +30,7 @@ namespace Packt.Mono.Framework.Graphics
         private int _frameWidth = 0;
         private int _frameHeight = 0;
         private int _currentFrame;
-        private Timer _timeForCurrentFrame;
+        private GameTimer _timeForCurrentFrame;
 
         public int Frame
         {
@@ -44,7 +44,7 @@ namespace Packt.Mono.Framework.Graphics
             get { return _frameDisplayTime; }
             set {
                 _frameDisplayTime = Math.Max(0, value);
-                _timeForCurrentFrame = new Timer(_frameDisplayTime);
+                _timeForCurrentFrame = new GameTimer(_frameDisplayTime);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Packt.Mono.Framework.Graphics
             _frameWidth = initialFrame.Width;
             _frameHeight = initialFrame.Height;
 
-            _timeForCurrentFrame =  new Timer(_frameDisplayTime);
+            _timeForCurrentFrame =  new GameTimer(_frameDisplayTime);
         }
 
         public virtual void Update(GameTime gameTime)

@@ -48,8 +48,8 @@ namespace FloodControl.Screens
         private int _playerScore = 0;
 
 
-        private Timer _lastFloodIncreaseTimer = new Timer(TimeSpan.FromSeconds(TimeBetweenFloodIncreases));
-        private Timer _inputTimer = new Timer(TimeSpan.FromSeconds(MinTimeSinceLastInput));
+        private GameTimer _lastFloodIncreaseTimer = new GameTimer(TimeSpan.FromSeconds(TimeBetweenFloodIncreases));
+        private GameTimer _inputTimer = new GameTimer(TimeSpan.FromSeconds(MinTimeSinceLastInput));
 
 
         public event EventHandler GameOver;

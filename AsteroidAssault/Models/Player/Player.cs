@@ -28,7 +28,7 @@ namespace AsteroidAssault.Models.Player
         private Sprite _sprite;
         private Rectangle _areaBounds;
 
-        private Timer _shotTimer = new Timer(TimeSpan.FromSeconds(GunTimeout));
+        private GameTimer _shotTimer = new GameTimer(TimeSpan.FromSeconds(GunTimeout));
         private Vector2 _gunOffset = new Vector2(25, 10);
 
         public int RemainingLives { get; private set; } = MaxLives;
