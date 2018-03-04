@@ -27,6 +27,9 @@ namespace AsteroidAssault
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+
+            
+
             RegisterGameScreens();
         }
 
@@ -60,6 +63,11 @@ namespace AsteroidAssault
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 512;
+            //graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
 
             _textureManager = new TextureManager(Content);
             foreach (var gs in _gameScreens.Values)

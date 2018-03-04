@@ -45,7 +45,7 @@ namespace AsteroidAssault.Screens
         {
             _spriteSheet = textureManager.OptionalLoadContent<Texture2D>(@"Textures/SpriteSheet");
 
-            _starField = new StarField(ClientBounds.Width, ClientBounds.Height, StarCount, _starVelocity, _spriteSheet, _starTextureSourceRectangle);
+            _starField = new StarField(StarCount, _starVelocity, new TileSheet(_spriteSheet, _starTextureSourceRectangle, Star.AnimationFrames), ScreenBounds);
             _asteroidManager = new AsteroidManager(AsteroidCount, new TileSheet(_spriteSheet, _initalAsteroidFrame, Asteroid.AsteroidFrames), ScreenBounds);
             _player = new Player(new TileSheet(_spriteSheet, _initalPlayerFrame, Player.PlayerAnimationFrames).SpriteAnimation(), ScreenBounds);
             _shotManager = new ShotManager(new TileSheet(_spriteSheet, _shotTexture, 4), ScreenBounds);

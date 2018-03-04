@@ -12,35 +12,30 @@ namespace AsteroidAssault.Models
     class StarField : IGameEntity
     {
 
-        private List<Sprite> _stars = new List<Sprite>();
+        private List<Star> _stars = new List<Star>();
 
-        private const int DefaultScreenWidth = 800;
-        private const int DefaultScreenHeight = 600;
+        private TileSheet _tileSheet;
+        private Rectangle _screenBounds;
 
         private Random _rand = new Random();
-        private Color[] _colors = { Color.White, Color.Yellow, Color.Wheat, Color.WhiteSmoke, Color.SlateGray, Color.CornflowerBlue, Color.Orange };
 
-        private int _screenWidth = DefaultScreenHeight;
-        private int _screenHeight = DefaultScreenHeight;
-
-        public StarField(int screenWidth, int screenHeight, int starCount, Vector2 starVelocity, Texture2D texture, Rectangle frameRectangle)
+        public StarField(int starCount, Vector2 starVelocity, TileSheet tileSheet, Rectangle screenBounds)
         {
-            this._screenWidth = screenWidth;
-            this._screenHeight = screenHeight;
+            this._screenBounds = screenBounds;
+            this._tileSheet = tileSheet;
 
-            GenerateStars(starCount, starVelocity, texture, frameRectangle);
+            GenerateStars(starCount, starVelocity);
         }
 
-        private void GenerateStars(int starCount, Vector2 starVelocity, Texture2D texture, Rectangle frameRectangle)
+        private void GenerateStars(int starCount, Vector2 starVelocity)
         {
             for (int i = 0; i < starCount; i++)
             {
-                Vector2 loc = new Vector2(_rand.Next(0, _screenWidth), _rand.Next(0, _screenHeight));
-                Sprite star = new Sprite(texture, frameRectangle, loc, starVelocity * (_rand.Next(30, 100) / 100.0f));
+                Vector2 loc = new Vector2(_rand.Next(0, _screenBounds.Width), _rand.Next(0, _screenBounds.Height));
+                Star star = new Star(_tileSheet.SpriteAnimation());
 
-                Color starColor = _colors[_rand.Next(0, _colors.Length)];
-                starColor *= (_rand.Next(30, 80) / 100.0f);
-                star.TintColor = starColor;
+                star.Velocity = starVelocity * (_rand.Next(30, 100) / 100.0f);
+                star.Location = loc;
 
                 _stars.Add(star);
             }
@@ -51,8 +46,8 @@ namespace AsteroidAssault.Models
             foreach (var star in _stars)
             {
                 star.Update(gameTime);
-                if (star.Location.Y > _screenHeight)
-                    star.Location = new Vector2(_rand.Next(0, _screenWidth), 0);
+                if (star.Location.Y > _screenBounds.Height)
+                    star.Location = new Vector2(_rand.Next(0, _screenBounds.Width), 0);
             }
         }
 
