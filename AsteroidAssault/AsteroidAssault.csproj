@@ -42,14 +42,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
-    <Compile Include="Models\Asteroid.cs" />
-    <Compile Include="Models\AsteroidManager.cs" />
-    <Compile Include="Models\Enemy.cs" />
-    <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\Shot.cs" />
-    <Compile Include="Models\ShotManager.cs" />
-    <Compile Include="Models\Star.cs" />
-    <Compile Include="Models\StarField.cs" />
+    <Compile Include="Models\Asteroid\Asteroid.cs" />
+    <Compile Include="Models\Asteroid\AsteroidManager.cs" />
+    <Compile Include="Models\Player\Enemy.cs" />
+    <Compile Include="Models\Player\Player.cs" />
+    <Compile Include="Models\Player\Shot.cs" />
+    <Compile Include="Models\Player\ShotManager.cs" />
+    <Compile Include="Models\Star\Star.cs" />
+    <Compile Include="Models\Star\StarField.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\GameStates.cs" />
     <Compile Include="Program.cs" />

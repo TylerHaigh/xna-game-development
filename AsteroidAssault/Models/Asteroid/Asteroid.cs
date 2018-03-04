@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Graphics;
 using System;
 
-namespace AsteroidAssault.Models
+namespace AsteroidAssault.Models.Asteroid
 {
     class Asteroid : IMovableGameEntity
     {

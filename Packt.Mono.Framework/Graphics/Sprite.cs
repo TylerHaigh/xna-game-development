@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Packt.Mono.Framework
+namespace Packt.Mono.Framework.Graphics
 {
     public class Sprite : IMovableGameEntity
     {

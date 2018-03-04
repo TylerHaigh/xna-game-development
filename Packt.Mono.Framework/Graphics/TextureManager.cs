@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Packt.Mono.Framework
+namespace Packt.Mono.Framework.Graphics
 {
     public class TextureManager
     {

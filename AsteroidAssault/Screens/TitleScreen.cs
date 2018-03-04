@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Graphics;
 using StateMachine;
 using System;
 using System.Collections.Generic;

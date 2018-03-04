@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Graphics;
+using Packt.Mono.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AsteroidAssault.Models
+namespace AsteroidAssault.Models.Player
 {
     class Player : IMovableGameEntity
     {

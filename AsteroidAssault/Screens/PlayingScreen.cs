@@ -1,7 +1,11 @@
 ﻿using AsteroidAssault.Models;
+using AsteroidAssault.Models.Asteroid;
+using AsteroidAssault.Models.Player;
+using AsteroidAssault.Models.Star;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
