@@ -47,6 +47,7 @@
     <Compile Include="Models\Player\Enemy.cs" />
     <Compile Include="Models\Player\EnemyManager.cs" />
     <Compile Include="Models\Player\EnemyPath.cs" />
+    <Compile Include="Models\Player\ExplosionParticleSystem.cs" />
     <Compile Include="Models\Player\Player.cs" />
     <Compile Include="Models\Player\Shot.cs" />
     <Compile Include="Models\Player\ShotManager.cs" />

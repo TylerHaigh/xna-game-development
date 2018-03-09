@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Packt.Mono.Framework.Graphics
 {
-    class Particle : Sprite, IGameEntity
+    public class Particle : IMovableGameEntity
     {
+
+        private Sprite _sprite;
 
         private Vector2 _accelleration; // applied accelleration to base sprite's velocity
         private float _maxSpeed; // Limits magnitude of velocity vector
@@ -22,13 +24,17 @@ namespace Packt.Mono.Framework.Graphics
         public float DurationProgress => _remainingDuration / (float)_initialDuration;
         public bool IsActive => _remainingDuration > 0;
 
+        public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
+        public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
+
         // too many parameters. needs to be simplified down to 4 max
         // could simplify by passing in a Sprite object!
         public Particle(
-            Texture2D texture, Rectangle initialFrame, Vector2 location, Vector2 velocity, // Sprite Params
+            Sprite s,
             Vector2 accelleration, float maxSpeed, int duration, Color initialColor, Color finalColor)
-            : base(texture, initialFrame, location, velocity)
         {
+            _sprite = s;
+
             _accelleration = accelleration;
             _maxSpeed = maxSpeed;
             _initialDuration = duration;
@@ -37,7 +43,7 @@ namespace Packt.Mono.Framework.Graphics
             _finalColor = finalColor;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             if(IsActive)
             {
@@ -48,16 +54,16 @@ namespace Packt.Mono.Framework.Graphics
                     Velocity *= _maxSpeed;
                 }
 
-                TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);
+                _sprite.TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);
                 _remainingDuration--;
-                base.Update(gameTime);
+                _sprite.Update(gameTime);
             }
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (IsActive)
-                base.Draw(gameTime, spriteBatch);
+                _sprite.Draw(gameTime, spriteBatch);
         }
     }
 }
