@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework;
 using Packt.Mono.Framework.Graphics;
+using Packt.Mono.Framework.Screen;
 using System.Collections.Generic;
 
 namespace AsteroidAssault
@@ -17,9 +18,7 @@ namespace AsteroidAssault
         SpriteBatch spriteBatch;
 
 
-        private GameState _gameState = GameState.Playing;
-        private Dictionary<GameState, IGameScreen> _gameScreens = new Dictionary<GameState, IGameScreen>();
-        IGameScreen _currentScreen => _gameScreens[_gameState];
+        private GameScreenState<GameState> _gameScreenState;
 
         private TextureManager _textureManager;
 
@@ -33,11 +32,11 @@ namespace AsteroidAssault
 
         private void RegisterGameScreens()
         {
-            TitleScreen ts = new TitleScreen(this);
-            PlayingScreen ps = new PlayingScreen(this);
+            GameScreenMap<GameState> map = new GameScreenMap<GameState>()
+                .AddState(GameState.TitleScreen, new TitleScreen(this))
+                .AddState(GameState.Playing, new PlayingScreen(this));
 
-            _gameScreens[GameState.TitleScreen] = ts;
-            _gameScreens[GameState.Playing] = ps;
+            _gameScreenState = new GameScreenState<GameState>(map, GameState.Playing);
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace AsteroidAssault
             graphics.ApplyChanges();
 
             _textureManager = new TextureManager(Content);
-            foreach (var gs in _gameScreens.Values)
+            foreach (var gs in _gameScreenState.AllScreens())
                 gs.LoadContent(_textureManager);
 
             // TODO: use this.Content to load your game content here
@@ -100,7 +99,7 @@ namespace AsteroidAssault
 
             // TODO: Add your update logic here
 
-            _currentScreen.Update(gameTime);
+            _gameScreenState.CurrentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -117,7 +116,7 @@ namespace AsteroidAssault
 
             spriteBatch.Begin();
             {
-                _currentScreen.Draw(gameTime, spriteBatch);
+                _gameScreenState.CurrentScreen.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
 

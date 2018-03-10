@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Packt.Mono.Framework
+namespace Packt.Mono.Framework.Screen
 {
-    public interface IGameScreen : IGameEntity
-    {
-        void LoadContent(TextureManager textureManager);
-    }
+    //public interface IGameScreen : IGameEntity
+    //{
+    //    void LoadContent(TextureManager textureManager);
+    //}
 
-    public abstract class GameScreen : IGameScreen
+    public abstract class GameScreen
     {
         protected Game _game;
         public GameScreen(Game game) { _game = game; }
@@ -23,8 +23,8 @@ namespace Packt.Mono.Framework
         public abstract void LoadContent(TextureManager textureManager);
         public abstract void Update(GameTime gameTime);
 
-        public abstract void OnEnter();
-        public abstract void OnExit();
+        public virtual void OnEnter() { }
+        public virtual void OnExit() { }
 
         public Rectangle ClientBounds => _game.Window.ClientBounds;
         public Rectangle ScreenBounds => new Rectangle(0, 0, ClientBounds.Width, ClientBounds.Height);

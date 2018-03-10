@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
 using Packt.Mono.Framework.Graphics;
+using Packt.Mono.Framework.Screen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,16 +93,6 @@ namespace AsteroidAssault.Screens
             _enemyManager.Draw(gameTime, spriteBatch);
             _pieceExplosionManager.Draw(gameTime, spriteBatch);
             _pointExplosionManager.Draw(gameTime, spriteBatch);
-        }
-
-        public override void OnEnter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OnExit()
-        {
-            throw new NotImplementedException();
         }
     }
 }

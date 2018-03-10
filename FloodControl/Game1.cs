@@ -10,6 +10,7 @@ using FloodControl.Models.Pieces;
 using FloodControl.Screens;
 using Packt.Mono.Framework;
 using Packt.Mono.Framework.Graphics;
+using Packt.Mono.Framework.Screen;
 
 namespace FloodControl
 {
@@ -25,8 +26,8 @@ namespace FloodControl
         TextureManager _textureManager;
 
         GameState _gameState;
-        private Dictionary<GameState, IGameScreen> _gameScreens = new Dictionary<GameState, IGameScreen>();
-        private IGameScreen _currentScreen => _gameScreens[_gameState];
+        private Dictionary<GameState, GameScreen> _gameScreens = new Dictionary<GameState, GameScreen>();
+        private GameScreen _currentScreen => _gameScreens[_gameState];
 
 
         public Game1()
