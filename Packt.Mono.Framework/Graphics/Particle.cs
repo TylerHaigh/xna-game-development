@@ -27,8 +27,6 @@ namespace Packt.Mono.Framework.Graphics
         public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
         public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
 
-        // too many parameters. needs to be simplified down to 4 max
-        // could simplify by passing in a Sprite object!
         public Particle(
             Sprite s,
             Vector2 accelleration, float maxSpeed, int duration, Color initialColor, Color finalColor)

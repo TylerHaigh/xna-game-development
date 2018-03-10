@@ -50,6 +50,14 @@ namespace Packt.Mono.Framework.Graphics
 
         }
 
+        public Rectangle Tile(int tile)
+        {
+            int x = tile % _tilesX;
+            int y = tile / _tilesX;
+
+            return TileAt(x, y);
+        }
+
         public IEnumerable<Rectangle> AllTiles()
         {
             List<Rectangle> frames = new List<Rectangle>();
