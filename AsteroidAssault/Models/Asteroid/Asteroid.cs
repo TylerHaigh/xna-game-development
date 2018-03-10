@@ -7,7 +7,7 @@ using System;
 
 namespace AsteroidAssault.Models.Asteroid
 {
-    class Asteroid : IMovableGameEntity
+    class Asteroid : GameEntity, IMovableGameEntity
     {
 
         private const int MinSpeed = 60;
@@ -68,12 +68,12 @@ namespace AsteroidAssault.Models.Asteroid
             return this._sprite.Destination.Intersects(screenRectWithPadding);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _sprite.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             _sprite.Draw(gameTime, spriteBatch);
         }

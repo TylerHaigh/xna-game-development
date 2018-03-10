@@ -31,6 +31,16 @@ namespace AsteroidAssault.Screens
             _titleScreen = textureManager.OptionalLoadContent<Texture2D>(@"Textures\TitleScreen");
         }
 
+        public override void OnEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Update(GameTime gameTime)
         {
         }

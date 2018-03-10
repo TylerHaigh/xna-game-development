@@ -11,7 +11,7 @@ using System.Text;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Player : IMovableGameEntity
+    class Player : GameEntity, IMovableGameEntity
     {
         public event EventHandler<ShotFiredEventArgs> ShotFired;
         public const int PlayerAnimationFrames = 3;
@@ -65,7 +65,7 @@ namespace AsteroidAssault.Models.Player
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if(!Destroyed)
             {
@@ -113,7 +113,7 @@ namespace AsteroidAssault.Models.Player
             this.Location = location;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (!Destroyed)
                 _sprite.Draw(gameTime, spriteBatch);

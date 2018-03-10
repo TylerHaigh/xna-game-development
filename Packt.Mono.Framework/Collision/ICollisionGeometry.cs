@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,18 +7,45 @@ using System.Threading.Tasks;
 namespace Packt.Mono.Framework.Collision
 {
 
-    public interface ICollisionGeometry<T>
+    public abstract class CollisionGeometry { }
+
+
+    public enum CollisionType
     {
-        bool Intersects(T other);
+        BoundingBox,
+        Circle
     }
 
-    public static class CollisionEngine
-    {
-        public static bool Intersects(CollisionCircle a, CollisionCircle b) => a.Intersects(b);
-        public static bool Intersects(CollisionCircle a, Vector2 b) => a.Intersects(b);
-        public static bool Intersects(CollisionCircle a, Point b) => a.Intersects(b);
 
-        public static bool Intersects(CollisionBoundingBox a, CollisionBoundingBox b) => a.Intersects(b);
-        public static bool Intersects(CollisionBoundingBox a, Rectangle b) => a.Intersects(b);
+    public class CollisionGeometryFactory
+    {
+
+        public static event EventHandler<CollisionArgs> CreatedCollisionGeometry;
+
+        public static CollisionGeometry CreateGeometry(CollisionType key)
+        {
+            switch (key)
+            {
+                case CollisionType.BoundingBox:
+                    {
+                        var box = new CollisionBoundingBox();
+                        CreatedCollisionGeometry?.Invoke(null, new CollisionArgs(box));
+                        return box;
+                    }
+                case CollisionType.Circle:
+                    {
+                        var c = new CollisionCircle();
+                        CreatedCollisionGeometry?.Invoke(null, new CollisionArgs(c));
+                        return c;
+                    }
+                default: throw new ArgumentException("Collision Geometry not defined for geometry type");
+            }
+        }
+    }
+
+    public class CollisionArgs
+    {
+        public readonly CollisionGeometry Geometry;
+        public CollisionArgs(CollisionGeometry geom) { this.Geometry = geom; }
     }
 }

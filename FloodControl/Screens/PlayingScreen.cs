@@ -300,7 +300,14 @@ namespace FloodControl.Screens
             StartNewLevel();
         }
 
+        public override void OnEnter()
+        {
+            throw new NotImplementedException();
+        }
 
-
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

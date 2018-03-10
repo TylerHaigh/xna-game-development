@@ -93,5 +93,15 @@ namespace AsteroidAssault.Screens
             _pieceExplosionManager.Draw(gameTime, spriteBatch);
             _pointExplosionManager.Draw(gameTime, spriteBatch);
         }
+
+        public override void OnEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

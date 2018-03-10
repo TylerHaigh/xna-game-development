@@ -152,6 +152,7 @@ namespace AsteroidAssault.Models.Player
                 }
                 else
                 {
+                    // todo: move to Enemy class
                     float chance = _rand.Next(0, 100);
                     if(chance <= ShipShotChance)
                     {

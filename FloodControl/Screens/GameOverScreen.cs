@@ -53,5 +53,15 @@ namespace FloodControl.Screens
         {
             gameOverTimer.Reset();
         }
+
+        public override void OnEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

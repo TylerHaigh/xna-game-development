@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Enemy : IMovableGameEntity
+    class Enemy : GameEntity, IMovableGameEntity
     {
         public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
         public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
@@ -42,13 +42,13 @@ namespace AsteroidAssault.Models.Player
             _previousLocation = location;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(IsActive())
                 _sprite.Draw(gameTime, spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
 
             if(IsActive())

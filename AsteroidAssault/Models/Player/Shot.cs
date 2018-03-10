@@ -6,7 +6,7 @@ using System;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Shot : IMovableGameEntity
+    class Shot : GameEntity, IMovableGameEntity
     {
 
         public const int AnimationFrames = 4;
@@ -25,12 +25,12 @@ namespace AsteroidAssault.Models.Player
             //_sprite.CollisionRadius = CollisionRadius;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             _sprite.Draw(gameTime, spriteBatch);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _sprite.Update(gameTime);
         }

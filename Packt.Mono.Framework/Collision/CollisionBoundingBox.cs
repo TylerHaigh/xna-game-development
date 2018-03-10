@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Packt.Mono.Framework.Collision
 {
-    public class CollisionBoundingBox : ICollisionGeometry<CollisionBoundingBox>
+    public class CollisionBoundingBox : CollisionGeometry
     {
         public readonly Vector2 Location;
         public readonly Rectangle BaseRectangle;
@@ -20,6 +20,8 @@ namespace Packt.Mono.Framework.Collision
             BaseRectangle.Width  - (XPadding * 2),
             BaseRectangle.Height - (YPadding * 2)
         );
+
+        public CollisionBoundingBox() : this(Vector2.Zero, new Rectangle(0, 0, 0, 0)) { }
 
         public CollisionBoundingBox(Vector2 location, Rectangle baseRectangle, int xPadding = 0, int yPadding = 0)
         {
@@ -48,5 +50,6 @@ namespace Packt.Mono.Framework.Collision
         {
             return Intersects(new Vector2(other.X, other.Y));
         }
+
     }
 }

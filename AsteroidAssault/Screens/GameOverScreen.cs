@@ -26,6 +26,16 @@ namespace AsteroidAssault.Screens
             throw new NotImplementedException();
         }
 
+        public override void OnEnter()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnExit()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Update(GameTime gameTime)
         {
             throw new NotImplementedException();

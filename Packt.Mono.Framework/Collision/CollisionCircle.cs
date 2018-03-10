@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Packt.Mono.Framework.Collision
 {
-    public class CollisionCircle : ICollisionGeometry<CollisionCircle>
+    public class CollisionCircle : CollisionGeometry
     {
         public readonly Vector2 Center;
         public readonly float Radius;
+
+        public CollisionCircle() : this(Vector2.Zero, 0) { }
 
         public CollisionCircle(Vector2 center, float radius)
         {

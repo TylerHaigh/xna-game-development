@@ -23,6 +23,9 @@ namespace Packt.Mono.Framework
         public abstract void LoadContent(TextureManager textureManager);
         public abstract void Update(GameTime gameTime);
 
+        public abstract void OnEnter();
+        public abstract void OnExit();
+
         public Rectangle ClientBounds => _game.Window.ClientBounds;
         public Rectangle ScreenBounds => new Rectangle(0, 0, ClientBounds.Width, ClientBounds.Height);
     }
