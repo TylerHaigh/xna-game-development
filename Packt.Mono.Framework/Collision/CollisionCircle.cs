@@ -9,8 +9,8 @@ namespace Packt.Mono.Framework.Collision
 {
     public class CollisionCircle : CollisionGeometry
     {
-        public readonly Vector2 Center;
-        public readonly float Radius;
+        public Vector2 Center { get; set; }
+        public float Radius { get; set; }
 
         public CollisionCircle() : this(Vector2.Zero, 0) { }
 

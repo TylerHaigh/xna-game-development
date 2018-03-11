@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class ShotManager : IGameEntity
+    class ShotManager
     {
         private List<Shot> _shots = new List<Shot>();
 

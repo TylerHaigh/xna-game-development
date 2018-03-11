@@ -2,21 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
 using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 
 namespace AsteroidAssault.Models.Asteroid
 {
-    class Asteroid : GameEntity, IMovableGameEntity
+    class Asteroid : GameEntity
     {
 
         private const int MinSpeed = 60;
         private const int MaxSpeed = 120;
 
         private const int ScreenPadding = 10;
-
-        public Vector2 Location { get { return _sprite.Location; } set { _sprite.Location = value; } }
-        public Vector2 Velocity { get { return _sprite.Velocity; } set { _sprite.Velocity = value; } }
+        
 
         public const int SpriteWidth = 50;
         public const int SpriteHeight = 50;
@@ -40,7 +39,10 @@ namespace AsteroidAssault.Models.Asteroid
         public Asteroid(Sprite sprite)
         {
             this._sprite = sprite;
-            //this._sprite.CollisionRadius = CollisionRadius;
+
+
+            // Register Components
+            //CollisionComponent circleCollider = new CollisionCircleComponent(Center, CollisionRadius, this);
         }
 
 
@@ -70,6 +72,8 @@ namespace AsteroidAssault.Models.Asteroid
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+            _sprite.Location = this.Location;
             _sprite.Update(gameTime);
         }
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Shot : GameEntity, IMovableGameEntity
+    class Shot : GameEntity
     {
 
         public const int AnimationFrames = 4;
@@ -14,9 +15,7 @@ namespace AsteroidAssault.Models.Player
         public const int TextureHeight = 5;
 
         private const int CollisionRadius = 2; // might be able to move to Shot class
-
-        public Vector2 Location { get { return _sprite.Location; } set { _sprite.Location = value; } }
-        public Vector2 Velocity { get { return _sprite.Velocity; } set { _sprite.Velocity = value; } }
+        
 
         private Sprite _sprite { get; set; }
 
@@ -32,6 +31,8 @@ namespace AsteroidAssault.Models.Player
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+            _sprite.Location = this.Location;
             _sprite.Update(gameTime);
         }
 

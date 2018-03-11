@@ -49,9 +49,10 @@
     <Compile Include="Collision\CollisionComponent.cs" />
     <Compile Include="Collision\CollisionEngine.cs" />
     <Compile Include="Collision\ICollisionGeometry.cs" />
+    <Compile Include="Components\Component.cs" />
     <Compile Include="Extensions\QueueExtensions.cs" />
+    <Compile Include="Entities\GameEntity.cs" />
     <Compile Include="Graphics\Particle.cs" />
-    <Compile Include="IGameEntity.cs" />
     <Compile Include="Screen\GameScreenState.cs" />
     <Compile Include="Screen\IGameScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Utilities;
 using System;
 using System.Collections.Generic;
@@ -9,14 +10,14 @@ using System.Text;
 
 namespace Packt.Mono.Framework.Graphics
 {
-    public class Sprite : IMovableGameEntity
+    public class Sprite
     {
 
         public Texture2D Texture { get; set; }
 
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Location { get; set; } = Vector2.Zero;
-        public Vector2 Velocity { get; set; } = Vector2.Zero;
+        //public Vector2 Velocity { get; set; } = Vector2.Zero;
         public float Scale { get; set; } = 1;
 
         private float _rotation = 0;
@@ -70,7 +71,7 @@ namespace Packt.Mono.Framework.Graphics
         {
             this.Location = location;
             this.Texture = texture;
-            this.Velocity = velocity;
+            //this.Velocity = velocity;
 
             _frames.Add(initialFrame);
             _initialFrame = initialFrame;
@@ -82,7 +83,7 @@ namespace Packt.Mono.Framework.Graphics
         {
             UpdateCurrentFrameTimer(gameTime);
 
-            Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            //Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         private void UpdateCurrentFrameTimer(GameTime gameTime)

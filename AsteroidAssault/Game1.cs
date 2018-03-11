@@ -19,6 +19,7 @@ namespace AsteroidAssault
 
 
         private GameScreenState<GameState> _gameScreenState;
+        private GameScreen _currentScreen => _gameScreenState.CurrentScreen;
 
         private TextureManager _textureManager;
 
@@ -99,7 +100,7 @@ namespace AsteroidAssault
 
             // TODO: Add your update logic here
 
-            _gameScreenState.CurrentScreen.Update(gameTime);
+            _currentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -116,7 +117,7 @@ namespace AsteroidAssault
 
             spriteBatch.Begin();
             {
-                _gameScreenState.CurrentScreen.Draw(gameTime, spriteBatch);
+                _currentScreen.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
 

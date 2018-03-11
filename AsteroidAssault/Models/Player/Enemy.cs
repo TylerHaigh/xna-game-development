@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Extensions;
 using Packt.Mono.Framework.Graphics;
 using System;
@@ -11,10 +12,9 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Enemy : GameEntity, IMovableGameEntity
+    class Enemy : GameEntity
     {
-        public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
-        public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
+  
         public bool Destroyed { get; private set; }
 
         private Sprite _sprite;
@@ -56,12 +56,15 @@ namespace AsteroidAssault.Models.Player
                 Velocity = CalculateHeading();
 
                 _previousLocation = Location;
-                _sprite.Update(gameTime);
 
                 _sprite.Rotation = (float)Math.Atan2(
                     Location.Y - _previousLocation.Y,
                     Location.X - _previousLocation.X
                 );
+
+                base.Update(gameTime);
+                _sprite.Location = this.Location;
+                _sprite.Update(gameTime);
 
                 if (ReachedWayPoint)
                     GetNextWaypoint();

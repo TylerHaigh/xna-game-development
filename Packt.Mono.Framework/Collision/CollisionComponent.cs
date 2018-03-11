@@ -4,28 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Packt.Mono.Framework.Components;
+using Packt.Mono.Framework.Entities;
 
 namespace Packt.Mono.Framework.Collision
 {
-    public abstract class CollisionComponent : IComponent
+    public abstract class CollisionComponent : Component
     {
-        private IGameEntity _entity;
         protected CollisionGeometry Geometry;
+
+        public CollisionComponent(GameEntity entity) : base(entity) { }
+
         public abstract CollisionType CollisionType { get; }
-
-        public bool IsActive { get; set; }
-
-        public void AttachToEntity(IGameEntity entity) => _entity = entity;
-        public void DetachFromEntity() => _entity = null;
-
-        public abstract void Update(GameTime gameTime);
     }
 
     public class BoundingBoxComponent : CollisionComponent
     {
         public override CollisionType CollisionType => CollisionType.BoundingBox;
 
-        public BoundingBoxComponent()
+        public BoundingBoxComponent(GameEntity entity) : base(entity)
         {
             Geometry = CollisionGeometryFactory.CreateGeometry(CollisionType.BoundingBox);
         }
@@ -41,9 +38,18 @@ namespace Packt.Mono.Framework.Collision
     {
         public override CollisionType CollisionType => CollisionType.Circle;
 
+        public CollisionCircleComponent(Vector2 center, float collisionRadius, GameEntity entity) : base(entity)
+        {
+            var collisionCircle = (CollisionCircle)CollisionGeometryFactory.CreateGeometry(CollisionType.Circle);
+            collisionCircle.Center = center;
+            collisionCircle.Radius = collisionRadius;
+
+            this.Geometry = collisionCircle;
+        }
+
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            GameEntity e = (GameEntity)Entity;
         }
     }
 

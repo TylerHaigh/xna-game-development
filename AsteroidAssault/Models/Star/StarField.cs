@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Star
 {
-    class StarField : IGameEntity
+    class StarField
     {
 
         private List<Star> _stars = new List<Star>();

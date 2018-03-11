@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Entities;
 
 namespace Packt.Mono.Framework.Graphics
 {
-    public class Particle : IMovableGameEntity
+    public class Particle : GameEntity
     {
 
         private Sprite _sprite;
@@ -24,9 +25,6 @@ namespace Packt.Mono.Framework.Graphics
         public float DurationProgress => _remainingDuration / (float)_initialDuration;
         public bool IsActive => _remainingDuration > 0;
 
-        public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
-        public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
-
         public Particle(
             Sprite s,
             Vector2 accelleration, float maxSpeed, int duration, Color initialColor, Color finalColor)
@@ -41,7 +39,7 @@ namespace Packt.Mono.Framework.Graphics
             _finalColor = finalColor;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if(IsActive)
             {
@@ -54,11 +52,14 @@ namespace Packt.Mono.Framework.Graphics
 
                 _sprite.TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);
                 _remainingDuration--;
+
+                base.Update(gameTime);
+                _sprite.Location = this.Location;
                 _sprite.Update(gameTime);
             }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (IsActive)
                 _sprite.Draw(gameTime, spriteBatch);

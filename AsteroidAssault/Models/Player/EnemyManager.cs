@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Utilities;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class EnemyManager : IGameEntity
+    class EnemyManager
     {
 
         public int MinEnemiesPerWave { get; set; } = 5;

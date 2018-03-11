@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Utilities;
 using System;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Player : GameEntity, IMovableGameEntity
+    class Player : GameEntity
     {
         public event EventHandler<ShotFiredEventArgs> ShotFired;
         public const int PlayerAnimationFrames = 3;
@@ -34,9 +35,7 @@ namespace AsteroidAssault.Models.Player
         public int RemainingLives { get; private set; } = MaxLives;
         public int PlayerScore { get; set; } = 0;
         public bool Destroyed { get; private set; } = false;
-
-        public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
-        public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
+        
         public Vector2 Center => _sprite.Center;
 
         public Player(Sprite s, Rectangle screenBounds)
@@ -78,7 +77,10 @@ namespace AsteroidAssault.Models.Player
                 Velocity.Normalize();
                 Velocity *= PlayerSpeed;
 
+                base.Update(gameTime);
+                _sprite.Location = this.Location;
                 _sprite.Update(gameTime);
+
                 ImposeMovementLimits(); // must come after sprite updates position from velocity
             }
         }

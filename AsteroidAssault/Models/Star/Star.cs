@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Star
 {
-    class Star : IMovableGameEntity
+    class Star : GameEntity
     {
         private Sprite _sprite;
         private Color[] _colors = { Color.White, Color.Yellow, Color.Wheat, Color.WhiteSmoke, Color.SlateGray, Color.CornflowerBlue, Color.Orange };
@@ -19,9 +20,7 @@ namespace AsteroidAssault.Models.Star
         public const int AnimationFrames = 1;
         public const int TextureWidth = 2;
         public const int TextureHeight = 2;
-
-        public Vector2 Location { get => _sprite.Location; set => _sprite.Location = value; }
-        public Vector2 Velocity { get => _sprite.Velocity; set => _sprite.Velocity = value; }
+        
 
         public Star(Sprite sprite) {
             this._sprite = sprite;
@@ -31,14 +30,16 @@ namespace AsteroidAssault.Models.Star
             _sprite.TintColor = starColor;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Update(GameTime gameTime)
         {
-            _sprite.Draw(gameTime, spriteBatch);
+            base.Update(gameTime);
+            _sprite.Location = this.Location;
+            _sprite.Update(gameTime);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _sprite.Update(gameTime);
+            _sprite.Draw(gameTime, spriteBatch);
         }
     }
 }
