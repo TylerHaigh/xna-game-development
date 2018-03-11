@@ -4,12 +4,14 @@ using Packt.Mono.Framework.Components;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Packt.Mono.Framework.Entities
 {
     public abstract class GameEntity
     {
-        public Vector2 Location { get; set; }
+        private Vector2 _location = Vector2.Zero;
+        public Vector2 Location { get => _location; set { _location = value; Sprite.Location = value; } }
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public GameEntity ParentEntity { get; set; }
@@ -32,16 +34,21 @@ namespace Packt.Mono.Framework.Entities
             ParentEntity = null;
         }
 
-
         public virtual void Update(GameTime gameTime)
         {
+            // has to come before component update because components will
+            // reference Location derived variabled (e.g. center) in their update routine
+            Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
             foreach (var c in Components) { c.Update(gameTime); }
             foreach (var c in ChildEntities) { c.Update(gameTime); }
 
-            Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-
-            Sprite.Location = this.Location;
             Sprite.Update(gameTime);
+        }
+
+        public IEnumerable<Component> GetComponent<T>() where T : Component
+        {
+            return Components.OfType<T>();
         }
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);

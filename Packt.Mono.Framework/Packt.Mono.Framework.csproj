@@ -48,7 +48,8 @@
     <Compile Include="Collision\CollisionCircle.cs" />
     <Compile Include="Collision\CollisionComponent.cs" />
     <Compile Include="Collision\CollisionEngine.cs" />
-    <Compile Include="Collision\ICollisionGeometry.cs" />
+    <Compile Include="Collision\CollisionEventArgs.cs" />
+    <Compile Include="Collision\CollisionGeometryFactory.cs" />
     <Compile Include="Components\Component.cs" />
     <Compile Include="Extensions\QueueExtensions.cs" />
     <Compile Include="Entities\GameEntity.cs" />

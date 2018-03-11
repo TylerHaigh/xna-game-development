@@ -5,6 +5,7 @@ using AsteroidAssault.Models.Star;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
 using System;
@@ -42,6 +43,8 @@ namespace AsteroidAssault.Screens
         private Rectangle _explosionPieceSpriteFrame = new Rectangle(0, 100, ExplosionParticleSystem.PieceWidth, ExplosionParticleSystem.PieceHeight);
         private Rectangle _explosionPointSpriteFrame = new Rectangle(0, 450, ExplosionParticleSystem.PointWidth, ExplosionParticleSystem.PointHeight);
 
+        private CollisionEngine _collisionEngine = new CollisionEngine();
+
         public PlayingScreen(Game game) : base(game)
         {
         }
@@ -75,6 +78,8 @@ namespace AsteroidAssault.Screens
 
         public override void Update(GameTime gameTime)
         {
+
+
             _starField.Update(gameTime);
             _asteroidManager.Update(gameTime);
             _player.Update(gameTime);
@@ -82,6 +87,9 @@ namespace AsteroidAssault.Screens
             _enemyManager.Update(gameTime);
             _pieceExplosionManager.Update(gameTime);
             _pointExplosionManager.Update(gameTime);
+
+            _collisionEngine.Update(gameTime);
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -93,6 +101,23 @@ namespace AsteroidAssault.Screens
             _enemyManager.Draw(gameTime, spriteBatch);
             _pieceExplosionManager.Draw(gameTime, spriteBatch);
             _pointExplosionManager.Draw(gameTime, spriteBatch);
+        }
+
+        public override void OnEnter()
+        {
+            CollisionComponent.CreatedCollisionComponent += NewCollisionGeometryCreated;
+            base.OnEnter();
+        }
+
+        private void NewCollisionGeometryCreated(object sender, CreatedCollisionComponentArgs e)
+        {
+            _collisionEngine.AddEntity(e.Component);
+        }
+
+        public override void OnExit()
+        {
+            CollisionComponent.CreatedCollisionComponent -= NewCollisionGeometryCreated;
+            base.OnExit();
         }
     }
 }

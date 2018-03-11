@@ -28,6 +28,7 @@ namespace AsteroidAssault.Models.Asteroid
         private List<Asteroid> _asteroids = new List<Asteroid>();
         private Random _rand = new Random();
 
+        public event EventHandler OnAsteroidDestroy;
 
         public AsteroidManager(int asteroidCount, TileSheet tileSheet, Rectangle screenBounds)
         {
@@ -46,10 +47,21 @@ namespace AsteroidAssault.Models.Asteroid
             asteroidSprite.Location = initPosition;
             asteroidSprite.Rotation = MathHelper.ToRadians(_rand.Next(0, 360));
 
-            _asteroids.Add(new Asteroid(asteroidSprite));
+            Asteroid a = new Asteroid(asteroidSprite);
+            a.OnDestroy += HandleOnAsteroidDestroy;
+            _asteroids.Add(a);
         }
 
-        public void Clear() => _asteroids.Clear();
+        private void HandleOnAsteroidDestroy(object sender, EventArgs e)
+        {
+            OnAsteroidDestroy?.Invoke(sender, e);
+        }
+
+        public void Clear() {
+
+            _asteroids.ForEach(a => a.DestroyEntity());
+            _asteroids.Clear();
+        }
 
         public void GenerateAsteroids(int asteroidCount)
         {
@@ -133,6 +145,7 @@ namespace AsteroidAssault.Models.Asteroid
             foreach (var a in _asteroids)
             {
                 a.Update(gameTime);
+
                 if (!a.IsOnScreen(_screenBounds))
                 {
                     a.Location = GenerateRandomLocation();
@@ -141,17 +154,17 @@ namespace AsteroidAssault.Models.Asteroid
             }
 
 
-            for (int i = 0; i < _asteroids.Count; i++)
-            {
-                for (int j = i + 1; j < _asteroids.Count; j++)
-                {
-                    Asteroid a = _asteroids[i];
-                    Asteroid b = _asteroids[j];
+            //for (int i = 0; i < _asteroids.Count; i++)
+            //{
+            //    for (int j = i + 1; j < _asteroids.Count; j++)
+            //    {
+            //        Asteroid a = _asteroids[i];
+            //        Asteroid b = _asteroids[j];
 
-                    if (a.IsCircleColliding(new CollisionCircle(b.Sprite.Center, Asteroid.CollisionRadius)))
-                        a.BounceAsteroids(b);
-                }
-            }
+            //        if (a.IsCircleColliding(new CollisionCircle(b.Sprite.Center, Asteroid.CollisionRadius)))
+            //            a.BounceAsteroids(b);
+            //    }
+            //}
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

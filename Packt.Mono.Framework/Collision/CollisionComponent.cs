@@ -11,45 +11,69 @@ namespace Packt.Mono.Framework.Collision
 {
     public abstract class CollisionComponent : Component
     {
-        protected CollisionGeometry Geometry;
+        public CollisionGeometry Geometry;
 
         public CollisionComponent(GameEntity entity) : base(entity) { }
 
-        public abstract CollisionType CollisionType { get; }
+        public event EventHandler<CollisionEventArgs> CollisionDetected;
+        public static event EventHandler<CreatedCollisionComponentArgs> CreatedCollisionComponent;
+
+        public void RaiseCollision(CollisionComponent other)
+        {
+            CollisionEventArgs args = new CollisionEventArgs
+            {
+                ThisComponent = this,
+                OtherComponent = other,
+                CollisionResolved = false
+            };
+            CollisionDetected?.Invoke(this, args);
+        }
+
+        protected void RaiseCreated()
+        {
+            CreatedCollisionComponent?.Invoke(this, new CreatedCollisionComponentArgs(this));
+        }
+
     }
+
 
     public class BoundingBoxComponent : CollisionComponent
     {
-        public override CollisionType CollisionType => CollisionType.BoundingBox;
+        private CollisionBoundingBox _box;
 
-        public BoundingBoxComponent(GameEntity entity) : base(entity)
+        public BoundingBoxComponent(GameEntity entity, Vector2 location, Rectangle baseRect) : base(entity)
         {
-            Geometry = CollisionGeometryFactory.CreateGeometry(CollisionType.BoundingBox);
-        }
+            //_box = (CollisionBoundingBox)CollisionGeometryFactory.CreateGeometry(CollisionType.BoundingBox);
+            _box = new CollisionBoundingBox(location, baseRect);
 
+            Geometry = _box;
+
+            RaiseCreated();
+        }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            _box.Location = Entity.Location;
         }
     }
 
     public class CollisionCircleComponent : CollisionComponent
     {
-        public override CollisionType CollisionType => CollisionType.Circle;
+        private CollisionCircle _circle;
 
-        public CollisionCircleComponent(Vector2 center, float collisionRadius, GameEntity entity) : base(entity)
+        public CollisionCircleComponent(GameEntity entity, Vector2 center, float collisionRadius) : base(entity)
         {
-            var collisionCircle = (CollisionCircle)CollisionGeometryFactory.CreateGeometry(CollisionType.Circle);
-            collisionCircle.Center = center;
-            collisionCircle.Radius = collisionRadius;
+            //_circle = (CollisionCircle)CollisionGeometryFactory.CreateGeometry(CollisionType.Circle);
+            _circle = new CollisionCircle(center, collisionRadius);
 
-            this.Geometry = collisionCircle;
+            this.Geometry = _circle;
+            RaiseCreated();
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            GameEntity e = (GameEntity)Entity;
+            _circle.Center = Entity.Sprite.Center;
         }
     }
 

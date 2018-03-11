@@ -27,10 +27,10 @@ namespace AsteroidAssault.Models.Asteroid
 
         private Random _rand = new Random();
 
-        private CollisionCircle _collisionCircle => new CollisionCircle(Sprite.Center, CollisionRadius);
+        //private CollisionCircle _collisionCircle => new CollisionCircle(Sprite.Center, CollisionRadius);
         public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, Sprite.Source);
 
-        public bool IsCircleColliding(CollisionCircle otherCircle) => CollisionEngine.Intersects(_collisionCircle, otherCircle);
+        //public bool IsCircleColliding(CollisionCircle otherCircle) => CollisionEngine.Intersects(_collisionCircle, otherCircle);
         public bool IsBoxColliding(Rectangle otherRect) => CollisionEngine.Intersects(BoundingBoxRectangle, otherRect);
 
         public Asteroid(Sprite sprite)
@@ -39,9 +39,23 @@ namespace AsteroidAssault.Models.Asteroid
 
 
             // Register Components
-            //CollisionComponent circleCollider = new CollisionCircleComponent(Center, CollisionRadius, this);
+            CollisionComponent circleCollider = new CollisionCircleComponent(this, Sprite.Center, CollisionRadius);
+            CollisionComponent boxCollider = new BoundingBoxComponent(this, Location, Sprite.Source);
+            Components.Add(circleCollider);
+            Components.Add(boxCollider);
+
+            circleCollider.CollisionDetected += HandleCollision;
         }
 
+        private void HandleCollision(object sender, CollisionEventArgs e)
+        {
+            GameEntity otherEntity = e.OtherComponent.Entity;
+
+            if (otherEntity is Asteroid) {
+                BounceAsteroids((Asteroid)otherEntity);
+                e.CollisionResolved = true;
+            }
+        }
 
         private Vector2 GenerateRandomVelocity()
         {

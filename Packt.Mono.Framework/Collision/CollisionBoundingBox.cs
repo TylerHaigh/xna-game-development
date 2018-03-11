@@ -9,10 +9,10 @@ namespace Packt.Mono.Framework.Collision
 {
     public class CollisionBoundingBox : CollisionGeometry
     {
-        public readonly Vector2 Location;
-        public readonly Rectangle BaseRectangle;
-        public readonly int XPadding; // Padding inside Base Rect
-        public readonly int YPadding;
+        public Vector2 Location { get; set; }
+        public Rectangle BaseRectangle { get; set; }
+        public int XPadding { get; set; } // Padding inside Base Rect
+        public int YPadding { get; set; }
 
         public Rectangle BoundingRect => new Rectangle(
             (int) Location.X + XPadding,
