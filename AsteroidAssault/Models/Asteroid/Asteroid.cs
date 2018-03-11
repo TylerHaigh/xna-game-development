@@ -27,18 +27,15 @@ namespace AsteroidAssault.Models.Asteroid
 
         private Random _rand = new Random();
 
-        private Sprite _sprite;
-        public Vector2 Center => _sprite.Center;
-
-        private CollisionCircle _collisionCircle => new CollisionCircle(Center, CollisionRadius);
-        public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, _sprite.Source);
+        private CollisionCircle _collisionCircle => new CollisionCircle(Sprite.Center, CollisionRadius);
+        public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, Sprite.Source);
 
         public bool IsCircleColliding(CollisionCircle otherCircle) => CollisionEngine.Intersects(_collisionCircle, otherCircle);
         public bool IsBoxColliding(Rectangle otherRect) => CollisionEngine.Intersects(BoundingBoxRectangle, otherRect);
 
         public Asteroid(Sprite sprite)
         {
-            this._sprite = sprite;
+            this.Sprite = sprite;
 
 
             // Register Components
@@ -67,27 +64,25 @@ namespace AsteroidAssault.Models.Asteroid
         public bool IsOnScreen(Rectangle screenBounds)
         {
             Rectangle screenRectWithPadding = new Rectangle(-ScreenPadding, -ScreenPadding, screenBounds.Width + ScreenPadding, screenBounds.Height + ScreenPadding);
-            return this._sprite.Destination.Intersects(screenRectWithPadding);
+            return this.Sprite.Destination.Intersects(screenRectWithPadding);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _sprite.Location = this.Location;
-            _sprite.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _sprite.Draw(gameTime, spriteBatch);
+            Sprite.Draw(gameTime, spriteBatch);
         }
 
         public void BounceAsteroids(Asteroid other)
         {
             Vector2 centerOfMass = (this.Velocity + other.Velocity) / 2;
 
-            Vector2 thisNormal = other._sprite.Center - this._sprite.Center;
-            Vector2 otherNormal = this._sprite.Center - other._sprite.Center;
+            Vector2 thisNormal = other.Sprite.Center - this.Sprite.Center;
+            Vector2 otherNormal = this.Sprite.Center - other.Sprite.Center;
 
             thisNormal.Normalize();
             otherNormal.Normalize();

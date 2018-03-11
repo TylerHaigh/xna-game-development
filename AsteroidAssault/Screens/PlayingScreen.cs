@@ -66,7 +66,7 @@ namespace AsteroidAssault.Screens
         private void EnemyManagerShotFired(object sender, ShotFiredEventArgs e)
         {
             // Work out direction of enemy to player
-            Vector2 shotDirection = _player.Center - e.Location;
+            Vector2 shotDirection = _player.Sprite.Center - e.Location;
             shotDirection.Normalize();
             e.Velocity = shotDirection;
 

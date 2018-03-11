@@ -26,7 +26,6 @@ namespace AsteroidAssault.Models.Player
 
         private const float ShotSpeed = 250f;
 
-        private Sprite _sprite;
         private Rectangle _areaBounds;
 
         private GameTimer _shotTimer = new GameTimer(TimeSpan.FromSeconds(GunTimeout));
@@ -36,11 +35,9 @@ namespace AsteroidAssault.Models.Player
         public int PlayerScore { get; set; } = 0;
         public bool Destroyed { get; private set; } = false;
         
-        public Vector2 Center => _sprite.Center;
-
         public Player(Sprite s, Rectangle screenBounds)
         {
-            this._sprite = s;
+            this.Sprite = s;
             //_sprite.CollisionRadius = CollisionRadius;
             _areaBounds = new Rectangle(screenBounds.X, screenBounds.Height / 2, screenBounds.Width, screenBounds.Height / 2);
 
@@ -78,8 +75,6 @@ namespace AsteroidAssault.Models.Player
                 Velocity *= PlayerSpeed;
 
                 base.Update(gameTime);
-                _sprite.Location = this.Location;
-                _sprite.Update(gameTime);
 
                 ImposeMovementLimits(); // must come after sprite updates position from velocity
             }
@@ -109,8 +104,8 @@ namespace AsteroidAssault.Models.Player
         {
             Vector2 location = this.Location;
 
-            location.X = MathHelper.Clamp(location.X, _areaBounds.X, _areaBounds.Right  - _sprite.Source.Width);
-            location.Y = MathHelper.Clamp(location.Y, _areaBounds.Y, _areaBounds.Bottom - _sprite.Source.Height);
+            location.X = MathHelper.Clamp(location.X, _areaBounds.X, _areaBounds.Right  - Sprite.Source.Width);
+            location.Y = MathHelper.Clamp(location.Y, _areaBounds.Y, _areaBounds.Bottom - Sprite.Source.Height);
 
             this.Location = location;
         }
@@ -118,7 +113,7 @@ namespace AsteroidAssault.Models.Player
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (!Destroyed)
-                _sprite.Draw(gameTime, spriteBatch);
+                Sprite.Draw(gameTime, spriteBatch);
         }
     }
 }

@@ -15,30 +15,26 @@ namespace AsteroidAssault.Models.Player
         public const int TextureHeight = 5;
 
         private const int CollisionRadius = 2; // might be able to move to Shot class
-        
-
-        private Sprite _sprite { get; set; }
 
         public Shot(Sprite s) {
-            this._sprite = s;
-            //_sprite.CollisionRadius = CollisionRadius;
+            this.Sprite = s;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _sprite.Draw(gameTime, spriteBatch);
+            Sprite.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _sprite.Location = this.Location;
-            _sprite.Update(gameTime);
+            Sprite.Location = this.Location;
+            Sprite.Update(gameTime);
         }
 
         public bool IsOnScreen(Rectangle screenBounds)
         {
-            return this._sprite.Destination.Intersects(screenBounds);
+            return this.Sprite.Destination.Intersects(screenBounds);
         }
     }
 

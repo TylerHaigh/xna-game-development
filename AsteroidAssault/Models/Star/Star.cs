@@ -13,7 +13,6 @@ namespace AsteroidAssault.Models.Star
 {
     class Star : GameEntity
     {
-        private Sprite _sprite;
         private Color[] _colors = { Color.White, Color.Yellow, Color.Wheat, Color.WhiteSmoke, Color.SlateGray, Color.CornflowerBlue, Color.Orange };
         private static Random _rand = new Random();
 
@@ -23,23 +22,23 @@ namespace AsteroidAssault.Models.Star
         
 
         public Star(Sprite sprite) {
-            this._sprite = sprite;
+            this.Sprite = sprite;
 
             Color starColor = _colors[_rand.Next(0, _colors.Length)];
             starColor *= (_rand.Next(30, 80) / 100.0f);
-            _sprite.TintColor = starColor;
+            Sprite.TintColor = starColor;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _sprite.Location = this.Location;
-            _sprite.Update(gameTime);
+            Sprite.Location = this.Location;
+            Sprite.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _sprite.Draw(gameTime, spriteBatch);
+            Sprite.Draw(gameTime, spriteBatch);
         }
     }
 }

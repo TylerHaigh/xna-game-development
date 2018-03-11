@@ -17,7 +17,6 @@ namespace AsteroidAssault.Models.Player
   
         public bool Destroyed { get; private set; }
 
-        private Sprite _sprite;
         private Vector2 _gunOffset = new Vector2(25, 25);
 
         private Queue<Vector2> _wayPoints = new Queue<Vector2>();
@@ -35,7 +34,7 @@ namespace AsteroidAssault.Models.Player
 
         public Enemy(Sprite s, Vector2 location)
         {
-            this._sprite = s;
+            this.Sprite = s;
             //_sprite.CollisionRadius = CollisionRadius;
 
             _currentWayPoint = location;
@@ -45,7 +44,7 @@ namespace AsteroidAssault.Models.Player
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(IsActive())
-                _sprite.Draw(gameTime, spriteBatch);
+                Sprite.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
@@ -57,14 +56,12 @@ namespace AsteroidAssault.Models.Player
 
                 _previousLocation = Location;
 
-                _sprite.Rotation = (float)Math.Atan2(
+                Sprite.Rotation = (float)Math.Atan2(
                     Location.Y - _previousLocation.Y,
                     Location.X - _previousLocation.X
                 );
 
                 base.Update(gameTime);
-                _sprite.Location = this.Location;
-                _sprite.Update(gameTime);
 
                 if (ReachedWayPoint)
                     GetNextWaypoint();
@@ -89,7 +86,7 @@ namespace AsteroidAssault.Models.Player
         public void AddWayPoint(Vector2 wayPoint) => _wayPoints.Enqueue(wayPoint);
         public void AddPath(EnemyPath path) => _wayPoints.EnqueueRange(path.WayPoints);
 
-        public bool ReachedWayPoint => Vector2.Distance(Location, _currentWayPoint) < _sprite.Source.Width / 2;
+        public bool ReachedWayPoint => Vector2.Distance(Location, _currentWayPoint) < Sprite.Source.Width / 2;
         
         public bool IsActive()
         {

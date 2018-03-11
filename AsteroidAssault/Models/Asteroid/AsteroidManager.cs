@@ -148,7 +148,7 @@ namespace AsteroidAssault.Models.Asteroid
                     Asteroid a = _asteroids[i];
                     Asteroid b = _asteroids[j];
 
-                    if (a.IsCircleColliding(new CollisionCircle(b.Center, Asteroid.CollisionRadius)))
+                    if (a.IsCircleColliding(new CollisionCircle(b.Sprite.Center, Asteroid.CollisionRadius)))
                         a.BounceAsteroids(b);
                 }
             }

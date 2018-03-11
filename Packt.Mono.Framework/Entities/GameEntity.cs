@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework.Components;
+using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +18,8 @@ namespace Packt.Mono.Framework.Entities
 
         public List<Component> Components = new List<Component>();
         public List<GameEntity> ChildEntities = new List<GameEntity>();
+
+        public Sprite Sprite { get; set; }
 
         public void DestroyEntity()
         {
@@ -36,6 +39,9 @@ namespace Packt.Mono.Framework.Entities
             foreach (var c in ChildEntities) { c.Update(gameTime); }
 
             Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            Sprite.Location = this.Location;
+            Sprite.Update(gameTime);
         }
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
