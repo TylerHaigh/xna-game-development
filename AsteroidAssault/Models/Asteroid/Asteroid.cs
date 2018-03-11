@@ -40,10 +40,7 @@ namespace AsteroidAssault.Models.Asteroid
 
             // Register Components
             CollisionComponent circleCollider = new CollisionCircleComponent(this, Sprite.Center, CollisionRadius);
-            CollisionComponent boxCollider = new BoundingBoxComponent(this, Location, Sprite.Source);
             Components.Add(circleCollider);
-            Components.Add(boxCollider);
-
             circleCollider.CollisionDetected += HandleCollision;
         }
 

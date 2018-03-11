@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class EnemyManager
+    class EnemyManager : IEntityManager
     {
 
         public int MinEnemiesPerWave { get; set; } = 5;
@@ -35,6 +35,7 @@ namespace AsteroidAssault.Models.Player
         public bool Active { get; set; } = true;
 
         public event EventHandler<ShotFiredEventArgs> ShotFired;
+        public event EventHandler OnEnemyDestroyed;
 
         public EnemyManager(TileSheet tileSheet, Rectangle screenBounds)
         {
@@ -51,6 +52,12 @@ namespace AsteroidAssault.Models.Player
             _enemies.Add(e);
 
             e.ShotFired += EnemyShotFired;
+            e.OnDestroy += HandleOnEnemyDestroy;
+        }
+
+        private void HandleOnEnemyDestroy(object sender, EventArgs e)
+        {
+            OnEnemyDestroyed?.Invoke(sender, e);
         }
 
         private void EnemyShotFired(object sender, ShotFiredEventArgs e)
@@ -149,6 +156,7 @@ namespace AsteroidAssault.Models.Player
                 e.Update(gameTime);
                 if (!e.IsActive())
                 {
+                    e.DestroyEntity();
                     _enemies.RemoveAt(i);
                 }
                 else
@@ -172,6 +180,12 @@ namespace AsteroidAssault.Models.Player
             {
                 e.Draw(gameTime, spriteBatch);
             }
+        }
+
+        public void Clear()
+        {
+            _enemies.ForEach(e => e.DestroyEntity());
+            _enemies.Clear();
         }
 
     }

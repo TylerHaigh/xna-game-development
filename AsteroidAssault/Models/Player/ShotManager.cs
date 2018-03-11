@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,14 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class ShotManager
+    class ShotManager : IEntityManager
     {
         private List<Shot> _shots = new List<Shot>();
 
         private TileSheet _tileSheet;
         private Rectangle _screenBounds;
+
+        public event EventHandler OnShotDestroy;
 
         public ShotManager(TileSheet tileSheet, Rectangle screenBounds)
         {
@@ -41,7 +44,10 @@ namespace AsteroidAssault.Models.Player
                 s.Update(gameTime);
 
                 if (!s.IsOnScreen(_screenBounds))
+                {
+                    s.DestroyEntity();
                     _shots.RemoveAt(i);
+                }
             }
         }
 
@@ -53,8 +59,20 @@ namespace AsteroidAssault.Models.Player
             shot.Location = args.Location;
             shot.Velocity = args.Velocity * args.ShotSpeed;
 
-            _shots.Add(shot);
+            shot.OnDestroy += HandleOnShotDestroy;
 
+            _shots.Add(shot);
+        }
+
+        private void HandleOnShotDestroy(object sender, EventArgs e)
+        {
+            OnShotDestroy?.Invoke(sender, e);
+        }
+
+        public void Clear()
+        {
+            _shots.ForEach(s => s.DestroyEntity());
+            _shots.Clear();
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Player
 {
-    class ExplosionParticleSystem
+    class ExplosionParticleSystem : IEntityManager
     {
 
         public enum ParticleType { Point, Piece }
@@ -147,6 +147,12 @@ namespace AsteroidAssault.Models.Player
         {
             foreach (var p in _particles)
                 p.Draw(gameTime, spriteBatch);
+        }
+
+        public void Clear()
+        {
+            _particles.ForEach(p => p.DestroyEntity());
+            _particles.Clear();
         }
     }
 }

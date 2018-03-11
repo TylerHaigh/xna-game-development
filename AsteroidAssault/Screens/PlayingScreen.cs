@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
 using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
 using System;
@@ -62,6 +63,10 @@ namespace AsteroidAssault.Screens
             _pieceExplosionManager = new ExplosionParticleSystem(new TileSheet(_spriteSheet, _explosionPieceSpriteFrame, ExplosionParticleSystem.PieceAnimationFrames), ExplosionParticleSystem.ParticleType.Piece);
             _pointExplosionManager = new ExplosionParticleSystem(new TileSheet(_spriteSheet, _explosionPointSpriteFrame, ExplosionParticleSystem.PointAnimationFrames), ExplosionParticleSystem.ParticleType.Point);
 
+            _asteroidManager.OnAsteroidDestroy += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
+            _shotManager.OnShotDestroy += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
+            _enemyManager.OnEnemyDestroyed += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
+
             _player.ShotFired += (sender, args) => _shotManager.CreateShot(args);
             _enemyManager.ShotFired += EnemyManagerShotFired;
         }
@@ -88,6 +93,8 @@ namespace AsteroidAssault.Screens
             _pieceExplosionManager.Update(gameTime);
             _pointExplosionManager.Update(gameTime);
 
+            // needs to come after everything has updated as this is responsible for providing
+            // input for next Update routine
             _collisionEngine.Update(gameTime);
 
         }

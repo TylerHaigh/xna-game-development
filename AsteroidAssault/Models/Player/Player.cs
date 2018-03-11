@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Utilities;
@@ -42,6 +43,14 @@ namespace AsteroidAssault.Models.Player
             _areaBounds = new Rectangle(screenBounds.X, screenBounds.Height / 2, screenBounds.Width, screenBounds.Height / 2);
 
             Location = new Vector2 { X = _areaBounds.Center.X, Y = _areaBounds.Center.Y };
+
+            var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
+            circle.CollisionDetected += CollisionDetected;
+        }
+
+        private void CollisionDetected(object sender, CollisionEventArgs e)
+        {
+            
         }
 
         public void FireShot()

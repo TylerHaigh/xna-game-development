@@ -8,6 +8,20 @@ using System.Linq;
 
 namespace Packt.Mono.Framework.Entities
 {
+    public interface IEntityManager
+    {
+        void Update(GameTime gameTime);
+        void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+
+        void Clear();
+    }
+
+    //public class EntityDestroyedEventArgs
+    //{
+    //    public readonly GameEntity Entity;
+    //    public EntityDestroyedEventArgs(GameEntity entity) { Entity = entity; }
+    //}
+
     public abstract class GameEntity
     {
         private Vector2 _location = Vector2.Zero;
@@ -25,6 +39,8 @@ namespace Packt.Mono.Framework.Entities
 
         public void DestroyEntity()
         {
+            // Must come before anything else to notify collision engine
+            // of which components to remove from collision engine
             OnDestroy?.Invoke(this, null);
 
             // remove all components and child entities

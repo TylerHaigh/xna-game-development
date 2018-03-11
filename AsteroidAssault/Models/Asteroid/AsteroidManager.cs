@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Asteroid
 {
-    class AsteroidManager
+    class AsteroidManager : IEntityManager
     {
         /*
          * Responsibilities:
@@ -152,19 +152,6 @@ namespace AsteroidAssault.Models.Asteroid
                     a.RandomiseVelocity();
                 }
             }
-
-
-            //for (int i = 0; i < _asteroids.Count; i++)
-            //{
-            //    for (int j = i + 1; j < _asteroids.Count; j++)
-            //    {
-            //        Asteroid a = _asteroids[i];
-            //        Asteroid b = _asteroids[j];
-
-            //        if (a.IsCircleColliding(new CollisionCircle(b.Sprite.Center, Asteroid.CollisionRadius)))
-            //            a.BounceAsteroids(b);
-            //    }
-            //}
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

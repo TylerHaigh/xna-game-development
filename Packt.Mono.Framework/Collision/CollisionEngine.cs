@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Packt.Mono.Framework.Components;
 using Packt.Mono.Framework.Entities;
 using System.Collections.Generic;
 
@@ -6,22 +7,32 @@ namespace Packt.Mono.Framework.Collision
 {
     public class CollisionEngine
     {
-        private List<CollisionComponent> _entities = new List<CollisionComponent>();
-        private List<CollisionComponent> _entitiesToRemove = new List<CollisionComponent>();
+        private List<CollisionComponent> _colliders = new List<CollisionComponent>();
+        private List<CollisionComponent> _collidersToRemove = new List<CollisionComponent>();
 
-        public void AddEntity(CollisionComponent e) => _entities.Add(e);
-        public void RemoveEntity(CollisionComponent e) => _entitiesToRemove.Add(e);
+        public void AddEntity(CollisionComponent e) => _colliders.Add(e);
+        public void RemoveEntity(CollisionComponent e) => _collidersToRemove.Add(e);
+        public void RemoveEntity(GameEntity e)
+        {
+            IEnumerable<Component> comp = e.GetComponent<CollisionComponent>();
+            foreach (var c in comp)
+            {
+                _collidersToRemove.Add((CollisionComponent)c);
+            }
+
+        }
 
         public void Update(GameTime gameTime)
         {
-            _entitiesToRemove.ForEach(e => _entities.Remove(e));
+            _collidersToRemove.ForEach(e => _colliders.Remove(e));
+            _collidersToRemove.Clear();
 
-            for (int i = 0; i < _entities.Count; i++)
+            for (int i = 0; i < _colliders.Count; i++)
             {
-                for (int j = i + 1; j < _entities.Count; j++)
+                for (int j = i + 1; j < _colliders.Count; j++)
                 {
-                    CollisionComponent a = _entities[i];
-                    CollisionComponent b = _entities[j];
+                    CollisionComponent a = _colliders[i];
+                    CollisionComponent b = _colliders[j];
 
                     // Check for collision
                     if (Collides(a.Geometry, b.Geometry))

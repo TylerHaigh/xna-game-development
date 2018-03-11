@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AsteroidAssault.Models.Star
 {
-    class StarField
+    class StarField : IEntityManager
     {
 
         private List<Star> _stars = new List<Star>();
@@ -56,6 +57,12 @@ namespace AsteroidAssault.Models.Star
         {
             foreach (var star in _stars)
                 star.Draw(gameTime, spriteBatch);
+        }
+
+        public void Clear()
+        {
+            _stars.ForEach(s => s.DestroyEntity());
+            _stars.Clear();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
@@ -18,6 +19,15 @@ namespace AsteroidAssault.Models.Player
 
         public Shot(Sprite s) {
             this.Sprite = s;
+
+            var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
+            circle.CollisionDetected += CollisionDetected;
+            Components.Add(circle);
+        }
+
+        private void CollisionDetected(object sender, CollisionEventArgs e)
+        {
+            //DestroyEntity();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -28,8 +38,6 @@ namespace AsteroidAssault.Models.Player
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Sprite.Location = this.Location;
-            Sprite.Update(gameTime);
         }
 
         public bool IsOnScreen(Rectangle screenBounds)

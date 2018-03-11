@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Extensions;
 using Packt.Mono.Framework.Graphics;
@@ -39,6 +40,15 @@ namespace AsteroidAssault.Models.Player
 
             _currentWayPoint = location;
             _previousLocation = location;
+
+            var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
+            circle.CollisionDetected += CollisionDetected;
+            Components.Add(circle);
+        }
+
+        private void CollisionDetected(object sender, CollisionEventArgs e)
+        {
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

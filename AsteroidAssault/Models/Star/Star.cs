@@ -32,8 +32,6 @@ namespace AsteroidAssault.Models.Star
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Sprite.Location = this.Location;
-            Sprite.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
