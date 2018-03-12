@@ -12,8 +12,6 @@ namespace Packt.Mono.Framework.Graphics
     public class Particle : GameEntity
     {
 
-        private Sprite _sprite;
-
         private Vector2 _accelleration; // applied accelleration to base sprite's velocity
         private float _maxSpeed; // Limits magnitude of velocity vector
         private int _initialDuration; // should be a timespan, not number of frames
@@ -29,7 +27,7 @@ namespace Packt.Mono.Framework.Graphics
             Sprite s,
             Vector2 accelleration, float maxSpeed, int duration, Color initialColor, Color finalColor)
         {
-            _sprite = s;
+            Sprite = s;
 
             _accelleration = accelleration;
             _maxSpeed = maxSpeed;
@@ -50,19 +48,17 @@ namespace Packt.Mono.Framework.Graphics
                     Velocity *= _maxSpeed;
                 }
 
-                _sprite.TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);
+                Sprite.TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);
                 _remainingDuration--;
 
                 base.Update(gameTime);
-                _sprite.Location = this.Location;
-                _sprite.Update(gameTime);
             }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (IsActive)
-                _sprite.Draw(gameTime, spriteBatch);
+                Sprite.Draw(gameTime, spriteBatch);
         }
     }
 }

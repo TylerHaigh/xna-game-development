@@ -46,7 +46,10 @@ namespace AsteroidAssault.Models.Asteroid
 
         private void HandleCollision(object sender, CollisionEventArgs e)
         {
+            if (e.CollisionResolved) return;
+
             GameEntity otherEntity = e.OtherComponent.Entity;
+            otherEntity = (otherEntity == this) ? e.ThisComponent.Entity : otherEntity;
 
             if (otherEntity is Asteroid) {
                 BounceAsteroids((Asteroid)otherEntity);

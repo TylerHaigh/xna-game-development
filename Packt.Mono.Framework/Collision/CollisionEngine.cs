@@ -29,17 +29,35 @@ namespace Packt.Mono.Framework.Collision
 
             for (int i = 0; i < _colliders.Count; i++)
             {
+                CollisionComponent a = _colliders[i];
+
+                // collisions for a a->b might trigger b to be destroyed (e.g. Shot vs Asteroid)
+                // when b->c is evaluated, b might be destroyed and this can't possibly collide with c
+
+                if (!a.IsActive || a.Entity == null || a.Entity.IsDestroyed) continue; // next iteration of I loop
+
                 for (int j = i + 1; j < _colliders.Count; j++)
                 {
-                    CollisionComponent a = _colliders[i];
+                    
                     CollisionComponent b = _colliders[j];
+
+                    if (!a.IsActive || a.Entity == null || a.Entity.IsDestroyed)
+                        break;
+                    else if (!b.IsActive || b.Entity == null || b.Entity.IsDestroyed)
+                        continue; // next iteration of J loop
 
                     // Check for collision
                     if (Collides(a.Geometry, b.Geometry))
+                    {
+                        // todo: handle game specific logic??
+                        
                         a.RaiseCollision(b);
+                    }
                 }
             }
         }
+
+        
 
         private bool Collides(CollisionGeometry a, CollisionGeometry b)
         {

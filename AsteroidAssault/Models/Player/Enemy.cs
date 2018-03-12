@@ -31,6 +31,8 @@ namespace AsteroidAssault.Models.Player
         public const int TextureHeight = 50;
         private const float ShotSpeed = 150f;
 
+        public const int EnemyPointValue = 100;
+
         public event EventHandler<ShotFiredEventArgs> ShotFired;
 
         public Enemy(Sprite s, Vector2 location)
@@ -48,19 +50,19 @@ namespace AsteroidAssault.Models.Player
 
         private void CollisionDetected(object sender, CollisionEventArgs e)
         {
-            
+           
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if(IsActive())
+            if(IsActive() && !IsDestroyed)
                 Sprite.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
 
-            if(IsActive())
+            if(IsActive() && !Destroyed)
             {
                 Velocity = CalculateHeading();
 
@@ -112,7 +114,8 @@ namespace AsteroidAssault.Models.Player
             ShotFiredEventArgs args = new ShotFiredEventArgs
             {
                 Location = Location + _gunOffset,
-                ShotSpeed = ShotSpeed
+                ShotSpeed = ShotSpeed,
+                FiredBy = WhoFired.Enemy
                 // Don't know directional velocity because we don't know where the player is
             };
             ShotFired?.Invoke(this, args);

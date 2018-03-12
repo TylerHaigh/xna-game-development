@@ -12,7 +12,11 @@ namespace Packt.Mono.Framework.Components
 
         public abstract void Update(GameTime gameTime);
 
-        public virtual void DetachFromEntity() => Entity = null;
+        public virtual void DetachFromEntity()
+        {
+            Entity = null;
+            IsActive = false;
+        }
 
     }
 }

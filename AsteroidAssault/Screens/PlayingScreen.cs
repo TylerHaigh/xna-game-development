@@ -46,6 +46,8 @@ namespace AsteroidAssault.Screens
 
         private CollisionEngine _collisionEngine = new CollisionEngine();
 
+        private int _playerScore;
+
         public PlayingScreen(Game game) : base(game)
         {
         }
@@ -65,10 +67,21 @@ namespace AsteroidAssault.Screens
 
             _asteroidManager.OnAsteroidDestroy += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
             _shotManager.OnShotDestroy += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
-            _enemyManager.OnEnemyDestroyed += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
+            _enemyManager.OnEnemyDestroyed += HandleOnEnemyDestroy;
 
             _player.ShotFired += (sender, args) => _shotManager.CreateShot(args);
             _enemyManager.ShotFired += EnemyManagerShotFired;
+        }
+
+        private void HandleOnEnemyDestroy(object sender, EventArgs e)
+        {
+            Enemy enemy = (Enemy)sender;
+            _collisionEngine.RemoveEntity(enemy);
+            _playerScore += Enemy.EnemyPointValue;
+
+
+            _pieceExplosionManager.AddExplosion(enemy.Sprite.Center, enemy.Velocity / 10);
+            _pointExplosionManager.AddExplosion(enemy.Sprite.Center, enemy.Velocity / 10);
         }
 
         private void EnemyManagerShotFired(object sender, ShotFiredEventArgs e)

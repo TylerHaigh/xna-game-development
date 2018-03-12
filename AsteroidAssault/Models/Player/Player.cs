@@ -61,7 +61,8 @@ namespace AsteroidAssault.Models.Player
                 {
                     Location = Location + _gunOffset,
                     Velocity = new Vector2(0, -1), // player can only fire on one direction
-                    ShotSpeed = ShotSpeed
+                    ShotSpeed = ShotSpeed,
+                    FiredBy = WhoFired.Player
                     // ShotBy = ShotBy.Player
                 };
 

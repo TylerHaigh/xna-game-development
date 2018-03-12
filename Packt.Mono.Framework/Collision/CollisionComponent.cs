@@ -26,7 +26,8 @@ namespace Packt.Mono.Framework.Collision
                 OtherComponent = other,
                 CollisionResolved = false
             };
-            CollisionDetected?.Invoke(this, args);
+            this.CollisionDetected?.Invoke(this, args);
+            other.CollisionDetected?.Invoke(other, args); // raise event for other entity
         }
 
         protected void RaiseCreated()
@@ -53,7 +54,8 @@ namespace Packt.Mono.Framework.Collision
 
         public override void Update(GameTime gameTime)
         {
-            _box.Location = Entity.Location;
+            if(this.IsActive)
+                _box.Location = Entity.Location;
         }
     }
 
@@ -73,7 +75,8 @@ namespace Packt.Mono.Framework.Collision
 
         public override void Update(GameTime gameTime)
         {
-            _circle.Center = Entity.Sprite.Center;
+            if (this.IsActive)
+                _circle.Center = Entity.Sprite.Center;
         }
     }
 

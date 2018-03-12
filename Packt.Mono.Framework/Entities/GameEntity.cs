@@ -31,6 +31,7 @@ namespace Packt.Mono.Framework.Entities
         public GameEntity ParentEntity { get; set; }
 
         public event EventHandler OnDestroy;
+        public bool IsDestroyed { get; private set; } = false;
 
         public List<Component> Components = new List<Component>();
         public List<GameEntity> ChildEntities = new List<GameEntity>();
@@ -44,10 +45,11 @@ namespace Packt.Mono.Framework.Entities
             OnDestroy?.Invoke(this, null);
 
             // remove all components and child entities
-            Components.ForEach(c => c.DetachFromEntity());
+            Components.ForEach(c => { c.IsActive = false; c.DetachFromEntity(); });
             ChildEntities.ForEach(c => c.DestroyEntity());
 
             ParentEntity = null;
+            IsDestroyed = true;
         }
 
         public virtual void Update(GameTime gameTime)
