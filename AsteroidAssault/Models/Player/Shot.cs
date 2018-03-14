@@ -39,21 +39,28 @@ namespace AsteroidAssault.Models.Player
 
             if (e.CollisionResolved) return;
 
-            GameEntity otherEntity = e.OtherComponent.Entity;
-            otherEntity = (otherEntity == this) ? e.ThisComponent.Entity : otherEntity;
+            GameEntity otherEntity = e.OtherEntity(this);
 
             if (otherEntity is Asteroid.Asteroid)
             {
                 // handle collision with asteroid
-
-                e.CollisionResolved = true;
+                otherEntity.Velocity += _shotToAsteroidImpact;
                 this.DestroyEntity();
+                e.CollisionResolved = true;
             }
             if (otherEntity is Enemy && FiredBy != WhoFired.Enemy)
             {
                 otherEntity.DestroyEntity();
                 this.DestroyEntity();
+                e.CollisionResolved = true;
             }
+            if (otherEntity is Player && FiredBy != WhoFired.Player)
+            {
+                otherEntity.DestroyEntity();
+                this.DestroyEntity();
+                e.CollisionResolved = true;
+            }
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

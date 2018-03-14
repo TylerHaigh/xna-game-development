@@ -150,6 +150,8 @@ namespace AsteroidAssault.Models.Player
 
         public void Update(GameTime gameTime)
         {
+            _enemies.RemoveAll(e => e.Destroyed);
+
             for (int i = _enemies.Count-1; i >= 0; i--)
             {
                 Enemy e = _enemies[i];

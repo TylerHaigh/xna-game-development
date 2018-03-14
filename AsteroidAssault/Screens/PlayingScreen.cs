@@ -9,6 +9,7 @@ using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
+using Packt.Mono.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,7 @@ namespace AsteroidAssault.Screens
         private CollisionEngine _collisionEngine = new CollisionEngine();
 
         private int _playerScore;
+        private GameTimer _playerRespawnTimer = new GameTimer(TimeSpan.FromSeconds(3));
 
         public PlayingScreen(Game game) : base(game)
         {
@@ -58,7 +60,6 @@ namespace AsteroidAssault.Screens
 
             _starField = new StarField(StarCount, _starVelocity, new TileSheet(_spriteSheet, _starTextureSourceRectangle, Star.AnimationFrames), ScreenBounds);
             _asteroidManager = new AsteroidManager(AsteroidCount, new TileSheet(_spriteSheet, _initalAsteroidFrame, Asteroid.AsteroidFrames), ScreenBounds);
-            _player = new Player(new TileSheet(_spriteSheet, _initalPlayerFrame, Player.PlayerAnimationFrames).SpriteAnimation(), ScreenBounds);
             _shotManager = new ShotManager(new TileSheet(_spriteSheet, _shotTextureInitialFrame, Shot.AnimationFrames), ScreenBounds);
             _enemyManager = new EnemyManager(new TileSheet(_spriteSheet, _enemyInitialFrame, Enemy.AnimationFrames), ScreenBounds);
 
@@ -69,8 +70,30 @@ namespace AsteroidAssault.Screens
             _shotManager.OnShotDestroy += (s, e) => _collisionEngine.RemoveEntity((GameEntity)s);
             _enemyManager.OnEnemyDestroyed += HandleOnEnemyDestroy;
 
-            _player.ShotFired += (sender, args) => _shotManager.CreateShot(args);
+            SpawnPlayer();
             _enemyManager.ShotFired += EnemyManagerShotFired;
+        }
+
+        private void SpawnPlayer()
+        {
+            _player = new Player(new TileSheet(_spriteSheet, _initalPlayerFrame, Player.PlayerAnimationFrames).SpriteAnimation(), ScreenBounds);
+            _player.ShotFired += OnPlayerShotFired;
+            _player.OnDestroy += OnPlayerDestroyed;
+        }
+
+        private void OnPlayerShotFired(object sender, ShotFiredEventArgs args) => _shotManager.CreateShot(args);
+
+        private void OnPlayerDestroyed(object sender, EventArgs e)
+        {
+            _player.ShotFired -= OnPlayerShotFired;
+            _player.OnDestroy -= OnPlayerDestroyed;
+
+            _collisionEngine.RemoveEntity(_player);
+
+            _pieceExplosionManager.AddExplosion(_player.Sprite.Center, Vector2.Zero);
+            _pointExplosionManager.AddExplosion(_player.Sprite.Center, Vector2.Zero);
+
+            _playerRespawnTimer.Reset();
         }
 
         private void HandleOnEnemyDestroy(object sender, EventArgs e)
@@ -86,6 +109,8 @@ namespace AsteroidAssault.Screens
 
         private void EnemyManagerShotFired(object sender, ShotFiredEventArgs e)
         {
+            if (_player.IsDestroyed) return;
+
             // Work out direction of enemy to player
             Vector2 shotDirection = _player.Sprite.Center - e.Location;
             shotDirection.Normalize();
@@ -97,6 +122,11 @@ namespace AsteroidAssault.Screens
         public override void Update(GameTime gameTime)
         {
 
+            _playerRespawnTimer.Update(gameTime);
+            if (_player.IsDestroyed && _playerRespawnTimer.Completed)
+            {
+                SpawnPlayer();
+            }
 
             _starField.Update(gameTime);
             _asteroidManager.Update(gameTime);

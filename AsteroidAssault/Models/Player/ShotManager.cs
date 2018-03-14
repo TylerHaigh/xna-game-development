@@ -37,6 +37,8 @@ namespace AsteroidAssault.Models.Player
 
         public void Update(GameTime gameTime)
         {
+            _shots.RemoveAll(s => s.IsDestroyed);
+            
             // iterate backwards to avoid having to decrement i
             for (int i = _shots.Count - 1; i >= 0; i--)
             {

@@ -34,8 +34,7 @@ namespace AsteroidAssault.Models.Player
 
         public int RemainingLives { get; private set; } = MaxLives;
         public int PlayerScore { get; set; } = 0;
-        public bool Destroyed { get; private set; } = false;
-        
+
         public Player(Sprite s, Rectangle screenBounds)
         {
             this.Sprite = s;
@@ -46,14 +45,30 @@ namespace AsteroidAssault.Models.Player
 
             var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
             circle.CollisionDetected += CollisionDetected;
+            Components.Add(circle);
         }
 
         private void CollisionDetected(object sender, CollisionEventArgs e)
         {
-            
+            if (e.CollisionResolved) return;
+
+            GameEntity otherEntity = e.OtherEntity(this);
+
+            if(otherEntity is Asteroid.Asteroid)
+            {
+                otherEntity.DestroyEntity();
+                this.DestroyEntity();
+                e.CollisionResolved = true;
+            }
+            if (otherEntity is Enemy)
+            {
+                otherEntity.DestroyEntity();
+                this.DestroyEntity();
+                e.CollisionResolved = true;
+            }
         }
 
-        public void FireShot()
+        private void FireShot()
         {
             if (_shotTimer.Completed)
             {
@@ -73,7 +88,7 @@ namespace AsteroidAssault.Models.Player
 
         public override void Update(GameTime gameTime)
         {
-            if(!Destroyed)
+            if(!IsDestroyed)
             {
                 Velocity = Vector2.Zero;
                 _shotTimer.Update(gameTime);
@@ -122,7 +137,7 @@ namespace AsteroidAssault.Models.Player
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (!Destroyed)
+            if (!IsDestroyed)
                 Sprite.Draw(gameTime, spriteBatch);
         }
     }
