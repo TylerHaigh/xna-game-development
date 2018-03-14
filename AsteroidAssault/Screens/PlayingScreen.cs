@@ -1,4 +1,5 @@
-﻿using AsteroidAssault.Models;
+﻿using AsteroidAssault.Audio;
+using AsteroidAssault.Models;
 using AsteroidAssault.Models.Asteroid;
 using AsteroidAssault.Models.Player;
 using AsteroidAssault.Models.Star;
@@ -81,12 +82,17 @@ namespace AsteroidAssault.Screens
             _player.OnDestroy += OnPlayerDestroyed;
         }
 
-        private void OnPlayerShotFired(object sender, ShotFiredEventArgs args) => _shotManager.CreateShot(args);
+        private void OnPlayerShotFired(object sender, ShotFiredEventArgs args)
+        {
+            _shotManager.CreateShot(args);
+            SoundManager.PlayPlayerShot();
+        }
 
         private void OnPlayerDestroyed(object sender, EventArgs e)
         {
             _player.ShotFired -= OnPlayerShotFired;
             _player.OnDestroy -= OnPlayerDestroyed;
+            SoundManager.PlayExplosion();
 
             _collisionEngine.RemoveEntity(_player);
 
@@ -101,7 +107,7 @@ namespace AsteroidAssault.Screens
             Enemy enemy = (Enemy)sender;
             _collisionEngine.RemoveEntity(enemy);
             _playerScore += Enemy.EnemyPointValue;
-
+            SoundManager.PlayExplosion();
 
             _pieceExplosionManager.AddExplosion(enemy.Sprite.Center, enemy.Velocity / 10);
             _pointExplosionManager.AddExplosion(enemy.Sprite.Center, enemy.Velocity / 10);
@@ -117,6 +123,7 @@ namespace AsteroidAssault.Screens
             e.Velocity = shotDirection;
 
             _shotManager.CreateShot(e);
+            SoundManager.PlayEnemyShot();
         }
 
         public override void Update(GameTime gameTime)

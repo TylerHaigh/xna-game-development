@@ -1,4 +1,5 @@
-﻿using AsteroidAssault.Screens;
+﻿using AsteroidAssault.Audio;
+using AsteroidAssault.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -70,6 +71,9 @@ namespace AsteroidAssault
             //graphics.IsFullScreen = true;
 
             graphics.ApplyChanges();
+
+
+            SoundManager.Initialise(Content);
 
             _textureManager = new TextureManager(Content);
             foreach (var gs in _gameScreenState.AllScreens())
