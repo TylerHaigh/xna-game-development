@@ -72,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Sounds\Explosion1.wav" />
+    <Content Include="Content\Sounds\Explosion2.wav" />
+    <Content Include="Content\Sounds\Explosion3.wav" />
+    <Content Include="Content\Sounds\Explosion4.wav" />
+    <Content Include="Content\Sounds\Shot1.wav" />
+    <Content Include="Content\Sounds\Shot2.wav" />
     <Content Include="Content\Textures\SpriteSheet.png" />
     <Content Include="Content\Textures\TitleScreen.png" />
     <Content Include="Icon.ico" />
