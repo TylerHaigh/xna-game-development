@@ -13,7 +13,7 @@ using System.Text;
 
 namespace AsteroidAssault.Models.Player
 {
-    class Player : GameEntity
+    class Player : GameEntity, ILivableEntity
     {
         public event EventHandler<ShotFiredEventArgs> ShotFired;
         public const int PlayerAnimationFrames = 3;
@@ -35,13 +35,17 @@ namespace AsteroidAssault.Models.Player
         public int RemainingLives { get; private set; } = MaxLives;
         public int PlayerScore { get; set; } = 0;
 
+        private const int MaxHealth = 100;
+        public int Health { get; private set; }
+        public bool IsDead => Health <= 0;
+
         public Player(Sprite s, Rectangle screenBounds)
         {
             this.Sprite = s;
             //_sprite.CollisionRadius = CollisionRadius;
             _areaBounds = new Rectangle(screenBounds.X, screenBounds.Height / 2, screenBounds.Width, screenBounds.Height / 2);
 
-            Location = new Vector2 { X = _areaBounds.Center.X, Y = _areaBounds.Center.Y };
+            Spawn(new Vector2 { X = _areaBounds.Center.X, Y = _areaBounds.Center.Y });
 
             var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
             circle.CollisionDetected += CollisionDetected;
@@ -77,7 +81,7 @@ namespace AsteroidAssault.Models.Player
                     Location = Location + _gunOffset,
                     Velocity = new Vector2(0, -1), // player can only fire on one direction
                     ShotSpeed = ShotSpeed,
-                    FiredBy = WhoFired.Player
+                    FiredBy = FiredBy.Player
                     // ShotBy = ShotBy.Player
                 };
 
@@ -139,6 +143,18 @@ namespace AsteroidAssault.Models.Player
         {
             if (!IsDestroyed)
                 Sprite.Draw(gameTime, spriteBatch);
+        }
+
+        public void Spawn(Vector2 location)
+        {
+            Health = MaxHealth;
+            Location = location;
+        }
+
+        public void Hit(int hitPoints)
+        {
+            Health -= hitPoints;
+            if (IsDead) DestroyEntity();
         }
     }
 }

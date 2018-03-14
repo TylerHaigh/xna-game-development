@@ -9,7 +9,7 @@ using System;
 namespace AsteroidAssault.Models.Player
 {
 
-    public enum WhoFired { Player, Enemy };
+    public enum FiredBy { Player, Enemy };
 
     class Shot : GameEntity
     {
@@ -22,11 +22,13 @@ namespace AsteroidAssault.Models.Player
 
         private Vector2 _shotToAsteroidImpact = new Vector2(0, -20); // impart upward velocity on impact
 
-        private readonly WhoFired FiredBy;
+        private readonly FiredBy _firedBy;
+        private int _damage = 0; // allows flexibility to allow player to slightly damage enemy
 
-        public Shot(Sprite s, WhoFired firedBy) {
+        public Shot(Sprite s, FiredBy firedBy, int damage) {
             this.Sprite = s;
-            FiredBy = firedBy;
+            _firedBy = firedBy;
+            _damage = damage;
 
             var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
             circle.CollisionDetected += CollisionDetected;
@@ -48,15 +50,15 @@ namespace AsteroidAssault.Models.Player
                 this.DestroyEntity();
                 e.CollisionResolved = true;
             }
-            if (otherEntity is Enemy && FiredBy != WhoFired.Enemy)
+            if (otherEntity is Enemy && _firedBy != FiredBy.Enemy)
             {
                 otherEntity.DestroyEntity();
                 this.DestroyEntity();
                 e.CollisionResolved = true;
             }
-            if (otherEntity is Player && FiredBy != WhoFired.Player)
+            if (otherEntity is Player && _firedBy != FiredBy.Player)
             {
-                otherEntity.DestroyEntity();
+                ((Player)otherEntity).Hit(_damage);
                 this.DestroyEntity();
                 e.CollisionResolved = true;
             }
@@ -86,7 +88,8 @@ namespace AsteroidAssault.Models.Player
         public Vector2 Location { get; set; }
         public Vector2 Velocity { get; set; }
         public float ShotSpeed { get; set; }
-        public WhoFired FiredBy { get; set; }
+        public FiredBy FiredBy { get; set; }
+        public int Damage { get; set; }
     }
 
    

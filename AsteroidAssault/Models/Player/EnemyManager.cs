@@ -20,7 +20,6 @@ namespace AsteroidAssault.Models.Player
 
         private const float NextWaveTimeout = 8;
         private const float SpawnWaitTimeout = 0.5f;
-        private const float ShipShotChance = 0.2f; // out of 100
 
         private TileSheet _tileSheet;
         private Rectangle _screenBounds;
@@ -150,25 +149,17 @@ namespace AsteroidAssault.Models.Player
 
         public void Update(GameTime gameTime)
         {
-            _enemies.RemoveAll(e => e.Destroyed);
+            _enemies.RemoveAll(e => e.IsDestroyed);
 
             for (int i = _enemies.Count-1; i >= 0; i--)
             {
                 Enemy e = _enemies[i];
                 e.Update(gameTime);
+
                 if (!e.IsActive())
                 {
                     e.DestroyEntity();
                     _enemies.RemoveAt(i);
-                }
-                else
-                {
-                    // todo: move to Enemy class
-                    float chance = _rand.Next(0, 100);
-                    if(chance <= ShipShotChance)
-                    {
-                        e.FireShot();
-                    }
                 }
             }
 

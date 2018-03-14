@@ -20,6 +20,8 @@ namespace AsteroidAssault.Models.Player
 
         public event EventHandler OnShotDestroy;
 
+        public int ShotCount => _shots.Count;
+
         public ShotManager(TileSheet tileSheet, Rectangle screenBounds)
         {
             this._tileSheet = tileSheet;
@@ -56,7 +58,7 @@ namespace AsteroidAssault.Models.Player
         public void CreateShot(ShotFiredEventArgs args)
         {
             Sprite s = _tileSheet.SpriteAnimation();
-            Shot shot = new Shot(s, args.FiredBy);
+            Shot shot = new Shot(s, args.FiredBy, args.Damage);
 
             shot.Location = args.Location;
             shot.Velocity = args.Velocity * args.ShotSpeed;

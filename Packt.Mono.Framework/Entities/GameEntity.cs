@@ -16,6 +16,14 @@ namespace Packt.Mono.Framework.Entities
         void Clear();
     }
 
+    public interface ILivableEntity
+    {
+        int Health { get; }
+        void Hit(int hitPoints);
+        void Spawn(Vector2 location);
+        bool IsDead { get; }
+    }
+
     //public class EntityDestroyedEventArgs
     //{
     //    public readonly GameEntity Entity;

@@ -16,13 +16,13 @@ namespace AsteroidAssault.Models.Player
     class Enemy : GameEntity
     {
   
-        public bool Destroyed { get; private set; }
-
         private Vector2 _gunOffset = new Vector2(25, 25);
 
         private Queue<Vector2> _wayPoints = new Queue<Vector2>();
         private Vector2 _currentWayPoint = Vector2.Zero;
         private Vector2 _previousLocation = Vector2.Zero;
+
+        private Random _rand = new Random();
 
         private const float Speed = 120;
         private const int CollisionRadius = 15;
@@ -32,6 +32,9 @@ namespace AsteroidAssault.Models.Player
         private const float ShotSpeed = 150f;
 
         public const int EnemyPointValue = 100;
+        private const int EnemyShotDamage = 10;
+        private const float ShipShotChance = 0.2f; // out of 100
+
 
         public event EventHandler<ShotFiredEventArgs> ShotFired;
 
@@ -62,9 +65,14 @@ namespace AsteroidAssault.Models.Player
         public override void Update(GameTime gameTime)
         {
 
-            if(IsActive() && !Destroyed)
+            if(IsActive() && !IsDestroyed)
             {
                 Velocity = CalculateHeading();
+
+                // fire shot
+                float chance = _rand.Next(0, 100);
+                if (chance <= ShipShotChance)
+                    FireShot();
 
                 _previousLocation = Location;
 
@@ -103,7 +111,7 @@ namespace AsteroidAssault.Models.Player
         public bool IsActive()
         {
             /// Used to check if should be updated and drawn
-            if (Destroyed) return false;
+            if (IsDestroyed) return false;
             if (_wayPoints.Count > 0) return true;
             if (ReachedWayPoint) return false; // reached final way point
             return true;
@@ -115,7 +123,8 @@ namespace AsteroidAssault.Models.Player
             {
                 Location = Location + _gunOffset,
                 ShotSpeed = ShotSpeed,
-                FiredBy = WhoFired.Enemy
+                FiredBy = FiredBy.Enemy,
+                Damage = EnemyShotDamage
                 // Don't know directional velocity because we don't know where the player is
             };
             ShotFired?.Invoke(this, args);

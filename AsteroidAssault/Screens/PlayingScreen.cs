@@ -123,7 +123,7 @@ namespace AsteroidAssault.Screens
         {
 
             _playerRespawnTimer.Update(gameTime);
-            if (_player.IsDestroyed && _playerRespawnTimer.Completed)
+            if (_player.IsDestroyed && _playerRespawnTimer.Completed && _shotManager.ShotCount == 0)
             {
                 SpawnPlayer();
             }
