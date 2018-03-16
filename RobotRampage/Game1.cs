@@ -28,6 +28,10 @@ namespace RobotRampage
         {
             // TODO: Add your initialization logic here
 
+            this.graphics.PreferredBackBufferWidth = 800;
+            this.graphics.PreferredBackBufferHeight = 600;
+            this.graphics.ApplyChanges();
+
             base.Initialize();
         }
 
