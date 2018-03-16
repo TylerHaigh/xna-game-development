@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Packt.Mono.Framework.Graphics;
 
 namespace RobotRampage
 {
@@ -15,6 +16,7 @@ namespace RobotRampage
         private Texture2D _spriteSheet;
         private Texture2D _titleScreen;
         private SpriteFont _pericles14;
+        private Camera _cam = new Camera(new Rectangle(0,0,1600, 1600), 800, 600);
 
         public Game1()
         {
@@ -53,6 +55,7 @@ namespace RobotRampage
             _spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
             _titleScreen = Content.Load<Texture2D>(@"Textures\TitleScreen");
             _pericles14 = Content.Load<SpriteFont>(@"Fonts\Pericles14");
+
         }
 
         /// <summary>

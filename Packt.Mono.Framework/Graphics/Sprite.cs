@@ -53,10 +53,11 @@ namespace Packt.Mono.Framework.Graphics
 
         public Rectangle Source => _frames[_currentFrame];
         public Rectangle Destination => new Rectangle((int)Location.X, (int)Location.Y, _initialFrame.Width, _initialFrame.Height);
-        private Vector2 CenterOfFrame => new Vector2(_initialFrame.Width / 2.0f, _initialFrame.Height / 2.0f);
-        public Vector2 Center => Location + CenterOfFrame;
+        public Vector2 RelativeCenter => new Vector2(FrameWidth / 2, FrameHeight / 2);
+        public Vector2 Center => Location + RelativeCenter;
 
-
+        public int FrameWidth => _initialFrame.Width;
+        public int FrameHeight => _initialFrame.Height;
 
         // Collision Detection
         //public int CollisionRadius { get; set; } = 0; // Bounding Circle Collision
@@ -98,7 +99,12 @@ namespace Packt.Mono.Framework.Graphics
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Center, Source, TintColor, Rotation, CenterOfFrame, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Center, Source, TintColor, Rotation, RelativeCenter, Scale, SpriteEffects.None, 0);
+        }
+
+        public void RotateTo(Vector2 direction)
+        {
+            Rotation = (float)Math.Atan2(direction.Y, direction.X);
         }
 
     }
