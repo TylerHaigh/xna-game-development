@@ -60,9 +60,9 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\Fonts\Pericles14.spritefont" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Fonts\" />
     <Folder Include="Content\Sounds\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
