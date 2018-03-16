@@ -12,6 +12,10 @@ namespace RobotRampage
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private Texture2D _spriteSheet;
+        private Texture2D _titleScreen;
+        private SpriteFont _pericles14;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -45,6 +49,10 @@ namespace RobotRampage
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
+            _spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
+            _titleScreen = Content.Load<Texture2D>(@"Textures\TitleScreen");
+            _pericles14 = Content.Load<SpriteFont>(@"Fonts\Pericles14");
         }
 
         /// <summary>
