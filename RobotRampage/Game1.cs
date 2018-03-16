@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework.Graphics;
+using RobotRampage.Utils;
 
 namespace RobotRampage
 {
@@ -17,11 +18,15 @@ namespace RobotRampage
         private Texture2D _titleScreen;
         private SpriteFont _pericles14;
         private Camera _cam = new Camera(new Rectangle(0,0,1600, 1600), 800, 600);
+        private GameWorld _world;
+        private TextureManager _textureManager;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            _world = new GameWorld(this, _cam);
         }
 
         /// <summary>
@@ -51,10 +56,13 @@ namespace RobotRampage
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            _textureManager = new TextureManager(Content);
 
-            _spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
-            _titleScreen = Content.Load<Texture2D>(@"Textures\TitleScreen");
-            _pericles14 = Content.Load<SpriteFont>(@"Fonts\Pericles14");
+            _spriteSheet = _textureManager.OptionalLoadContent<Texture2D>(@"Textures\SpriteSheet");
+            _titleScreen = _textureManager.OptionalLoadContent<Texture2D>(@"Textures\TitleScreen");
+            _pericles14 = _textureManager.OptionalLoadContent<SpriteFont>(@"Fonts\Pericles14");
+
+            _world.LoadContent(_textureManager);
 
         }
 
@@ -78,6 +86,7 @@ namespace RobotRampage
                 Exit();
 
             // TODO: Add your update logic here
+            _world.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -91,6 +100,9 @@ namespace RobotRampage
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            _world.Draw(gameTime, spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

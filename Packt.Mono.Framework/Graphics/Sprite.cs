@@ -59,6 +59,9 @@ namespace Packt.Mono.Framework.Graphics
         public int FrameWidth => _initialFrame.Width;
         public int FrameHeight => _initialFrame.Height;
 
+        public bool Animate { get; set; }
+        //public bool AnimateWhenStopped { get; set; } // seems hacky. Remove?
+
         // Collision Detection
         //public int CollisionRadius { get; set; } = 0; // Bounding Circle Collision
         //public int BoundingXPadding { get; set; } = 0; // Boudning Box Collision
@@ -82,7 +85,8 @@ namespace Packt.Mono.Framework.Graphics
 
         public virtual void Update(GameTime gameTime)
         {
-            UpdateCurrentFrameTimer(gameTime);
+            if(Animate)
+                UpdateCurrentFrameTimer(gameTime);
 
             //Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }

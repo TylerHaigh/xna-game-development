@@ -12,6 +12,7 @@ namespace RobotRampage.Utils
     class WorldSprite : Sprite
     {
 
+        public new Vector2 Location { get => WorldLocation; set => WorldLocation = value; }
         public Vector2 WorldLocation { get; set; } = Vector2.Zero;
         public Vector2 ScreenLocation => _cam.Transform(WorldLocation);
 
