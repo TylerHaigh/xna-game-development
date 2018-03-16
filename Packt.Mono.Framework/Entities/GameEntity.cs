@@ -20,6 +20,7 @@ namespace Packt.Mono.Framework.Entities
     {
         int Health { get; }
         void Hit(int hitPoints);
+        void Die();
         void Spawn(Vector2 location);
         bool IsDead { get; }
     }
@@ -46,8 +47,10 @@ namespace Packt.Mono.Framework.Entities
 
         public Sprite Sprite { get; set; }
 
-        public void DestroyEntity()
+        public virtual void DestroyEntity()
         {
+            if (IsDestroyed) return;
+            
             // Must come before anything else to notify collision engine
             // of which components to remove from collision engine
             OnDestroy?.Invoke(this, null);

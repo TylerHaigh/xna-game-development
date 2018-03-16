@@ -54,11 +54,9 @@
     <Compile Include="Models\Player\ShotManager.cs" />
     <Compile Include="Models\Star\Star.cs" />
     <Compile Include="Models\Star\StarField.cs" />
-    <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\GameStates.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screens\PlayerDeadState.cs" />
     <Compile Include="Screens\PlayingScreen.cs" />
     <Compile Include="Screens\TitleScreen.cs" />
   </ItemGroup>
@@ -86,6 +84,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\Fonts\Perecles14.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@ namespace AsteroidAssault.Models.Player
         public const int PlayerSpriteHeight = 50;
 
         private const float PlayerSpeed = 160;
-        private const int MaxLives = 3;
+        public const int MaxLives = 3;
         private const int CollisionRadius = 15;
         private const float GunTimeout = 0.2f;
 
@@ -39,17 +39,17 @@ namespace AsteroidAssault.Models.Player
         public int Health { get; private set; }
         public bool IsDead => Health <= 0;
 
-        public Player(Sprite s, Rectangle screenBounds)
+        public Player(Sprite s, Rectangle screenBounds, int lives = MaxLives)
         {
             this.Sprite = s;
-            //_sprite.CollisionRadius = CollisionRadius;
             _areaBounds = new Rectangle(screenBounds.X, screenBounds.Height / 2, screenBounds.Width, screenBounds.Height / 2);
+            RemainingLives = lives;
+        }
 
-            Spawn(new Vector2 { X = _areaBounds.Center.X, Y = _areaBounds.Center.Y });
-
-            var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
-            circle.CollisionDetected += CollisionDetected;
-            Components.Add(circle);
+        public override void DestroyEntity()
+        {
+            RemainingLives--;
+            base.DestroyEntity();
         }
 
         private void CollisionDetected(object sender, CollisionEventArgs e)
@@ -149,12 +149,22 @@ namespace AsteroidAssault.Models.Player
         {
             Health = MaxHealth;
             Location = location;
+
+            var circle = new CollisionCircleComponent(this, this.Sprite.Center, CollisionRadius);
+            circle.CollisionDetected += CollisionDetected;
+            Components.Add(circle);
         }
 
         public void Hit(int hitPoints)
         {
             Health -= hitPoints;
             if (IsDead) DestroyEntity();
+        }
+
+        public void Die()
+        {
+            if (!IsDead) Hit(Health + 1);
+            DestroyEntity();
         }
     }
 }

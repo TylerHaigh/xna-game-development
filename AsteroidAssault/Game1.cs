@@ -34,11 +34,17 @@ namespace AsteroidAssault
 
         private void RegisterGameScreens()
         {
-            GameScreenMap<GameState> map = new GameScreenMap<GameState>()
-                .AddState(GameState.TitleScreen, new TitleScreen(this))
-                .AddState(GameState.Playing, new PlayingScreen(this));
+            TitleScreen ts = new TitleScreen(this);
+            ts.StartGame += (s, e) => _gameScreenState.SetState(GameState.Playing);
 
-            _gameScreenState = new GameScreenState<GameState>(map, GameState.Playing);
+            PlayingScreen ps = new PlayingScreen(this);
+            ps.GameOverWaitFinished += (s, e) => _gameScreenState.SetState(GameState.TitleScreen);
+
+            GameScreenMap<GameState> map = new GameScreenMap<GameState>()
+                .AddState(GameState.TitleScreen, ts)
+                .AddState(GameState.Playing, ps);
+
+            _gameScreenState = new GameScreenState<GameState>(map, GameState.TitleScreen);
         }
 
         /// <summary>

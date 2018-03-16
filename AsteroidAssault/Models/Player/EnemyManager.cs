@@ -36,6 +36,8 @@ namespace AsteroidAssault.Models.Player
         public event EventHandler<ShotFiredEventArgs> ShotFired;
         public event EventHandler OnEnemyDestroyed;
 
+        public int EnemyCount => _enemies.Count;
+
         public EnemyManager(TileSheet tileSheet, Rectangle screenBounds)
         {
             _tileSheet = tileSheet;

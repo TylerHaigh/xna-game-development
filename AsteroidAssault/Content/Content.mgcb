@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Fonts/Perecles14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Perecles14.spritefont
+
 #begin Sounds/Explosion1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

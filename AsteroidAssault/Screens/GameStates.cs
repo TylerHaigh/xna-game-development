@@ -8,6 +8,6 @@ namespace AsteroidAssault.Screens
 {
     enum GameState
     {
-        TitleScreen, Playing, PlayerDead, GameOver
+        TitleScreen, Playing, GameOver
     }
 }

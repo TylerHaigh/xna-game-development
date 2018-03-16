@@ -38,6 +38,13 @@ namespace AsteroidAssault.Models.Asteroid
             GenerateAsteroids(asteroidCount);
         }
 
+        public void Reset()
+        {
+            foreach (var a in _asteroids)
+            {
+                a.Location = new Vector2(-500, -500); ; // off screen
+            }
+        }
 
         public void AddAsteroid()
         {
