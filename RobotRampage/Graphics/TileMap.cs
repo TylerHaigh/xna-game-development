@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Graphics;
 using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace RobotRampage.Graphics
     {
         private Texture2D _texture;
         private List<Rectangle> _tiles = new List<Rectangle>();
-        private int[,] _tileMatrix = new int[MapWidth, MapHeight];
+        private Tiles[,] _mapSquares = new Tiles[MapWidth, MapHeight];
 
         private Random _rand = new Random();
 
@@ -38,7 +39,7 @@ namespace RobotRampage.Graphics
 
             // Build new Grid
             ReloadTiles();
-            ResetTileMap();
+            ResetSquares();
         }
 
         private void ReloadTiles()
@@ -58,11 +59,69 @@ namespace RobotRampage.Graphics
             }
         }
 
-        private void ResetTileMap()
+        private void ResetSquares()
         {
             for (int x = 0; x < MapWidth; x++)
                 for (int y = 0; y < MapHeight; y++)
-                    _tileMatrix[x, y] = (int)Tiles.GreyFloor;
+                    _mapSquares[x, y] = Tiles.GreyFloor;
+        }
+
+        // We will use "square" to refer to a location within the _mapSquares array, while we will use
+        // "tile" to refer to the index number stored in a particular square.
+
+        // GetSquareByPixelX() and GetSquareByPixelY() will allow us to
+        // convert world-based pixel coordinates to map square references
+
+        public int GetSquareByPixelX(int pixelX) => pixelX / TileWidth;
+        public int GetSquareByPixelY(int pixelY) => pixelY / TileHeight;
+
+        public Vector2 GetSquareAtPixel(Vector2 vec)
+        {
+            return new Vector2(
+                GetSquareByPixelX((int)vec.X),
+                GetSquareByPixelX((int)vec.Y)
+            );
+        }
+
+        public Vector2 GetSquareCenter(int squareX, int squareY)
+        {
+            return new Vector2(
+                (squareX * TileWidth) + (TileWidth / 2),
+                (squareY * TileHeight) + (TileHeight / 2));
+        }
+
+        public Vector2 GetSquareCenter(Vector2 square)
+        {
+            return GetSquareCenter((int)square.X, (int)square.Y);
+        }
+
+        // SquareWorldRectangle() answers the question "What pixels on the
+        // world map does this square occupy?"
+
+        public Rectangle SquareWorldRectangle (int x, int y)
+        {
+            return new Rectangle(
+                x * TileWidth, y * TileHeight,
+                TileWidth, TileHeight);
+        }
+
+        public Rectangle SquareWorldRectangle(Vector2 square)
+        {
+            return SquareWorldRectangle((int)square.X, (int)square.Y);
+        }
+
+        // SquareScreenRectangle() provides the same information, but in
+        // localized screen coordinates. This information will be used in the Draw() method when
+        // rendering each square's tile to the display
+
+        public Rectangle SquareScreenRectangle(Camera cam, int x, int y)
+        {
+            return cam.Transform(SquareWorldRectangle(x, y));
+        }
+
+        public Rectangle SquareScreenRectangle(Camera cam, Vector2 square)
+        {
+            return SquareScreenRectangle(cam, (int)square.X, (int)square.Y);
         }
 
     }
