@@ -20,4 +20,18 @@ namespace RobotRampage.Graphics
         PurpleWall,
         PinkWall
     }
+
+    public static class EnumExtensions
+    {
+        public static int ToInt(this Enum e) => Convert.ToInt32(e);
+    }
+
+    public static class RandomExtensions
+    {
+        public static T Next<T> (this Random rand, T start, T end) where T : Enum
+        {
+            int next = rand.Next(start.ToInt(), end.ToInt());
+            return (T)Enum.ToObject(typeof(T), next);
+        }
+    }
 }

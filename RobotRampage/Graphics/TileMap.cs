@@ -41,6 +41,7 @@ namespace RobotRampage.Graphics
             // Build new Grid
             ReloadTiles();
             ResetSquares();
+            GenerateRandomMap();
         }
 
         private void ReloadTiles()
@@ -203,15 +204,19 @@ namespace RobotRampage.Graphics
 
         public void Draw(Camera cam, SpriteBatch spriteBatch)
         {
-            int startX = GetSquareAtPixelX((int)cam.Position.X);
-            int endX = GetSquareAtPixelX((int)cam.Position.X + cam.ViewPortWidth);
+            // Due to some rendering issue the bottom row was always cut off
+            // making the bottom row of tiles pop into dispplay.
+            // To avoid this, always render one tile outside of the viewport
 
-            int startY = GetSquareAtPixelY((int)cam.Position.Y);
-            int endY = GetSquareAtPixelY((int)cam.Position.Y + cam.ViewPortHeight);
+            int startX = GetSquareAtPixelX((int)cam.Position.X)-1;
+            int endX = GetSquareAtPixelX((int)cam.Position.X + cam.ViewPortWidth)+1;
+
+            int startY = GetSquareAtPixelY((int)cam.Position.Y)-1;
+            int endY = GetSquareAtPixelY((int)cam.Position.Y + cam.ViewPortHeight)+1;
 
             for (int x = startX; x <= endX; x++)
             {
-                for (int y = startY; y < endX; y++)
+                for (int y = startY; y < endY; y++)
                 {
                     if (CoordinateWithinBounds(x, y))
                         spriteBatch.Draw(
@@ -222,7 +227,43 @@ namespace RobotRampage.Graphics
                         );
                 }
             }
+        }
 
+
+        private const int WallChancePercent = 10; // 10%
+
+
+        private bool IsBorderSquare(int x, int y)
+        {
+            return (x == 0 || x == MapWidth - 1 ||
+                    y == 0 || y == MapHeight - 1);
+        }
+
+        private bool IsBorderEdgeGap(int x, int y)
+        {
+            return (x == 1 || x == MapWidth - 2 ||
+                    y == 1 || y == MapHeight - 2);
+        }
+
+        public void GenerateRandomMap()
+        {
+            Tiles floorTile = _rand.Next(Tiles.GreyFloor, Tiles.PinkFloor + 1);
+            Tiles wallTile = _rand.Next(Tiles.GreyWall, Tiles.PinkWall + 1);
+
+            for(int x = 0; x < MapWidth; x++)
+            {
+                for(int y = 0; y < MapHeight; y++)
+                {
+                    if (IsBorderSquare(x, y))
+                        _mapSquares[x, y] = wallTile;
+                    else if (IsBorderEdgeGap(x, y))
+                        _mapSquares[x, y] = floorTile;
+                    else
+                        _mapSquares[x, y] = (_rand.Next(0, 100) <= WallChancePercent)
+                            ? wallTile
+                            : floorTile;
+                }
+            }
         }
 
     }
