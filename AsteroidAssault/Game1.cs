@@ -55,7 +55,7 @@ namespace AsteroidAssault
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Add your initialization logic here
 
             base.Initialize();
         }
@@ -85,7 +85,7 @@ namespace AsteroidAssault
             foreach (var gs in _gameScreenState.AllScreens())
                 gs.LoadContent(_textureManager);
 
-            // TODO: use this.Content to load your game content here
+            // use this.Content to load your game content here
             //_spriteSheet = Content.Load<Texture2D>(@"Textures\SpriteSheet");
         }
 
@@ -95,7 +95,7 @@ namespace AsteroidAssault
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace AsteroidAssault
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // Add your update logic here
 
             _currentScreen.Update(gameTime);
 
@@ -123,7 +123,7 @@ namespace AsteroidAssault
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            // Add your drawing code here
 
             spriteBatch.Begin();
             {

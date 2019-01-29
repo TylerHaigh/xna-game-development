@@ -37,7 +37,7 @@ namespace RobotRampage
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Add your initialization logic here
 
             this.graphics.PreferredBackBufferWidth = 800;
             this.graphics.PreferredBackBufferHeight = 600;
@@ -55,7 +55,7 @@ namespace RobotRampage
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // load your game content here
             _textureManager = new TextureManager(Content);
 
             _spriteSheet = _textureManager.OptionalLoadContent<Texture2D>(@"Textures\SpriteSheet");
@@ -72,7 +72,7 @@ namespace RobotRampage
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace RobotRampage
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // Add your update logic here
             _world.Update(gameTime);
 
             base.Update(gameTime);
@@ -99,7 +99,7 @@ namespace RobotRampage
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Add your drawing code here
             spriteBatch.Begin();
             _world.Draw(gameTime, spriteBatch);
             spriteBatch.End();

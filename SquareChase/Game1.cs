@@ -36,7 +36,7 @@ namespace SquareChase
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Add your initialization logic here
 
             // do things like set screen resolution, toggle full screen mode, etc.
 
@@ -54,7 +54,7 @@ namespace SquareChase
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // load your game content here
             _square = new Square(Content.Load<Texture2D>(@"Square"));
         }
 
@@ -64,7 +64,7 @@ namespace SquareChase
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace SquareChase
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // Add your update logic here
 
 
             if (_remainingTime <= 0)
@@ -110,7 +110,7 @@ namespace SquareChase
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Add your drawing code here
             _spriteBatch.Begin();
             {
                 _spriteBatch.Draw(_square.Texture, _square.Bounds, _square.ColourToShow);

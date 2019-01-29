@@ -61,7 +61,7 @@ namespace FloodControl
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Add your initialization logic here
 
             base.Initialize();
 
@@ -102,7 +102,7 @@ namespace FloodControl
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
-            // TODO: use this.Content to load your game content here
+            // load your game content here
             _textureManager = new TextureManager(this.Content);
 
             foreach (var gs in _gameScreens.Values)
@@ -115,7 +115,7 @@ namespace FloodControl
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace FloodControl
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // Add your update logic here
 
             _currentScreen.Update(gameTime);
 
@@ -143,7 +143,7 @@ namespace FloodControl
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Add your drawing code here
 
             spriteBatch.Begin();
             {
