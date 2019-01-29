@@ -72,14 +72,14 @@ namespace RobotRampage.Graphics
         // GetSquareByPixelX() and GetSquareByPixelY() will allow us to
         // convert world-based pixel coordinates to map square references
 
-        public int GetSquareByPixelX(int pixelX) => pixelX / TileWidth;
-        public int GetSquareByPixelY(int pixelY) => pixelY / TileHeight;
+        public int GetSquareAtPixelX(int pixelX) => pixelX / TileWidth;
+        public int GetSquareAtPixelY(int pixelY) => pixelY / TileHeight;
 
         public Vector2 GetSquareAtPixel(Vector2 vec)
         {
             return new Vector2(
-                GetSquareByPixelX((int)vec.X),
-                GetSquareByPixelX((int)vec.Y)
+                GetSquareAtPixelX((int)vec.X),
+                GetSquareAtPixelX((int)vec.Y)
             );
         }
 
@@ -122,6 +122,77 @@ namespace RobotRampage.Graphics
         public Rectangle SquareScreenRectangle(Camera cam, Vector2 square)
         {
             return SquareScreenRectangle(cam, (int)square.X, (int)square.Y);
+        }
+
+
+        // Helper methods related to Tiles enum
+
+        private void PreconditionCheckSquareIndex(int squareX, int squareY)
+        {
+            if (squareX < 0 || squareX >= MapWidth)
+                throw new ArgumentException("squareX must be within map range");
+
+            if (squareY < 0 || squareY >= MapHeight)
+                throw new ArgumentException("squareY must be within map range");
+        }
+
+        public Tiles GetTileAtSquare(int squareX, int squareY)
+        {
+            PreconditionCheckSquareIndex(squareX, squareY);
+            return _mapSquares[squareX, squareY];
+        }
+
+        public Tiles GetTileAtSquare(Vector2 square)
+        {
+            return GetTileAtSquare((int)square.X, (int)square.Y);
+        }
+
+        public void SetTileAtSquare(int squareX, int squareY, Tiles tile)
+        {
+            PreconditionCheckSquareIndex(squareX, squareY);
+            _mapSquares[squareX, squareY] = tile;
+        }
+
+        public void SetTileAtSquare(Vector2 square, Tiles tile)
+        {
+            SetTileAtSquare((int)square.X, (int)square.Y, tile);
+        }
+
+        public Tiles GetTileAtPixel(int pixelX, int pixelY)
+        {
+            return GetTileAtSquare(
+                GetSquareAtPixelX(pixelX),
+                GetSquareAtPixelY(pixelY)
+            );
+        }
+
+        public Tiles GetTileAtPixel(Vector2 pixel)
+        {
+            return GetTileAtPixel((int)pixel.X, (int)pixel.Y);
+        }
+
+        public bool IsWallTile(int squareX, int squareY)
+        {
+            Tiles t = GetTileAtSquare(squareX, squareY);
+            return t > Tiles.GreyWall; // TODO: Woeful. Fix later
+        }
+
+        public bool IsWallTile(Vector2 square)
+        {
+            return IsWallTile((int)square.X, (int)square.Y);
+        }
+
+        public bool IsWallTileAtPixel(int pixelX, int pixelY)
+        {
+            return IsWallTile(
+                GetSquareAtPixelX(pixelX),
+                GetSquareAtPixelY(pixelY)
+            );
+        }
+
+        public bool IsWallTileAtPixel(Vector2 pixel)
+        {
+            return IsWallTileAtPixel((int)pixel.X, (int)pixel.Y);
         }
 
     }
