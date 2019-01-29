@@ -17,7 +17,6 @@ namespace Packt.Mono.Framework.Graphics
 
         public Color TintColor { get; set; } = Color.White;
         public Vector2 Location { get; set; } = Vector2.Zero;
-        //public Vector2 Velocity { get; set; } = Vector2.Zero;
         public float Scale { get; set; } = 1;
 
         private float _rotation = 0;
@@ -60,22 +59,14 @@ namespace Packt.Mono.Framework.Graphics
         public int FrameHeight => _initialFrame.Height;
 
         public bool Animate { get; set; }
-        //public bool AnimateWhenStopped { get; set; } // seems hacky. Remove?
 
-        // Collision Detection
-        //public int CollisionRadius { get; set; } = 0; // Bounding Circle Collision
-        //public int BoundingXPadding { get; set; } = 0; // Boudning Box Collision
-        //public int BoundingYPadding { get; set; } = 0;
-        //public CollisionCircle CollisionCircle => new CollisionCircle (Center, CollisionRadius);
-        //public CollisionBoundingBox BoundingBoxRectangle => new CollisionBoundingBox(Location, _initialFrame, BoundingXPadding, BoundingYPadding);
+        public Sprite(Texture2D texture, Rectangle initialFrame) : this(texture, initialFrame, Vector2.Zero) { }
 
-        public Sprite(Texture2D texture, Rectangle initialFrame) : this(texture, initialFrame, Vector2.Zero, Vector2.Zero) { }
 
-        public Sprite(Texture2D texture, Rectangle initialFrame, Vector2 location, Vector2 velocity)
+        public Sprite(Texture2D texture, Rectangle initialFrame, Vector2 location)
         {
             this.Location = location;
             this.Texture = texture;
-            //this.Velocity = velocity;
 
             _frames.Add(initialFrame);
             _initialFrame = initialFrame;
@@ -87,8 +78,6 @@ namespace Packt.Mono.Framework.Graphics
         {
             if(Animate)
                 UpdateCurrentFrameTimer(gameTime);
-
-            //Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         private void UpdateCurrentFrameTimer(GameTime gameTime)
@@ -109,6 +98,37 @@ namespace Packt.Mono.Framework.Graphics
         public void RotateTo(Vector2 direction)
         {
             Rotation = (float)Math.Atan2(direction.Y, direction.X);
+        }
+
+        public void ClearFrames()
+        {
+            _frames.Clear();
+        }
+
+        public void AddAnimation(int framesX, int framesY = 1, int paddingX = 0, int paddingY = 0)
+        {
+            AddAnimation(_initialFrame, framesX, framesY, paddingX, paddingY);
+        }
+
+        public void AddAnimation(Rectangle initialFrame, int framesX, int framesY = 1, int paddingX = 0, int paddingY = 0)
+        {
+            ClearFrames();
+
+            for (int x = 0; x < framesX; x++)
+            {
+                for (int y = 0; y < framesY; y++)
+                {
+                    Rectangle rect = new Rectangle(
+                        initialFrame.X + ((initialFrame.Width + paddingX) * x),
+                        initialFrame.Y + ((initialFrame.Height + paddingY) * y),
+                        initialFrame.Width,
+                        initialFrame.Height
+                    );
+                    _frames.Add(rect);
+                }
+            }
+
+            Animate = true;
         }
 
     }

@@ -12,8 +12,7 @@ namespace RobotRampage.Utils
     class WorldSprite : Sprite
     {
 
-        public new Vector2 Location { get => WorldLocation; set => WorldLocation = value; }
-        public Vector2 WorldLocation { get; set; } = Vector2.Zero;
+        public Vector2 WorldLocation { get => Location; set => Location = value; }
         public Vector2 ScreenLocation => _cam.Transform(WorldLocation);
 
         public Rectangle WorldRectangle => new Rectangle((int)WorldLocation.X, (int)WorldLocation.Y, FrameWidth, FrameHeight);
@@ -22,14 +21,14 @@ namespace RobotRampage.Utils
         public Vector2 WorldCenter => WorldLocation + RelativeCenter;
         public Vector2 ScreenCenter => _cam.Transform(WorldCenter);
 
-        // todo: will need to work out collision box and circle properties
-
         private Camera _cam;
 
-        public WorldSprite(Texture2D texture, Rectangle initialFrame, Vector2 worldLocation, Camera cam) : base(texture, initialFrame)
+        public WorldSprite(Texture2D texture, Rectangle initialFrame, Camera cam) : this(texture, initialFrame, cam, Vector2.Zero) { }
+
+        public WorldSprite(Texture2D texture, Rectangle initialFrame, Camera cam, Vector2 worldLocation) : base(texture, initialFrame)
         {
-            WorldLocation = worldLocation;
             _cam = cam;
+            WorldLocation = worldLocation;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

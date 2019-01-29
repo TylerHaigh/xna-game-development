@@ -33,8 +33,7 @@ namespace Packt.Mono.Framework.Entities
 
     public abstract class GameEntity
     {
-        private Vector2 _location = Vector2.Zero;
-        public Vector2 Location { get => _location; set { _location = value; Sprite.Location = value; } }
+        public Vector2 Location { get => Sprite.Location; set => Sprite.Location = value; }
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public GameEntity ParentEntity { get; set; }
@@ -46,6 +45,12 @@ namespace Packt.Mono.Framework.Entities
         public List<GameEntity> ChildEntities = new List<GameEntity>();
 
         public Sprite Sprite { get; set; }
+
+        public void AddChild(GameEntity entity)
+        {
+            ChildEntities.Add(entity);
+            entity.ParentEntity = this;
+        }
 
         public virtual void DestroyEntity()
         {
@@ -72,7 +77,8 @@ namespace Packt.Mono.Framework.Entities
             foreach (var c in Components) { c.Update(gameTime); }
             foreach (var c in ChildEntities) { c.Update(gameTime); }
 
-            Sprite.Update(gameTime);
+            if (Sprite != null)
+                Sprite.Update(gameTime);
         }
 
         public IEnumerable<Component> GetComponent<T>() where T : Component

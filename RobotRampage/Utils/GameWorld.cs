@@ -5,6 +5,7 @@ using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
 using RobotRampage.Graphics;
+using RobotRampage.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,8 @@ namespace RobotRampage.Utils
 
         private List<GameEntity> _entities = new List<GameEntity>();
 
-        private WorldSprite _sp1;
-        private WorldSprite _sp2;
-
         private TileMap _tileMap = new TileMap();
+        private Player _player;
 
         public GameWorld(Game game, Camera cam) : base(game)
         {
@@ -32,44 +31,43 @@ namespace RobotRampage.Utils
         public override void LoadContent(TextureManager textureManager)
         {
             Texture2D spriteSheet = textureManager.OptionalLoadContent<Texture2D>(@"Textures\SpriteSheet");
-            _sp1 = new WorldSprite(spriteSheet, new Rectangle(0,  64, 32, 32), new Vector2(100, 100), _cam);
-            _sp2 = new WorldSprite(spriteSheet, new Rectangle(0, 160, 32, 32), new Vector2(200, 200), _cam);
 
             _tileMap.Intialise(spriteSheet);
+
+            //_player = new Player(
+            //    spriteSheet,
+            //    new Rectangle(0, 64, 32, 32), 6,
+            //    new Rectangle(0, 96, 32, 32), 1,
+            //    new Vector2(300, 300),
+            //    _cam
+            //);
+
+            Rectangle playerBaseInitialRectangle = new Rectangle(0, 64, 32, 32);
+            Rectangle playerTurretInitialRectangle = new Rectangle(0, 96, 32, 32);
+            Vector2 playerLocation = new Vector2(300, 300);
+
+            WorldSprite playerBase   = new WorldSprite(spriteSheet, playerBaseInitialRectangle, _cam);
+            WorldSprite playerTurret = new WorldSprite(spriteSheet, playerTurretInitialRectangle, _cam);
+
+            playerBase.AddAnimation(6);
+
+            _player = new Player(playerBase, playerTurret)
+            {
+                Location = playerLocation
+            };
+
         }
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 spriteMove = Vector2.Zero;
-            Vector2 cameraMove = Vector2.Zero;
-
-            KeyboardState kdb = Keyboard.GetState();
-
-            if (kdb.IsKeyDown(Keys.A)) spriteMove.X = -1;
-            if (kdb.IsKeyDown(Keys.D)) spriteMove.X =  1;
-            if (kdb.IsKeyDown(Keys.W)) spriteMove.Y = -1;
-            if (kdb.IsKeyDown(Keys.S)) spriteMove.Y =  1;
-
-            if (kdb.IsKeyDown(Keys.Left))  cameraMove.X = -1;
-            if (kdb.IsKeyDown(Keys.Right)) cameraMove.X =  1;
-            if (kdb.IsKeyDown(Keys.Up))    cameraMove.Y = -1;
-            if (kdb.IsKeyDown(Keys.Down))  cameraMove.Y =  1;
-
-            _cam.Move(cameraMove);
-
-            Vector2 velocity = (spriteMove * 60);
-            _sp1.WorldLocation += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            _sp1.Update(gameTime);
-            _sp2.Update(gameTime);
+            _player.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _tileMap.Draw(_cam, spriteBatch);
+            _tileMap.Draw(_cam, gameTime, spriteBatch);
 
-            _sp1.Draw(gameTime, spriteBatch);
-            _sp2.Draw(gameTime, spriteBatch);
+            _player.Draw(gameTime, spriteBatch);
         }
 
         

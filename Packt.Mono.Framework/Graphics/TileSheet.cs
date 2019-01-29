@@ -79,9 +79,12 @@ namespace Packt.Mono.Framework.Graphics
         public Sprite SpriteAnimation()
         {
             Sprite s = new Sprite(_texture, InitalFrame);
+            s.ClearFrames();
             s.AddFrames(AllTiles());
             return s;
         }
+
+        // TODO: Create method to create a WorldSprite Animation
 
 
     }

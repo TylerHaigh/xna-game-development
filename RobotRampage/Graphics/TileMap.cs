@@ -202,7 +202,7 @@ namespace RobotRampage.Graphics
             return IsWallTileAtPixel((int)pixel.X, (int)pixel.Y);
         }
 
-        public void Draw(Camera cam, SpriteBatch spriteBatch)
+        public void Draw(Camera cam, GameTime gameTime, SpriteBatch spriteBatch)
         {
             // Due to some rendering issue the bottom row was always cut off
             // making the bottom row of tiles pop into dispplay.
