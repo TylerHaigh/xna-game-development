@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
+using RobotRampage.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace RobotRampage.Utils
         private WorldSprite _sp1;
         private WorldSprite _sp2;
 
+        private TileMap _tileMap = new TileMap();
+
         public GameWorld(Game game, Camera cam) : base(game)
         {
             _cam = cam;
@@ -31,6 +34,8 @@ namespace RobotRampage.Utils
             Texture2D spriteSheet = textureManager.OptionalLoadContent<Texture2D>(@"Textures\SpriteSheet");
             _sp1 = new WorldSprite(spriteSheet, new Rectangle(0,  64, 32, 32), new Vector2(100, 100), _cam);
             _sp2 = new WorldSprite(spriteSheet, new Rectangle(0, 160, 32, 32), new Vector2(200, 200), _cam);
+
+            _tileMap.Intialise(spriteSheet);
         }
 
         public override void Update(GameTime gameTime)
@@ -61,6 +66,8 @@ namespace RobotRampage.Utils
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            _tileMap.Draw(_cam, spriteBatch);
+
             _sp1.Draw(gameTime, spriteBatch);
             _sp2.Draw(gameTime, spriteBatch);
         }

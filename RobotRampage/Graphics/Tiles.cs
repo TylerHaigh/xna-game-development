@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RobotRampage.Graphics
 {
-    enum Tiles
+    public enum Tiles
     {
         GreyFloor = 0,
         OrangeFloor,

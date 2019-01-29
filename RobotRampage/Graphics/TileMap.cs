@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using RobotRampage.Utils;
 using System;
@@ -14,7 +15,7 @@ namespace RobotRampage.Graphics
     // General ideas should be refactored into the generic Game Engine Library
     // TODO: After implementing TileMap, try and refactror into generic class
 
-    class TileMap
+    public class TileMap
     {
         private Texture2D _texture;
         private List<Rectangle> _tiles = new List<Rectangle>();
@@ -127,13 +128,18 @@ namespace RobotRampage.Graphics
 
         // Helper methods related to Tiles enum
 
+        private bool CoordinateWithinBounds(int squareX, int squareY)
+        {
+            return (
+                (squareX >= 0 && squareX < MapWidth) &&
+                (squareY >= 0 && squareY < MapHeight)
+            );
+        }
+
         private void PreconditionCheckSquareIndex(int squareX, int squareY)
         {
-            if (squareX < 0 || squareX >= MapWidth)
-                throw new ArgumentException("squareX must be within map range");
-
-            if (squareY < 0 || squareY >= MapHeight)
-                throw new ArgumentException("squareY must be within map range");
+            if (!CoordinateWithinBounds(squareX, squareY))
+                throw new ArgumentException("squareX and squareY must be within map bounds");
         }
 
         public Tiles GetTileAtSquare(int squareX, int squareY)
@@ -193,6 +199,30 @@ namespace RobotRampage.Graphics
         public bool IsWallTileAtPixel(Vector2 pixel)
         {
             return IsWallTileAtPixel((int)pixel.X, (int)pixel.Y);
+        }
+
+        public void Draw(Camera cam, SpriteBatch spriteBatch)
+        {
+            int startX = GetSquareAtPixelX((int)cam.Position.X);
+            int endX = GetSquareAtPixelX((int)cam.Position.X + cam.ViewPortWidth);
+
+            int startY = GetSquareAtPixelY((int)cam.Position.Y);
+            int endY = GetSquareAtPixelY((int)cam.Position.Y + cam.ViewPortHeight);
+
+            for (int x = startX; x <= endX; x++)
+            {
+                for (int y = startY; y < endX; y++)
+                {
+                    if (CoordinateWithinBounds(x, y))
+                        spriteBatch.Draw(
+                            _texture,
+                            SquareScreenRectangle(cam, x, y),
+                            _tiles[(int)GetTileAtSquare(x, y)],
+                            Color.White
+                        );
+                }
+            }
+
         }
 
     }
