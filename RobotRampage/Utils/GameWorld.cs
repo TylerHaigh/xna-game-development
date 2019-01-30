@@ -51,7 +51,7 @@ namespace RobotRampage.Utils
 
             playerBase.AddAnimation(6);
 
-            _player = new Player(playerBase, playerTurret)
+            _player = new Player(playerBase, playerTurret, _cam)
             {
                 Location = playerLocation
             };
@@ -61,6 +61,7 @@ namespace RobotRampage.Utils
         public override void Update(GameTime gameTime)
         {
             _player.Update(gameTime);
+            _cam.Move(_player.GetCameraRepositionLocation(gameTime));
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

@@ -20,6 +20,8 @@ namespace RobotRampage.Models
         private WorldSprite _baseSprite;
         private WorldSprite _turretSprite;
 
+        private Camera _cam;
+
         public Player(
                 Texture2D spriteTexture,
                 Rectangle baseInitialFrame,
@@ -33,6 +35,7 @@ namespace RobotRampage.Models
             BuildPlayerTurret(spriteTexture, turretInitialFrame, turretFrameCount, worldLocation, cam);
 
             Sprite = _baseSprite;
+            _cam = cam;
 
             // TODO: Create bounding box with 4 pixel barrier
         }
@@ -70,12 +73,14 @@ namespace RobotRampage.Models
 
 
 
-        public Player(WorldSprite baseSprite, WorldSprite turretSprite)
+        public Player(WorldSprite baseSprite, WorldSprite turretSprite, Camera cam)
         {
             this._baseSprite = baseSprite;
             this._turretSprite = turretSprite;
 
             Sprite = _baseSprite;
+
+            _cam = cam;
 
             // TODO: Create bounding box with 4 pixel barrier
 
@@ -84,6 +89,7 @@ namespace RobotRampage.Models
         public override void Update(GameTime gameTime)
         {
             HandleInput(gameTime);
+            ClampToWorld();
             
             // Update the player's location
             base.Update(gameTime);
@@ -156,6 +162,8 @@ namespace RobotRampage.Models
             );
         }
 
+        private Vector2 _moveAngle = Vector2.Zero;
+
         private void HandleInput(GameTime gameTime)
         {
 
@@ -173,14 +181,59 @@ namespace RobotRampage.Models
             {
                 moveAngle.Normalize();
                 _baseSprite.RotateTo(moveAngle);
-                this.Velocity = moveAngle * PlayerSpeed;
             }
+
+            this.Velocity = moveAngle * PlayerSpeed;
+            this._moveAngle = moveAngle;
 
             if (fireAngle != Vector2.Zero)
             {
                 fireAngle.Normalize();
                 _turretSprite.RotateTo(fireAngle);
             }
+        }
+
+        // Movement Limitation
+
+        private void ClampToWorld()
+        {
+            float x = MathHelper.Clamp(
+                _baseSprite.WorldLocation.X,
+                0,
+                _cam.WorldRectangle.Right - _baseSprite.FrameWidth
+            );
+
+            float y = MathHelper.Clamp(
+                _baseSprite.WorldLocation.Y,
+                0,
+                _cam.WorldRectangle.Bottom - _baseSprite.FrameHeight
+            );
+
+            _baseSprite.WorldLocation = new Vector2(x, y);
+        }
+
+
+        private static Rectangle ScrollArea = new Rectangle(150, 100, 500, 400);
+
+        public Vector2 GetCameraRepositionLocation(GameTime gameTime)
+        {
+            Vector2 totalMovementOffset = Vector2.Zero;
+
+            float moveScale = PlayerSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_baseSprite.ScreenRectangle.X < ScrollArea.X && _moveAngle.X < 0)
+                totalMovementOffset += new Vector2(_moveAngle.X, 0) * moveScale;
+
+            if (_baseSprite.ScreenRectangle.Right > ScrollArea.Right && _moveAngle.X > 0)
+                totalMovementOffset += new Vector2(_moveAngle.X, 0) * moveScale;
+
+            if (_baseSprite.ScreenRectangle.Y < ScrollArea.Y && _moveAngle.Y < 0)
+                totalMovementOffset += new Vector2(0, _moveAngle.Y) * moveScale;
+
+            if (_baseSprite.ScreenRectangle.Bottom > ScrollArea.Bottom && _moveAngle.Y > 0)
+                totalMovementOffset += new Vector2(0, _moveAngle.Y) * moveScale;
+
+            return totalMovementOffset;
         }
 
     }
