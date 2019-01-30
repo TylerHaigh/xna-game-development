@@ -181,7 +181,7 @@ namespace RobotRampage.Graphics
         public bool IsWallTile(int squareX, int squareY)
         {
             Tiles t = GetTileAtSquare(squareX, squareY);
-            return t > Tiles.GreyWall; // TODO: Woeful. Fix later
+            return t >= Tiles.GreyWall; // TODO: Woeful. Fix later
         }
 
         public bool IsWallTile(Vector2 square)
