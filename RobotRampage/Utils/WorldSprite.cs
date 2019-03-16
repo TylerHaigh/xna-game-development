@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace RobotRampage.Utils
 {
-    class WorldSprite : Sprite
+    public class WorldSprite : Sprite
     {
 
-        public Vector2 WorldLocation { get => Location; set => Location = value; }
+        public Vector2 WorldLocation { get => base.Location; set => base.Location = value; }
         public Vector2 ScreenLocation => _cam.Transform(WorldLocation);
 
         public Rectangle WorldRectangle => new Rectangle((int)WorldLocation.X, (int)WorldLocation.Y, FrameWidth, FrameHeight);

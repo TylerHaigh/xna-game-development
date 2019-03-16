@@ -38,9 +38,8 @@ namespace AsteroidAssault.Models.Player
 
         public event EventHandler<ShotFiredEventArgs> ShotFired;
 
-        public Enemy(Sprite s, Vector2 location)
+        public Enemy(Sprite s, Vector2 location) : base(s)
         {
-            this.Sprite = s;
             //_sprite.CollisionRadius = CollisionRadius;
 
             _currentWayPoint = location;

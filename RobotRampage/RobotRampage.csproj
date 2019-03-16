@@ -43,14 +43,17 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collision\WorldBoundingBoxComponent.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Graphics\TileMap.cs" />
     <Compile Include="Graphics\Tiles.cs" />
+    <Compile Include="Utils\WorldInvisibleEntity.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\GameWorld.cs" />
     <Compile Include="Utils\Size.cs" />
+    <Compile Include="Utils\WorldEntity.cs" />
     <Compile Include="Utils\WorldSprite.cs" />
   </ItemGroup>
   <ItemGroup>

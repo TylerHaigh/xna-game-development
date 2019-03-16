@@ -53,6 +53,7 @@
     <Compile Include="Collision\CollisionEventArgs.cs" />
     <Compile Include="Collision\CollisionGeometryFactory.cs" />
     <Compile Include="Components\Component.cs" />
+    <Compile Include="Entities\InvisibleEntity.cs" />
     <Compile Include="Extensions\QueueExtensions.cs" />
     <Compile Include="Entities\GameEntity.cs" />
     <Compile Include="Graphics\Camera.cs" />

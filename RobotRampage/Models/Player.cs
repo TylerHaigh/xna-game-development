@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Utilities;
+using RobotRampage.Collision;
 using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
@@ -14,30 +16,47 @@ using System.Threading.Tasks;
 namespace RobotRampage.Models
 {
 
-    class Player : GameEntity
+    class Player : WorldEntity
     {
         private const float PlayerSpeed = 90f;
         private static Rectangle ScrollArea = new Rectangle(150, 100, 500, 400); // TODO: Hardcoded based on world
 
         private WorldSprite _baseSprite;
         private WorldSprite _turretSprite;
-        private Camera _cam;
 
         private Vector2 _moveAngle = Vector2.Zero;
 
-        public Vector2 WorldLocation { get => _baseSprite.WorldLocation; set => _baseSprite.WorldLocation = value; }
 
-        public Player(WorldSprite baseSprite, WorldSprite turretSprite, Camera cam)
+        public Player(WorldSprite baseSprite, WorldSprite turretSprite, Camera cam) : base(cam, baseSprite)
         {
+            // Base sprite will be the WorldSprite
             this._baseSprite = baseSprite;
+
+            // Will need to update turretSprite manually
             this._turretSprite = turretSprite;
 
-            Sprite = _baseSprite;
+            CreateCollisionBoundingBox();
+        }
 
-            _cam = cam;
+        private void CreateCollisionBoundingBox()
+        {
+            // Create bounding box with 4 pixel barrier
+            CollisionBoundingBox box = new CollisionBoundingBox(WorldLocation, _baseSprite.WorldRectangle, 4, 4);
+            CollisionComponent comp = new WorldBoundingBoxComponent(this, box);
 
-            // TODO: Create bounding box with 4 pixel barrier
+            comp.CollisionDetected += CollisionDetected;
+            Components.Add(comp);
+        }
 
+        private void CollisionDetected(object sender, CollisionEventArgs e)
+        {
+            if (e.CollisionResolved) return;
+
+            Console.WriteLine("Collision Detected");
+            WorldLocation = LastKnownWorldLocation;
+            _baseSprite.WorldLocation = LastKnownWorldLocation;
+            _turretSprite.WorldLocation = LastKnownWorldLocation;
+            e.CollisionResolved = true;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,7 +74,7 @@ namespace RobotRampage.Models
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // Draw base first, then turret
-            Sprite.Draw(gameTime, spriteBatch);
+            _baseSprite.Draw(gameTime, spriteBatch);
 
             _turretSprite.Draw(gameTime, spriteBatch);
         }
@@ -101,13 +120,13 @@ namespace RobotRampage.Models
             float x = MathHelper.Clamp(
                 WorldLocation.X,
                 0,
-                _cam.WorldRectangle.Right - _baseSprite.FrameWidth
+                Cam.WorldRectangle.Right - _baseSprite.FrameWidth
             );
 
             float y = MathHelper.Clamp(
                 WorldLocation.Y,
                 0,
-                _cam.WorldRectangle.Bottom - _baseSprite.FrameHeight
+                Cam.WorldRectangle.Bottom - _baseSprite.FrameHeight
             );
 
             WorldLocation = new Vector2(x, y);

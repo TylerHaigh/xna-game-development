@@ -33,7 +33,20 @@ namespace Packt.Mono.Framework.Entities
 
     public abstract class GameEntity
     {
-        public Vector2 Location { get => Sprite.Location; set => Sprite.Location = value; }
+        private Vector2 _location = Vector2.Zero;
+        public Vector2 Location
+        {
+            get { return _location; }
+            set
+            {
+                _location = value;
+                if(Sprite != null)
+                    this.Sprite.Location = value;
+            }
+        }
+
+        public Vector2 LastKnownLocation = Vector2.Zero;
+
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public GameEntity ParentEntity { get; set; }
@@ -45,6 +58,9 @@ namespace Packt.Mono.Framework.Entities
         public List<GameEntity> ChildEntities = new List<GameEntity>();
 
         public Sprite Sprite { get; set; }
+
+        public GameEntity() { }
+        public GameEntity(Sprite s) { Sprite = s; }
 
         public void AddChild(GameEntity entity)
         {
@@ -72,6 +88,7 @@ namespace Packt.Mono.Framework.Entities
         {
             // has to come before component update because components will
             // reference Location derived variabled (e.g. center) in their update routine
+            LastKnownLocation = Location;
             Location += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             foreach (var c in Components) { c.Update(gameTime); }

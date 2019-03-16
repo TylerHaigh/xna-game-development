@@ -52,6 +52,13 @@ namespace Packt.Mono.Framework.Collision
             RaiseCreated();
         }
 
+        public BoundingBoxComponent(GameEntity entity, CollisionBoundingBox box) : base(entity)
+        {
+            _box = box;
+            Geometry = box;
+            RaiseCreated();
+        }
+
         public override void Update(GameTime gameTime)
         {
             if(this.IsActive)

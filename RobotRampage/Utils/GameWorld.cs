@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using Packt.Mono.Framework.Screen;
@@ -20,12 +21,22 @@ namespace RobotRampage.Utils
 
         private List<GameEntity> _entities = new List<GameEntity>();
 
-        private TileMap _tileMap = new TileMap();
+        private TileMap _tileMap;
         private Player _player;
+        private CollisionEngine _collisionEngine;
 
         public GameWorld(Game game, Camera cam) : base(game)
         {
             _cam = cam;
+            _tileMap = new TileMap();
+            _collisionEngine = new CollisionEngine();
+
+            CollisionComponent.CreatedCollisionComponent += RegisterCollisionBox;
+        }
+
+        private void RegisterCollisionBox(object sender, CreatedCollisionComponentArgs args)
+        {
+            _collisionEngine.AddEntity(args.Component);
         }
 
         public override void LoadContent(TextureManager textureManager)
@@ -53,7 +64,7 @@ namespace RobotRampage.Utils
 
             _player = new Player(playerBase, playerTurret, _cam)
             {
-                Location = playerLocation
+                WorldLocation = playerLocation
             };
 
         }
@@ -61,6 +72,7 @@ namespace RobotRampage.Utils
         public override void Update(GameTime gameTime)
         {
             _player.Update(gameTime);
+            _collisionEngine.Update(gameTime);
             _cam.Move(_player.GetCameraRepositionLocation(gameTime));
         }
 

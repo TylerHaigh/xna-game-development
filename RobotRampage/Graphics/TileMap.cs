@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
+using RobotRampage.Collision;
 using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
@@ -255,15 +257,38 @@ namespace RobotRampage.Graphics
                 for(int y = 0; y < MapHeight; y++)
                 {
                     if (IsBorderSquare(x, y))
+                    {
                         _mapSquares[x, y] = wallTile;
+                        GenerateWallTileCollisionBox(x, y);
+                    }
                     else if (IsBorderEdgeGap(x, y))
                         _mapSquares[x, y] = floorTile;
                     else
-                        _mapSquares[x, y] = (_rand.Next(0, 100) <= WallChancePercent)
-                            ? wallTile
-                            : floorTile;
+                    {
+                        bool genWallTile = (_rand.Next(0, 100) <= WallChancePercent);
+                        _mapSquares[x, y] = floorTile;
+
+                        if(genWallTile)
+                        {
+                            _mapSquares[x, y] = wallTile;
+                            GenerateWallTileCollisionBox(x, y);
+                        }
+                    }
                 }
             }
+        }
+
+        private void GenerateWallTileCollisionBox(int x, int y)
+        {
+            Rectangle rect = SquareWorldRectangle(x, y);
+            Vector2 vec = new Vector2(rect.X, rect.Y);
+            GenerateWallTileCollisionBox(vec, rect);
+        }
+
+        private void GenerateWallTileCollisionBox(Vector2 vec, Rectangle rect)
+        {
+            CollisionBoundingBox box = new CollisionBoundingBox(vec, rect, 1, 1);
+            CollisionComponent comp = new WorldBoundingBoxComponent(new WorldInvisibleEntity(), box);
         }
 
     }
