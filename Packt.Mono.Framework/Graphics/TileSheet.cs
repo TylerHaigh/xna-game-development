@@ -19,7 +19,7 @@ namespace Packt.Mono.Framework.Graphics
         private int _paddingX;
         private int _paddingY;
 
-        public TileSheet(Texture2D texture, Rectangle initialFrame, int tilesX, int tilesY = 1, int paddingX = 0, int paddingY = 0)
+        public TileSheet(Texture2D texture, Rectangle initialFrame, int tilesX = 1, int tilesY = 1, int paddingX = 0, int paddingY = 0)
         {
             this._texture = texture;
             this.InitalFrame = initialFrame;
