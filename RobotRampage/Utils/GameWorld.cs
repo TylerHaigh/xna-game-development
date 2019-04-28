@@ -79,7 +79,7 @@ namespace RobotRampage.Utils
 
             // Shots
             Rectangle shotRect = new Rectangle(0, 128, 32, 32);
-            TileSheet shotTileSheet = new TileSheet(spriteSheet, shotRect);
+            TileSheet shotTileSheet = new TileSheet(spriteSheet, shotRect, 2);
             ShotFactory shotFactory = new ShotFactory(shotTileSheet);
             _shotManager = new ShotManager(shotFactory);
 

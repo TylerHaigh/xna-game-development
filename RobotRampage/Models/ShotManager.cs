@@ -24,12 +24,12 @@ namespace RobotRampage.Models
 
         public void AddShot(ShotFiredEventArgs args)
         {
-            AddShot(args.Location, args.Velocity, 0);
+            AddShot(args.Location, args.Velocity, args.ShotType);
         }
 
-        public void AddShot(Vector2 location, Vector2 velocity, int frame)
+        public void AddShot(Vector2 location, Vector2 velocity, ShotType shotType)
         {
-            Shot shot = _shotFactory.CreateShot(location, velocity, frame);
+            Shot shot = _shotFactory.CreateShot(location, velocity, shotType);
             AddShot(shot);
         }
 

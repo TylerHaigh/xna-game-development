@@ -7,8 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Packt.Mono.Framework.Entities
+namespace RobotRampage.Models
 {
+    public enum ShotType
+    {
+        Bullet = 0,
+        Missile = 1
+    }
+
     public class Shot : Particle
     {
         private const float MaxSpeed = 400f;
@@ -16,9 +22,12 @@ namespace Packt.Mono.Framework.Entities
         private static readonly Color InitialColor = Color.White;
         private static readonly Color FinalColor = Color.White;
 
-        public Shot(Sprite s, Vector2 accelleration)
+        public ShotType ShotType { get; private set; }
+
+        public Shot(Sprite s, Vector2 accelleration, ShotType shotType)
             : base(s, accelleration, MaxSpeed, Duration, InitialColor, FinalColor)
         {
+            this.ShotType = shotType;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -41,17 +50,17 @@ namespace Packt.Mono.Framework.Entities
             _shotTileSheet = shotTileSheet;
         }
 
-        public Shot CreateShot(Vector2 location, Vector2 velocity, int frame)
+        public Shot CreateShot(Vector2 location, Vector2 velocity, ShotType shotType)
         {
             Sprite s = _shotTileSheet.SpriteAnimation();
             s.Animate = false;
-            s.Frame = frame;
+            s.Frame = (int)shotType;
             s.RotateTo(velocity);
 
-            Shot shot = new Shot(s, Vector2.Zero)
+            Shot shot = new Shot(s, Vector2.Zero, shotType)
             {
                 Location = location,
-                Velocity = velocity
+                Velocity = velocity,
             };
 
             return shot;

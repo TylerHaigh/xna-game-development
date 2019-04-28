@@ -58,7 +58,7 @@ namespace RobotRampage.Models
         {
             if (e.CollisionResolved) return;
 
-            Console.WriteLine("Collision Detected");
+            //Console.WriteLine("Collision Detected");
             WorldLocation = LastKnownWorldLocation;
             _baseSprite.WorldLocation = LastKnownWorldLocation;
             _turretSprite.WorldLocation = LastKnownWorldLocation;
@@ -180,11 +180,11 @@ namespace RobotRampage.Models
             if (CanFireWeapon)
             {
 
-                Console.WriteLine("Shot Fired");
                 ShotFiredEventArgs args = new ShotFiredEventArgs
                 {
                     Location = _turretSprite.WorldLocation,
-                    Velocity = fireAngle * WeaponSpeed
+                    Velocity = fireAngle * WeaponSpeed,
+                    ShotType = ShotType.Bullet
                 };
 
                 ShotFired?.Invoke(this, args);
@@ -201,5 +201,6 @@ namespace RobotRampage.Models
     {
         public Vector2 Location { get; set; }
         public Vector2 Velocity { get; set; }
+        public ShotType ShotType { get; set; }
     }
 }
