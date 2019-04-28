@@ -25,6 +25,7 @@ namespace RobotRampage.Utils
         private Player _player;
         private CollisionEngine _collisionEngine;
         private EffectsManager _effectsManager;
+        private ShotManager _shotManager;
 
         public GameWorld(Game game, Camera cam) : base(game)
         {
@@ -76,11 +77,25 @@ namespace RobotRampage.Utils
 
             _effectsManager = new EffectsManager(explosionTileSheet, particleTileSheet);
 
+            // Shots
+            Rectangle shotRect = new Rectangle(0, 128, 32, 32);
+            TileSheet shotTileSheet = new TileSheet(spriteSheet, shotRect);
+            ShotFactory shotFactory = new ShotFactory(shotTileSheet);
+            _shotManager = new ShotManager(shotFactory);
+
+            _player.ShotFired += PlayerShotFired;
+
+        }
+
+        private void PlayerShotFired(object sender, ShotFiredEventArgs e)
+        {
+            _shotManager.AddShot(e);
         }
 
         public override void Update(GameTime gameTime)
         {
             _player.Update(gameTime);
+            _shotManager.Update(gameTime);
             _effectsManager.Update(gameTime);
             _collisionEngine.Update(gameTime);
             _cam.Move(_player.GetCameraRepositionLocation(gameTime));
@@ -89,6 +104,7 @@ namespace RobotRampage.Utils
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             _tileMap.Draw(_cam, gameTime, spriteBatch);
+            _shotManager.Draw(gameTime, spriteBatch);
             _player.Draw(gameTime, spriteBatch);
             _effectsManager.Draw(gameTime, spriteBatch);
         }

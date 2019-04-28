@@ -44,8 +44,9 @@ namespace Packt.Mono.Framework.Graphics
                 Velocity += _accelleration;
                 if(Velocity.Length() > _maxSpeed)
                 {
-                    Velocity.Normalize();
-                    Velocity *= _maxSpeed;
+                    Vector2 vel = Velocity;
+                    vel.Normalize();
+                    Velocity = vel * _maxSpeed;
                 }
 
                 Sprite.TintColor = Color.Lerp(_initialColor, _finalColor, DurationProgress);

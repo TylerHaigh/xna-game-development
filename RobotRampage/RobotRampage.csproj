@@ -46,9 +46,10 @@
     <Compile Include="Collision\WorldBoundingBoxComponent.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Graphics\EffectsManager.cs" />
-    <Compile Include="Graphics\Particle.cs" />
     <Compile Include="Graphics\TileMap.cs" />
     <Compile Include="Graphics\Tiles.cs" />
+    <Compile Include="Models\ShotManager.cs" />
+    <Compile Include="Models\Shot.cs" />
     <Compile Include="Utils\WorldInvisibleEntity.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Program.cs" />

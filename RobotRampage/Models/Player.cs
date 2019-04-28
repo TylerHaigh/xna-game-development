@@ -26,6 +26,12 @@ namespace RobotRampage.Models
 
         private Vector2 _moveAngle = Vector2.Zero;
 
+        private const float WeaponSpeed = 600f;
+        private const float ShotMinTimer = 0.15f;
+        private GameTimer _shotTimer = new GameTimer(TimeSpan.FromSeconds(ShotMinTimer));
+        public bool CanFireWeapon => _shotTimer.Completed;
+
+
 
         public Player(WorldSprite baseSprite, WorldSprite turretSprite, Camera cam) : base(cam, baseSprite)
         {
@@ -61,6 +67,8 @@ namespace RobotRampage.Models
 
         public override void Update(GameTime gameTime)
         {
+            _shotTimer.Update(gameTime);
+
             HandleInput(gameTime);
             ClampToWorld();
             
@@ -107,6 +115,10 @@ namespace RobotRampage.Models
             {
                 fireAngle.Normalize();
                 _turretSprite.RotateTo(fireAngle);
+
+                // Firing a shot will only work when the player presses the key
+                // Should this be changed to a space bar?
+                FireWeapon(fireAngle);
             }
         }
 
@@ -162,5 +174,32 @@ namespace RobotRampage.Models
 
         #endregion
 
+
+        private void FireWeapon(Vector2 fireAngle)
+        {
+            if (CanFireWeapon)
+            {
+
+                Console.WriteLine("Shot Fired");
+                ShotFiredEventArgs args = new ShotFiredEventArgs
+                {
+                    Location = _turretSprite.WorldLocation,
+                    Velocity = fireAngle * WeaponSpeed
+                };
+
+                ShotFired?.Invoke(this, args);
+
+                _shotTimer.Reset();
+            }
+        }
+
+        public event EventHandler<ShotFiredEventArgs> ShotFired;
+
+    }
+
+    public class ShotFiredEventArgs
+    {
+        public Vector2 Location { get; set; }
+        public Vector2 Velocity { get; set; }
     }
 }
