@@ -32,7 +32,7 @@ namespace RobotRampage.Utils
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            WorldSprite.Draw(gameTime, spriteBatch);
         }
 
         public WorldEntity(Camera cam) { this.Cam = cam; }

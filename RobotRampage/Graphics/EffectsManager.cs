@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
+using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,10 @@ namespace RobotRampage.Graphics
         private List<Particle> _particles = new List<Particle>();
         private Random _rand = new Random();
 
-        private TileSheet _explosionTileSheet;
-        private TileSheet _particleTileSheet;
+        private WorldTileSheet _explosionTileSheet;
+        private WorldTileSheet _particleTileSheet;
 
-        public EffectsManager(TileSheet explosionTileSheet, TileSheet particleTileSheet)
+        public EffectsManager(WorldTileSheet explosionTileSheet, WorldTileSheet particleTileSheet)
         {
             _explosionTileSheet = explosionTileSheet;
             _particleTileSheet = particleTileSheet;

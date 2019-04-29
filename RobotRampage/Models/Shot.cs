@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
+using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace RobotRampage.Models
         public GameEntity OtherEntity { get; set; }
     }
 
-    public class Shot : Particle
+    public class Shot : WorldParticle
     {
         private const float MaxSpeed = 400f;
         private const int Duration = 120;
@@ -39,8 +40,8 @@ namespace RobotRampage.Models
 
         public event EventHandler<ShotCollisionEventArgs> OnShotCollision;
 
-        public Shot(Sprite s, Vector2 accelleration, ShotType shotType)
-            : base(s, accelleration, MaxSpeed, Duration, InitialColor, FinalColor)
+        public Shot(WorldSprite s, Camera cam, Vector2 accelleration, ShotType shotType)
+            : base(s, cam, accelleration, MaxSpeed, Duration, InitialColor, FinalColor)
         {
             this.ShotType = shotType;
             AddCollisionCircle();
@@ -84,23 +85,25 @@ namespace RobotRampage.Models
 
     public class ShotFactory
     {
-        private TileSheet _shotTileSheet;
+        private WorldTileSheet _shotTileSheet;
+        private Camera _cam;
 
-        public ShotFactory(TileSheet shotTileSheet)
+        public ShotFactory(WorldTileSheet shotTileSheet, Camera cam)
         {
             _shotTileSheet = shotTileSheet;
+            _cam = cam;
         }
 
         public Shot CreateShot(Vector2 location, Vector2 velocity, ShotType shotType)
         {
-            Sprite s = _shotTileSheet.SpriteAnimation();
+            WorldSprite s = _shotTileSheet.SpriteAnimation();
             s.Animate = false;
             s.Frame = (int)shotType;
             s.RotateTo(velocity);
 
-            Shot shot = new Shot(s, Vector2.Zero, shotType)
+            Shot shot = new Shot(s, _cam, Vector2.Zero, shotType)
             {
-                Location = location,
+                WorldLocation = location,
                 Velocity = velocity,
             };
 

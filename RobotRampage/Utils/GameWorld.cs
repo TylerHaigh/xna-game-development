@@ -72,15 +72,15 @@ namespace RobotRampage.Utils
 
             Rectangle particleRect = new Rectangle(0, 288, 2, 2);
             Rectangle explosionParticleRect = new Rectangle(0, 256, 32, 32);
-            TileSheet explosionTileSheet = new TileSheet(spriteSheet, particleRect);
-            TileSheet particleTileSheet = new TileSheet(spriteSheet, explosionParticleRect, 3);
+            WorldTileSheet explosionTileSheet = new WorldTileSheet(spriteSheet, particleRect, _cam);
+            WorldTileSheet particleTileSheet = new WorldTileSheet(spriteSheet, explosionParticleRect, _cam, 3);
 
             _effectsManager = new EffectsManager(explosionTileSheet, particleTileSheet);
 
             // Shots
             Rectangle shotRect = new Rectangle(0, 128, 32, 32);
-            TileSheet shotTileSheet = new TileSheet(spriteSheet, shotRect, 2);
-            ShotFactory shotFactory = new ShotFactory(shotTileSheet);
+            WorldTileSheet shotTileSheet = new WorldTileSheet(spriteSheet, shotRect, _cam, 2);
+            ShotFactory shotFactory = new ShotFactory(shotTileSheet, _cam);
             _shotManager = new ShotManager(shotFactory);
             //_shotManager.OnShotDestroyed += OnShotDestroyed;
             _shotManager.OnShotCollision += OnShotCollision;
