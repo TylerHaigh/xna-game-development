@@ -40,7 +40,7 @@ namespace RobotRampage.Models
         private const float WeaponUpgradeTimeDefault = 30.0f;
         private GameTimer _weaponUpgradeTimer = new GameTimer(TimeSpan.FromSeconds(WeaponUpgradeTimeDefault));
 
-        private ShotType _currentShotType = ShotType.Triple;
+        private ShotType _currentShotType = ShotType.Bullet;
         private GameTimer ActiveWeaponTimer => (_currentShotType == ShotType.Missile) ? _missileTimer : _shotTimer;
         public bool CanFireWeapon => ActiveWeaponTimer.Completed;
 

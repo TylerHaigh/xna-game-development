@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Packt.Mono.Framework.Collision;
+using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,14 @@ namespace RobotRampage.Models
         Triple = 2, // Use same sprite frame as bullet
     }
 
+    
+
+    public class ShotCollisionEventArgs
+    {
+        public Shot Shot { get; set; }
+        public GameEntity OtherEntity { get; set; }
+    }
+
     public class Shot : Particle
     {
         private const float MaxSpeed = 400f;
@@ -23,22 +33,52 @@ namespace RobotRampage.Models
         private static readonly Color InitialColor = Color.White;
         private static readonly Color FinalColor = Color.White;
 
+        private const int ShotCollisionRadius = 14;
+
         public ShotType ShotType { get; private set; }
+
+        public event EventHandler<ShotCollisionEventArgs> OnShotCollision;
 
         public Shot(Sprite s, Vector2 accelleration, ShotType shotType)
             : base(s, accelleration, MaxSpeed, Duration, InitialColor, FinalColor)
         {
             this.ShotType = shotType;
+            AddCollisionCircle();
+        }
+
+        private void AddCollisionCircle()
+        {
+            CollisionCircleComponent component = new CollisionCircleComponent(this, this.Sprite.Center, ShotCollisionRadius);
+            component.CollisionDetected += ShotCollision;
+
+            this.Components.Add(component);
+        }
+
+        private void ShotCollision(object sender, CollisionEventArgs e)
+        {
+            if (e.OtherEntity(this) is Player) return;
+            if (e.OtherEntity(this) is Shot) return;
+
+            ShotCollisionEventArgs args = new ShotCollisionEventArgs
+            {
+                Shot = this,
+                OtherEntity = e.OtherEntity(this)
+            };
+
+            OnShotCollision?.Invoke(this, args);
+            this.DestroyEntity();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            base.Draw(gameTime, spriteBatch);
+            if(!IsDestroyed && IsActive)
+                base.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            if(!IsDestroyed && IsActive)
+                base.Update(gameTime);
         }
     }
 

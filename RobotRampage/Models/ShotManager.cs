@@ -11,8 +11,17 @@ using System.Threading.Tasks;
 
 namespace RobotRampage.Models
 {
+
+    public class ShotDestroyedEventArgs
+    {
+        public Shot Shot { get; set; }
+    }
+
     class ShotManager : IEntityManager
     {
+        public event EventHandler<ShotDestroyedEventArgs> OnShotDestroyed;
+        public event EventHandler<ShotCollisionEventArgs> OnShotCollision;
+
         private List<Shot> _shots = new List<Shot>();
 
         private ShotFactory _shotFactory;
@@ -35,7 +44,26 @@ namespace RobotRampage.Models
 
         public void AddShot(Shot shot)
         {
+            shot.OnDestroy += ShotOnDestroy;
+            shot.OnShotCollision += ShotOnCollision;
+
             _shots.Add(shot);
+        }
+
+        private void ShotOnDestroy(object sender, EventArgs e)
+        {
+            // TODO: Remove if not required
+            ShotDestroyedEventArgs args = new ShotDestroyedEventArgs
+            {
+                Shot = (Shot)sender
+            };
+
+            OnShotDestroyed?.Invoke(sender, args);
+        }
+
+        private void ShotOnCollision(object sender, ShotCollisionEventArgs e)
+        {
+            OnShotCollision?.Invoke(sender, e);
         }
 
         public void Clear()

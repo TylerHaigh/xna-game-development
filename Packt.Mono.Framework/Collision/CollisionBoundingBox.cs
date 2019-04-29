@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Packt.Mono.Framework.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,11 @@ namespace Packt.Mono.Framework.Collision
         public bool Intersects(Point other)
         {
             return Intersects(new Vector2(other.X, other.Y));
+        }
+
+        public bool Intersects(CollisionCircle other)
+        {
+            return other.Intersects(this);
         }
 
     }

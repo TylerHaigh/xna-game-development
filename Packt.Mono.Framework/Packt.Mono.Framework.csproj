@@ -56,6 +56,7 @@
     <Compile Include="Entities\InvisibleEntity.cs" />
     <Compile Include="Extensions\QueueExtensions.cs" />
     <Compile Include="Entities\GameEntity.cs" />
+    <Compile Include="Extensions\RectangleExtensions.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Particle.cs" />
     <Compile Include="Screen\GameScreenState.cs" />

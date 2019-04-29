@@ -70,12 +70,14 @@ namespace Packt.Mono.Framework.Collision
         private bool CollisionCircleCollides(CollisionCircle a, CollisionGeometry b)
         {
             if (b is CollisionCircle) return a.Intersects((CollisionCircle)b);
+            if (b is CollisionBoundingBox) return a.Intersects((CollisionBoundingBox)b);
             return false;
         }
 
         private bool BoundingBoxCollides(CollisionBoundingBox a, CollisionGeometry b)
         {
             if (b is CollisionBoundingBox) return a.Intersects((CollisionBoundingBox)b);
+            if (b is CollisionCircle) return a.Intersects((CollisionCircle)b);
             return false;
         }
 

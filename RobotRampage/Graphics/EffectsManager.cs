@@ -120,7 +120,7 @@ namespace RobotRampage.Graphics
             AddExplosion(location, momentum, config);
         }
 
-        public void AddLargeExplosion(Vector2 location, Vector2 momentum)
+        public void AddLargeExplosion(Vector2 location)
         {
             ParticleConfig config = new ParticleConfig
             {
@@ -133,7 +133,7 @@ namespace RobotRampage.Graphics
                 InitialColor = new Color(1, 3, 0, 0.5f),
                 FinalColor = new Color(1, 3, 0, 0)
             };
-            AddExplosion(location, momentum, config);
+            AddExplosion(location, Vector2.Zero, config);
         }
 
         public void AddSparksEffect(Vector2 location, Vector2 impactVelocity)

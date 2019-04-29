@@ -4,6 +4,7 @@ using Packt.Mono.Framework.Collision;
 using Packt.Mono.Framework.Entities;
 using Packt.Mono.Framework.Graphics;
 using RobotRampage.Collision;
+using RobotRampage.Models;
 using RobotRampage.Utils;
 using System;
 using System.Collections.Generic;
@@ -288,7 +289,7 @@ namespace RobotRampage.Graphics
         private void GenerateWallTileCollisionBox(Vector2 vec, Rectangle rect)
         {
             CollisionBoundingBox box = new CollisionBoundingBox(vec, rect, 1, 1);
-            CollisionComponent comp = new WorldBoundingBoxComponent(new WorldInvisibleEntity(), box);
+            CollisionComponent comp = new WorldBoundingBoxComponent(new WallTileEntity(), box);
         }
 
     }

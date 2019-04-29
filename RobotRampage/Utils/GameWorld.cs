@@ -82,9 +82,32 @@ namespace RobotRampage.Utils
             TileSheet shotTileSheet = new TileSheet(spriteSheet, shotRect, 2);
             ShotFactory shotFactory = new ShotFactory(shotTileSheet);
             _shotManager = new ShotManager(shotFactory);
+            //_shotManager.OnShotDestroyed += OnShotDestroyed;
+            _shotManager.OnShotCollision += OnShotCollision;
 
             _player.ShotFired += PlayerShotFired;
 
+        }
+
+        private void OnShotCollision(object sender, ShotCollisionEventArgs e)
+        {
+            if(e.OtherEntity is WallTileEntity)
+            {
+                if (e.Shot.ShotType == ShotType.Bullet)
+                    _effectsManager.AddSparksEffect(e.Shot.Sprite.Location, e.Shot.Velocity);
+                else
+                    CreateLargeExplosion(e.Shot.Sprite.Location);
+            }
+        }
+
+        private void CreateLargeExplosion(Vector2 location)
+        {
+            // TODO: Do we need a method for this?
+            _effectsManager.AddLargeExplosion(location + new Vector2(-10, -10));
+            _effectsManager.AddLargeExplosion(location + new Vector2(-10, +10));
+            _effectsManager.AddLargeExplosion(location + new Vector2(+10, +10));
+            _effectsManager.AddLargeExplosion(location + new Vector2(+10, -10));
+            _effectsManager.AddLargeExplosion(location);
         }
 
         private void PlayerShotFired(object sender, ShotFiredEventArgs e)
