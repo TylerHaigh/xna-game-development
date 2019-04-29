@@ -26,11 +26,23 @@ namespace RobotRampage.Models
 
         private Vector2 _moveAngle = Vector2.Zero;
 
-        private const float WeaponSpeed = 600f;
-        private const float ShotMinTimer = 0.15f;
-        private GameTimer _shotTimer = new GameTimer(TimeSpan.FromSeconds(ShotMinTimer));
-        public bool CanFireWeapon => _shotTimer.Completed;
+        public event EventHandler<ShotFiredEventArgs> ShotFired;
 
+        private const float WeaponSpeed = 600f;
+        private const float TripleWeaponSplitAngleDegrees = 15.0f;
+
+        private const float ShotTimeout = 0.15f;
+        private GameTimer _shotTimer = new GameTimer(TimeSpan.FromSeconds(ShotTimeout));
+
+        private const float MissileTimeout = 0.5f;
+        private GameTimer _missileTimer = new GameTimer(TimeSpan.FromSeconds(MissileTimeout));
+
+        private const float WeaponUpgradeTimeDefault = 30.0f;
+        private GameTimer _weaponUpgradeTimer = new GameTimer(TimeSpan.FromSeconds(WeaponUpgradeTimeDefault));
+
+        private ShotType _currentShotType = ShotType.Triple;
+        private GameTimer ActiveWeaponTimer => (_currentShotType == ShotType.Missile) ? _missileTimer : _shotTimer;
+        public bool CanFireWeapon => ActiveWeaponTimer.Completed;
 
 
         public Player(WorldSprite baseSprite, WorldSprite turretSprite, Camera cam) : base(cam, baseSprite)
@@ -67,8 +79,9 @@ namespace RobotRampage.Models
 
         public override void Update(GameTime gameTime)
         {
-            _shotTimer.Update(gameTime);
+            ActiveWeaponTimer.Update(gameTime);
 
+            CheckWeaponUpgradeExpiry(gameTime); // Check before player fires weapon
             HandleInput(gameTime);
             ClampToWorld();
             
@@ -174,26 +187,113 @@ namespace RobotRampage.Models
 
         #endregion
 
+        #region FireWeapon
 
         private void FireWeapon(Vector2 fireAngle)
         {
             if (CanFireWeapon)
             {
-
-                ShotFiredEventArgs args = new ShotFiredEventArgs
+                switch (_currentShotType)
                 {
-                    Location = _turretSprite.WorldLocation,
-                    Velocity = fireAngle * WeaponSpeed,
-                    ShotType = ShotType.Bullet
-                };
-
-                ShotFired?.Invoke(this, args);
-
-                _shotTimer.Reset();
+                    case ShotType.Bullet:
+                        FireNormalShot(fireAngle);
+                        break;
+                    case ShotType.Triple:
+                        FireTripleShot(fireAngle);
+                        break;
+                    case ShotType.Missile:
+                        FireMissileShot(fireAngle);
+                        break;
+                    default:
+                        throw new ArgumentException("Shot type not defined for " + _currentShotType);
+                }
             }
         }
 
-        public event EventHandler<ShotFiredEventArgs> ShotFired;
+        private void FireNormalShot(Vector2 fireAngle)
+        {
+            ShotFiredEventArgs args = new ShotFiredEventArgs
+            {
+                Location = _turretSprite.WorldLocation,
+                Velocity = fireAngle * WeaponSpeed,
+                ShotType = ShotType.Bullet
+            };
+
+            ShotFired?.Invoke(this, args);
+
+            _shotTimer.Reset();
+        }
+
+        private void FireTripleShot(Vector2 fireAngle)
+        {
+            Vector2 baseWeaponVector = fireAngle * WeaponSpeed;
+            double baseAngle = Math.Atan2(baseWeaponVector.Y, baseWeaponVector.X);
+            double offset = MathHelper.ToRadians(TripleWeaponSplitAngleDegrees);
+
+            ShotFiredEventArgs shot1 = new ShotFiredEventArgs
+            {
+                Location = _turretSprite.WorldLocation,
+                Velocity = baseWeaponVector,
+                ShotType = ShotType.Bullet
+            };
+
+            ShotFiredEventArgs shot2 = new ShotFiredEventArgs
+            {
+                Location = _turretSprite.WorldLocation,
+                Velocity = new Vector2(
+                   (float)Math.Cos(baseAngle - offset),
+                   (float)Math.Sin(baseAngle - offset)
+                ) * baseWeaponVector.Length(),
+                ShotType = ShotType.Bullet
+            };
+
+            ShotFiredEventArgs shot3 = new ShotFiredEventArgs
+            {
+                Location = _turretSprite.WorldLocation,
+                Velocity = new Vector2(
+                   (float)Math.Cos(baseAngle + offset),
+                   (float)Math.Sin(baseAngle + offset)
+                ) * baseWeaponVector.Length(),
+                ShotType = ShotType.Bullet
+            };
+
+            ShotFired?.Invoke(this, shot1);
+            ShotFired?.Invoke(this, shot2);
+            ShotFired?.Invoke(this, shot3);
+
+            _shotTimer.Reset();
+        }
+
+        private void FireMissileShot(Vector2 fireAngle)
+        {
+            ShotFiredEventArgs args = new ShotFiredEventArgs
+            {
+                Location = _turretSprite.WorldLocation,
+                Velocity = fireAngle * WeaponSpeed,
+                ShotType = ShotType.Missile
+            };
+
+            ShotFired?.Invoke(this, args);
+
+            _missileTimer.Reset();
+        }
+
+        private void CheckWeaponUpgradeExpiry(GameTime gameTime)
+        {
+            if (_currentShotType != ShotType.Bullet)
+            {
+                _weaponUpgradeTimer.Update(gameTime);
+                if(_weaponUpgradeTimer.Completed)
+                {
+                    _weaponUpgradeTimer.Reset();
+                    _currentShotType = ShotType.Bullet;
+                }
+            }
+        }
+
+        #endregion
+
+
 
     }
 
